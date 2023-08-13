@@ -1,7 +1,5 @@
+import {Button as IButton} from 'native-base';
 import React from 'react';
-import {Text, View} from 'react-native';
-import {Box, Center, Stack, Button as IButton} from 'native-base';
-import theme from '../../util/theme';
 
 const Button = ({
   buttonText,

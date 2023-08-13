@@ -21,16 +21,16 @@ const getTextComputedStyles = type => {
     return styles.h4;
   } else if (type === 'h5') {
     return styles.h5;
+  } else if (type === 'subtitle1') {
+    return styles.subtitle1;
+  } else if (type === 'subtitle2') {
+    return styles.subtitle2;
   } else if (type === 'body1') {
     return styles.body1;
   } else if (type === 'body2') {
     return styles.body2;
   } else if (type === 'body3') {
     return styles.body3;
-  } else if (type === 'subtitle1') {
-    return styles.subtitle1;
-  } else if (type === 'subtitle2') {
-    return styles.subtitle2;
   } else if (type === 'button1') {
     return styles.button1;
   } else if (type === 'button2') {

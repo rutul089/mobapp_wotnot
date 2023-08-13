@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import {View, AppState, Image, Keyboard, SafeAreaView} from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer} from '@react-navigation/native';
 import {
   CardStyleInterpolators,
   createStackNavigator,
 } from '@react-navigation/stack';
-import NetInfo from '@react-native-community/netinfo';
+import React, {Component} from 'react';
+import {AppState, Keyboard, View} from 'react-native';
+import {SignInScreen, SplashScreen} from '../screens';
 import {navigationRef} from './NavigationUtils';
-import {SplashScreen, SignInScreen} from '../screens';
 const Stack = createStackNavigator();
 
 export default class RootContainer extends Component {

@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, Platform, SafeAreaView, StatusBar} from 'react-native';
+import React from 'react';
+import {SafeAreaView, StatusBar, View} from 'react-native';
 
 const FlexContainer = ({
   children,
@@ -18,7 +18,7 @@ const FlexContainer = ({
         translucent={translucent}
         hidden={false}
       />
-      <SafeAreaView style={[{flex: 1}, {backgroundColor: bottomSafeAreaColor}]}>
+      <SafeAreaView style={{flex: 1, backgroundColor: bottomSafeAreaColor}}>
         <View style={{flex: 1, backgroundColor}}>{children}</View>
       </SafeAreaView>
     </React.Fragment>

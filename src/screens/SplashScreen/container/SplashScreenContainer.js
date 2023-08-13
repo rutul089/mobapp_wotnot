@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-import SplashScreenComponent from '../component/SplashScreenComponent';
 import {navigate} from '../../../navigator/NavigationUtils';
+import SplashScreenComponent from '../component/SplashScreenComponent';
 
 export default class SplashScreenContainer extends Component {
   constructor(props) {
@@ -11,7 +10,7 @@ export default class SplashScreenContainer extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      navigate('SignInScreen')
+      navigate('SignInScreen');
     }, 2200);
   }
 
