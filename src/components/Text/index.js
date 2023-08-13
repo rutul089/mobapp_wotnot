@@ -1,13 +1,13 @@
 import React from 'react';
 import {Text as IText} from 'react-native';
+import {theme} from '../../util/theme';
 import {
+  computeColor,
   computeFontFamily,
+  computeFontLineHeight,
   computeFontSize,
   computeFontWeight,
-  computeColor,
-  computeFontLineHeight,
 } from '../helpers/helper';
-import {theme} from '../../util/theme';
 import {styles} from './style';
 
 const getTextComputedStyles = type => {
@@ -60,6 +60,7 @@ const getAdditionalComputedStyles = (size, weight, color, fontFamily) => {
   }
   return additionalStyles;
 };
+
 const Text = ({
   color,
   size,

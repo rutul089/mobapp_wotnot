@@ -24,6 +24,7 @@ const Button = ({
     }}
     _pressed={_pressed}
     style={style}
+    variant={variant}
     {...rest}>
     {buttonText}
   </IButton>

@@ -8,7 +8,7 @@ const containers = {
 };
 
 const image = {
-  '2xs': wp('2.7'), // 10
+  xs2: wp('2.7'), // 10
   xs: wp('3.2'), //12
   sm: wp('3.6'), //14
   md: wp('4.1'), //16
