@@ -5,38 +5,40 @@ export const styles = {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.bold,
-    fontSize: theme.typography.fontSizes['6xl'],
+    fontSize: theme.typography.fontSizes.xl6,
   },
   h2: {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.bold,
-    fontSize: theme.typography.fontSizes['5xl'],
+    fontSize: theme.typography.fontSizes.xl5,
   },
   h3: {
     fontFamily: theme.typography.fonts.circularStdBook,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.normal,
-    fontSize: theme.typography.fontSizes['2xl'],
+    fontSize: theme.typography.fontSizes.xl2,
   },
   h4: {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.bold,
-    fontSize: theme.typography.fontSizes['xl'],
+    fontSize: theme.typography.fontSizes.xl,
+    lineHeight: theme.typography.lineHeights.xl4,
   },
   h5: {
     fontFamily: theme.typography.fonts.circularStdBook,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.normal,
-    fontSize: theme.typography.fontSizes['lg'],
+    fontSize: theme.typography.fontSizes.lg,
+    lineHeight: theme.typography.lineHeights.xl,
   },
   body1: {
     fontFamily: theme.typography.fonts.circularStdBook,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.normal,
     fontSize: theme.typography.fontSizes.md,
-    lineHeight:theme.typography.lineHeights.md
+    lineHeight: theme.typography.lineHeights.md,
   },
   body2: {
     fontFamily: theme.typography.fonts.circularStdBook,
@@ -44,7 +46,7 @@ export const styles = {
     fontWeight: theme.typography.fontWeights.normal,
     fontSize: theme.typography.fontSizes.sm,
   },
-  body3:{
+  body3: {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.bold,
@@ -55,24 +57,28 @@ export const styles = {
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.medium,
     fontSize: theme.typography.fontSizes.lg,
+    lineHeight: theme.typography.lineHeights.xl,
   },
   subtitle2: {
     fontFamily: theme.typography.fonts.circularStdMedium,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.medium,
     fontSize: theme.typography.fontSizes.md,
+    lineHeight: theme.typography.lineHeights.xl,
   },
   button1: {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.bold,
     fontSize: theme.typography.fontSizes.md,
+    lineHeight: theme.typography.lineHeights.xl,
   },
   button2: {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.bold,
     fontSize: theme.typography.fontSizes.sm,
+    lineHeight: theme.typography.lineHeights.xl,
   },
   caption12: {
     fontFamily: theme.typography.fonts.circularStdBook,
@@ -80,11 +86,18 @@ export const styles = {
     fontWeight: theme.typography.fontWeights.normal,
     fontSize: theme.typography.fontSizes.xs,
   },
+  navigation: {
+    fontFamily: theme.typography.fonts.circularStdBold,
+    color: theme.colors.typography.black,
+    fontWeight: theme.typography.fontWeights.bold,
+    fontSize: theme.typography.fontSizes.xs,
+    lineHeight: theme.typography.lineHeights.xl,
+  },
   link: {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.link,
     fontWeight: theme.typography.fontWeights.bold,
     fontSize: theme.typography.fontSizes.md,
-    lineHeight:20
+    lineHeight: theme.typography.lineHeights.xl,
   },
 };

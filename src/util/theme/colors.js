@@ -1,5 +1,3 @@
-import {hex2rgba} from '../../components/helpers/helper';
-
 const purplePayBlue = {
   blue: '#006E96',
   darkBlue: '#0B3471',
@@ -48,7 +46,7 @@ const typography = {
   blue1: '#EBDAFF',
   blue2: '#B7A5CD',
   _475569: '#475569',
-  link:"#2A7CFF"
+  link: '#2A7CFF',
 };
 
 const colors = {
@@ -59,7 +57,7 @@ const colors = {
   // Primary colors
   brandColor: {
     ...purplePayBlue,
-    ...wotnotColor
+    ...wotnotColor,
   },
   card: {
     background: '#F4F4F4',

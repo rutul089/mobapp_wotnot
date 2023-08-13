@@ -1,8 +1,6 @@
-import React, {Component} from 'react';
-import {View, Text, SafeAreaView} from 'react-native';
-import {SplashScreen} from './src/screens';
-import RootContainer from './src/navigator/RootContainer';
 import {NativeBaseProvider} from 'native-base';
+import React, {Component} from 'react';
+import RootContainer from './src/navigator/RootContainer';
 
 export default class App extends Component {
   constructor(props) {
