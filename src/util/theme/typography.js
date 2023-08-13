@@ -8,7 +8,7 @@ const typography = {
     bold: '700',
   },
   lineHeights: {
-    '2xs': wp('4'), // 15
+    xs2: wp('4'), // 15
     xs: wp('4.6'), //18
     sm: wp('5'), //18
     md: wp('5.1'), //20,
@@ -22,7 +22,7 @@ const typography = {
     xl7: wp('10.8'), //42
   },
   fontSizes: {
-    '2xs': wp('2.7'), // 10
+    xs2: wp('2.7'), // 10
     xs: wp('3.2'), //12
     sm: wp('3.6'), //14
     md: wp('4.1'), //16
