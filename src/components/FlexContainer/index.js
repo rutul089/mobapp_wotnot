@@ -1,5 +1,6 @@
 import React from 'react';
 import {SafeAreaView, StatusBar, View} from 'react-native';
+import theme from '../../util/theme';
 
 const FlexContainer = ({
   children,
@@ -8,6 +9,8 @@ const FlexContainer = ({
   backgroundColor = 'white',
   isDarkContent = true,
   translucent = false,
+  paddingHorizontal = 0,
+  paddingVertical = 0,
 }) => {
   return (
     <React.Fragment>
@@ -19,7 +22,15 @@ const FlexContainer = ({
         hidden={false}
       />
       <SafeAreaView style={{flex: 1, backgroundColor: bottomSafeAreaColor}}>
-        <View style={{flex: 1, backgroundColor}}>{children}</View>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor,
+            paddingHorizontal: paddingHorizontal,
+            paddingVertical: paddingVertical,
+          }}>
+          {children}
+        </View>
       </SafeAreaView>
     </React.Fragment>
   );

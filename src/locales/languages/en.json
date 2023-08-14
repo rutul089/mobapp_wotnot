@@ -14,12 +14,14 @@
     "forgot_password": "Forgot Password?"
   },
   "switch": {"on": "ON", "off": "OFF"},
+  "tab": {
+    "chat": "Chat",
+    "setting": "Setting"
+  },
   "chat": {
     "tab_you": "(%s) You",
     "tab_assigned": "(s%) Assigned",
     "tab_unassigned": "(s%) Unassigned",
-    "chat": "Chat",
-    "setting": "Setting",
     "join_conversation_message": "This conversation is not assigned to you. In order to write a message, click 'Join Conversation",
     "saved_reply": "Saved Reply",
     "calendar": "Calendar",
@@ -41,7 +43,9 @@
     "close_conversation": "Close Conversation",
     "search_from_teams_and_teammates": "Search from teams and teammates",
     "teammates": "Teammates",
-    "team": "Team",
+    "team": "Team"
+  },
+  "settings": {
     "active_status": "Active Status",
     "active_status_message": "Your status will determine whether the chats need to be assigned to you or not.",
     "account": "Account",
