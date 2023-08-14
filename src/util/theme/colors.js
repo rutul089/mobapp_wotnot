@@ -12,14 +12,12 @@ const purplePayBlue = {
 
 const wotnotColor = {
   blue: '#2A7CFF',
-  darkBlue: '#0B3471',
-  deepDarkBlue: '#0C3471',
-  brightBlue: '#008ABC',
-  lightBlue: '#F0F8FE',
   darkestBlue: '#1a5064',
   lightestBlue: '#cbe8f2',
   skyBlue: '#76BED8',
-  primaryDark: '#1F1D35',
+  FAFAFA:"#FAFAFA",
+  green:'#00B600',
+  silver:'#858585'
 };
 
 const gray = {
@@ -47,6 +45,7 @@ const typography = {
   blue2: '#B7A5CD',
   _475569: '#475569',
   link: '#2A7CFF',
+  silver:'#858585'
 };
 
 const colors = {

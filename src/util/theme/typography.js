@@ -22,6 +22,7 @@ const typography = {
     xl7: wp('10.8'), //42
   },
   fontSizes: {
+    xxs:wp(2.3), // 8
     xs2: wp('2.7'), // 10
     xs: wp('3.2'), //12
     sm: wp('3.6'), //14
@@ -30,8 +31,8 @@ const typography = {
     xl: wp('5.1'), //20
     xl2: wp('6.4'), //25
     xl3: wp('7'), //27
-    xl4: wp('8.7'), //34
-    xl5: wp('8.7'), //32
+    xl4: wp('8'), //32
+    xl5: wp('8.7'), //34
     xl6: wp('8.7'), //40
   },
   fonts: {
