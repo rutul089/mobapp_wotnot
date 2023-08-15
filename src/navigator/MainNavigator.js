@@ -1,6 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {Image} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import images from '../assets/images';
 import {styles as textStyle} from '../components/Text/style';
 import {strings} from '../locales/i18n';
@@ -25,9 +26,9 @@ function renderIcon(image, focused) {
 
 const MainNavigator = ({badgeValue}) => {
   return (
-    <Tab.Navigator
-      screenOptions={({route}) => {
-        return {
+    <SafeAreaView style={{height: '100%', width: '100%'}}>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
           tabBarIcon: ({focused, color, size}) => {
             let iconName;
             if (route.name === 'Chat') {
@@ -43,39 +44,35 @@ const MainNavigator = ({badgeValue}) => {
           tabBarLabelStyle: textStyle.body2NoColor,
           tabBarStyle: {
             backgroundColor: theme.colors.brandColor.FAFAFA,
-            // height: theme.sizes.xl13,
-            // padding: 0,
-            // margin: 0,
           },
-          // tabBarItemStyle: {marginBottom:0,paddingBottom:0,bottom:-30},
           headerShown: false,
-        };
-      }}>
-      <Tab.Screen
-        name={strings('tab.chat')}
-        component={DashboardScreen}
-        options={
-          {
-            // tabBarIconStyle: {display: 'none'},
-            // tabBarLabelPosition: 'beside-icon',
-            // tabBarIcon: ({focused}) => renderIcon(images.ic_send, focused),
+        })}>
+        <Tab.Screen
+          name={strings('tab.chat')}
+          component={DashboardScreen}
+          options={
+            {
+              // tabBarIconStyle: {display: 'none'},
+              // tabBarLabelPosition: 'beside-icon',
+              // tabBarIcon: ({focused}) => renderIcon(images.ic_send, focused),
+            }
           }
-        }
-      />
-      <Tab.Screen
-        name={strings('tab.setting')}
-        component={SettingScreen}
-        options={
-          {
-            // tabBarIconStyle: {display: 'none'},
-            // tabBarLabelPosition: 'beside-icon',
-            // tabBarIcon: ({focused}) => (
-            //   <View>{renderIcon(images.ic_chat, focused)}</View>
-            // ),
+        />
+        <Tab.Screen
+          name={strings('tab.setting')}
+          component={SettingScreen}
+          options={
+            {
+              // tabBarIconStyle: {display: 'none'},
+              // tabBarLabelPosition: 'beside-icon',
+              // tabBarIcon: ({focused}) => (
+              //   <View>{renderIcon(images.ic_chat, focused)}</View>
+              // ),
+            }
           }
-        }
-      />
-    </Tab.Navigator>
+        />
+      </Tab.Navigator>
+    </SafeAreaView>
   );
 };
 

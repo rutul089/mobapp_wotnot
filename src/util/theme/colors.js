@@ -15,9 +15,11 @@ const wotnotColor = {
   darkestBlue: '#1a5064',
   lightestBlue: '#cbe8f2',
   skyBlue: '#76BED8',
-  FAFAFA:"#FAFAFA",
-  green:'#00B600',
-  silver:'#858585'
+  FAFAFA: '#FAFAFA',
+  green: '#00B600',
+  silver: '#858585',
+  lightGreen: '#13BE66',
+  yellow: '#F1B000',
 };
 
 const gray = {
@@ -45,7 +47,7 @@ const typography = {
   blue2: '#B7A5CD',
   _475569: '#475569',
   link: '#2A7CFF',
-  silver:'#858585'
+  silver: '#858585',
 };
 
 const colors = {

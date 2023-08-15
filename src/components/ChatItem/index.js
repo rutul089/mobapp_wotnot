@@ -2,45 +2,91 @@ import React from 'react';
 import {Image, Pressable, StyleSheet, View} from 'react-native';
 import {hp, wp} from '../../util/helper';
 import theme from '../../util/theme';
+import colors from '../../util/theme/colors';
 import Spacing from '../Spacing';
 import Text from '../Text/index';
 
 const ChatItem = ({name, email, uri, subTittle, isOnline, onPress}) => (
-  <Pressable style={{padding: 5}} onPress={onPress}>
-    <View style={{gap: hp(0.1)}}>
-      <View style={styles.container}>
-        <View>
-          <Image source={{uri: uri}} style={styles.image} />
-          <View
-            style={[
-              styles.badgeContainer,
-              {
-                backgroundColor: isOnline
-                  ? theme.colors.brandColor.green
-                  : theme.colors.brandColor.silver,
-              },
-            ]}
-          />
-        </View>
-        <Spacing direction="y" size="xs" />
-        <View style={styles.rightContainer}>
-          <Text type={'body2'} weight={theme.typography.fontWeights.medium}>
-            {name}
-          </Text>
-          <Text type={'caption12'}>{email}</Text>
+  <Pressable
+    style={{
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: hp(0.8),
+      gap: wp(2),
+    }}
+    onPress={onPress}>
+    <View style={{flex: 0.8}}>
+      <View style={{gap: hp(0.1)}}>
+        <View style={styles.container}>
+          <View>
+            <Image source={{uri: uri}} style={styles.image} />
+            <View
+              style={[
+                styles.badgeContainer,
+                {
+                  backgroundColor: isOnline
+                    ? theme.colors.brandColor.green
+                    : theme.colors.brandColor.silver,
+                },
+              ]}
+            />
+          </View>
+          <Spacing direction="y" size="xs" />
+          <View style={styles.rightContainer}>
+            <Text type={'body2'} weight={theme.typography.fontWeights.medium}>
+              {name}
+            </Text>
+            <Text
+              type={'caption12'}
+              style={{color: colors.brandColor.silver}}
+              numberOfLines={1}>
+              {email}
+            </Text>
+          </View>
         </View>
       </View>
-      <Text type={'caption12'}>Bot: Great! in that case could you p...</Text>
+      {subTittle && (
+        <Text
+          type={'caption12'}
+          size={'xxs'}
+          style={styles.subTittle}
+          numberOfLines={1}>
+          {subTittle}
+        </Text>
+      )}
     </View>
-    {subTittle && (
-      <Text
-        type={'caption12'}
-        size={'xxs'}
-        style={styles.subTittle}
-        numberOfLines={1}>
-        {subTittle}
-      </Text>
-    )}
+    <View
+      style={{
+        flex: 0.2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(2),
+      }}>
+      <View
+        style={{
+          height: hp(4),
+          width: hp(4),
+          backgroundColor: colors.brandColor.lightBlue,
+          padding: 2,
+          borderRadius: hp(4),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={{color: colors.brandColor.blue}}>258</Text>
+      </View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{color: colors.brandColor.silver}}>29d</Text>
+        <View
+          style={{
+            height: 20,
+            width: 20,
+            backgroundColor: colors.brandColor.lightGreen,
+            borderRadius: 20,
+          }}
+        />
+        {/* <ActivityIndicator /> */}
+      </View>
+    </View>
   </Pressable>
 );
 
@@ -55,7 +101,7 @@ const styles = StyleSheet.create({
     width: theme.sizes.image.xl4,
     borderRadius: theme.sizes.image.xl4 / 2,
     marginRight: 10,
-    backgroundColor: 'cyan',
+    backgroundColor: colors.brandColor.lightestBlue,
   },
   badgeContainer: {
     height: 10,
@@ -68,6 +114,7 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     flex: 1,
+    width: 'auto',
     justifyContent: 'center',
   },
   subTittle: {
