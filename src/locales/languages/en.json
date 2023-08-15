@@ -19,7 +19,8 @@
     "setting": "Settings",
     "you": "You",
     "assigned": "Assigned",
-    "unassigned": "Unassigned"
+    "unassigned": "Unassigned",
+    "closed": "Closed"
   },
   "chat": {
     "join_conversation_message": "This conversation is not assigned to you. In order to write a message, click 'Join Conversation",

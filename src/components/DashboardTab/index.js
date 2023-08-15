@@ -2,7 +2,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import React, {useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 import {strings} from '../../locales/i18n';
-import {wp} from '../../util/helper';
+import {hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
 import ChatItem from '../ChatItem';
 
@@ -12,8 +12,11 @@ const renderItem = () => {
   return (
     <ChatItem
       name={'Sagar Shah'}
-      email={'sagar.shah@wotnot.io'}
+      email={
+        'Bot, Ahmedabad, India Bot, Ahmedabad, India Bot, Ahmedabad, India'
+      }
       uri={'https://i.pravatar.cc/512'}
+      subTittle={'Bot: Great! in that case could you p...'}
       onPress={() => {}}
     />
   );
@@ -24,7 +27,7 @@ const ChatListView = () => {
     <FlatList
       data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
       renderItem={renderItem}
-      style={{padding: wp(1)}}
+      style={{paddingHorizontal: wp(4), paddingVertical: hp(2)}}
     />
   );
 };
@@ -34,6 +37,7 @@ const DashboardTab = ({data}) => {
     {id: 0, title: strings('tab.you'), value: 10},
     {id: 1, title: strings('tab.assigned'), value: 10},
     {id: 2, title: strings('tab.unassigned'), value: 999},
+    {id: 3, title: strings('tab.closed'), value: 999},
   ]);
 
   useEffect(() => {
