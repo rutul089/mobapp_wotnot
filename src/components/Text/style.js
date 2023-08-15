@@ -45,12 +45,20 @@ export const styles = {
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.normal,
     fontSize: theme.typography.fontSizes.sm,
+    lineHeight: theme.typography.lineHeights.xs,
   },
   body3: {
     fontFamily: theme.typography.fonts.circularStdBold,
     color: theme.colors.typography.black,
     fontWeight: theme.typography.fontWeights.bold,
     fontSize: theme.typography.fontSizes.xs,
+  },
+  body3_10: {
+    fontFamily: theme.typography.fonts.circularStdBook,
+    color: theme.colors.typography.silver,
+    fontWeight: theme.typography.fontWeights.normal,
+    fontSize: theme.typography.fontSizes.xs2,
+    lineHeight: theme.typography.fontSizes.xs,
   },
   subtitle1: {
     fontFamily: theme.typography.fonts.circularStdMedium,
@@ -99,5 +107,10 @@ export const styles = {
     fontWeight: theme.typography.fontWeights.bold,
     fontSize: theme.typography.fontSizes.md,
     lineHeight: theme.typography.lineHeights.xl,
+  },
+  body2NoColor: {
+    fontFamily: theme.typography.fonts.circularStdBook,
+    fontWeight: theme.typography.fontWeights.normal,
+    fontSize: theme.typography.fontSizes.sm,
   },
 };
