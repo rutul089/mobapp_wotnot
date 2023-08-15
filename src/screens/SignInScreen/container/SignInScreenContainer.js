@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
+import {navigate} from '../../../navigator/NavigationUtils';
 import SignInScreenComponent from '../component/SignInScreenComponent';
-import { navigate } from '../../../navigator/NavigationUtils';
 
 export default class SignInScreenContainer extends Component {
   constructor(props) {
@@ -16,8 +16,7 @@ export default class SignInScreenContainer extends Component {
       <>
         <SignInScreenComponent
           onSubmit={(email, password) => {
-            navigate('MainNavigator')
-            console.log('onSubmit===>', email, password);
+            navigate('MainNavigator');
             this.setState({email, password});
           }}
         />

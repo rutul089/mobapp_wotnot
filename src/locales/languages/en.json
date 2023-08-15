@@ -16,12 +16,12 @@
   "switch": {"on": "ON", "off": "OFF"},
   "tab": {
     "chat": "Chat",
-    "setting": "Setting"
+    "setting": "Settings",
+    "you": "You",
+    "assigned": "Assigned",
+    "unassigned": "Unassigned"
   },
   "chat": {
-    "tab_you": "(%s) You",
-    "tab_assigned": "(s%) Assigned",
-    "tab_unassigned": "(s%) Unassigned",
     "join_conversation_message": "This conversation is not assigned to you. In order to write a message, click 'Join Conversation",
     "saved_reply": "Saved Reply",
     "calendar": "Calendar",

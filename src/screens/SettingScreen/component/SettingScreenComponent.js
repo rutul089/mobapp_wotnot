@@ -6,7 +6,6 @@ import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
 import theme from '../../../util/theme';
 import styles from '../Style';
-import BottomSheet from '../../../components/BottomSheet';
 
 const RenderRowItem = ({onPress, text, dropdownVale, color, dropDownClick}) => {
   return (

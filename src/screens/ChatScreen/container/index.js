@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
-import ChatScreenComponent from '../component/ChatScreenComponent';
+import ChatScreenComponent from '../component';
 
 export default class ChatScreenContainer extends Component {
   constructor(props) {

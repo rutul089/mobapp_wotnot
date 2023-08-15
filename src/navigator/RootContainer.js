@@ -5,10 +5,10 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack';
 import React, {Component} from 'react';
-import { AppState, Keyboard, View, SafeAreaView } from 'react-native';
+import {AppState, Keyboard, View} from 'react-native';
 import {SignInScreen, SplashScreen} from '../screens';
-import {navigationRef} from './NavigationUtils';
 import MainNavigator from './MainNavigator';
+import {navigationRef} from './NavigationUtils';
 const Stack = createStackNavigator();
 
 export default class RootContainer extends Component {
@@ -83,7 +83,7 @@ export default class RootContainer extends Component {
 
   render() {
     return (
-      <View style={{flex: 1,backgroundColor:'lightblue'}}>
+      <View style={{flex: 1, backgroundColor: 'lightblue'}}>
         <NavigationContainer
           ref={navigationRef}
           onReady={() => {

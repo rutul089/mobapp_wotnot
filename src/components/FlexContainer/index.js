@@ -1,6 +1,5 @@
 import React from 'react';
 import {SafeAreaView, StatusBar, View} from 'react-native';
-import theme from '../../util/theme';
 
 const FlexContainer = ({
   children,

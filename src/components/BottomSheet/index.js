@@ -1,19 +1,17 @@
-import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 import {
-  View,
-  StyleSheet,
+  Animated,
+  Dimensions,
   KeyboardAvoidingView,
   Modal,
-  TouchableOpacity,
-  Animated,
   PanResponder,
   Platform,
-  Dimensions,
-  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import theme from '../../util/theme';
-
 
 const SUPPORTED_ORIENTATIONS = [
   'portrait',
@@ -239,7 +237,7 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 100,
     margin: 10,
-    backgroundColor: "#E3E1E5",
+    backgroundColor: '#E3E1E5',
   },
   closeIconContainerStyle: {
     height: theme.normalize(70),

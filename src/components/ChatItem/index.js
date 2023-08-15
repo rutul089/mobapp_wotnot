@@ -5,29 +5,32 @@ import theme from '../../util/theme';
 import Spacing from '../Spacing';
 import Text from '../Text/index';
 
-const UserItem = ({name, email, uri, subTittle, isOnline}) => (
-  <Pressable style={{padding: 5}}>
-    <View style={styles.container}>
-      <View>
-        <Image source={{uri: uri}} style={styles.image} />
-        <View
-          style={[
-            styles.badgeContainer,
-            {
-              backgroundColor: isOnline
-                ? theme.colors.brandColor.green
-                : theme.colors.brandColor.silver,
-            },
-          ]}
-        />
+const ChatItem = ({name, email, uri, subTittle, isOnline, onPress}) => (
+  <Pressable style={{padding: 5}} onPress={onPress}>
+    <View style={{gap: hp(0.1)}}>
+      <View style={styles.container}>
+        <View>
+          <Image source={{uri: uri}} style={styles.image} />
+          <View
+            style={[
+              styles.badgeContainer,
+              {
+                backgroundColor: isOnline
+                  ? theme.colors.brandColor.green
+                  : theme.colors.brandColor.silver,
+              },
+            ]}
+          />
+        </View>
+        <Spacing direction="y" size="xs" />
+        <View style={styles.rightContainer}>
+          <Text type={'body2'} weight={theme.typography.fontWeights.medium}>
+            {name}
+          </Text>
+          <Text type={'caption12'}>{email}</Text>
+        </View>
       </View>
-      <Spacing direction="y" size="xs" />
-      <View style={styles.rightContainer}>
-        <Text type={'body2'} weight={theme.typography.fontWeights.medium}>
-          {name}
-        </Text>
-        <Text type={'caption12'}>{email}</Text>
-      </View>
+      <Text type={'caption12'}>Bot: Great! in that case could you p...</Text>
     </View>
     {subTittle && (
       <Text
@@ -41,7 +44,7 @@ const UserItem = ({name, email, uri, subTittle, isOnline}) => (
   </Pressable>
 );
 
-export default UserItem;
+export default ChatItem;
 
 const styles = StyleSheet.create({
   container: {
@@ -52,6 +55,7 @@ const styles = StyleSheet.create({
     width: theme.sizes.image.xl4,
     borderRadius: theme.sizes.image.xl4 / 2,
     marginRight: 10,
+    backgroundColor: 'cyan',
   },
   badgeContainer: {
     height: 10,

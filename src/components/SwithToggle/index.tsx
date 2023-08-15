@@ -1,3 +1,4 @@
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   StyleProp,
@@ -8,7 +9,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
 
 const styles = StyleSheet.create({
   container: {
