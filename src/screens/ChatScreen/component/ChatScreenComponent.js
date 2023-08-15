@@ -1,10 +1,12 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import { View} from 'react-native';
+import {FlexContainer, SwitchToggle, Text, UserItem} from '../../../components';
+import theme from '../../../util/theme';
 
 const ChatScreenComponent = ({params}) => (
-  <View>
+  <FlexContainer>
     <Text>ChatScreenComponent</Text>
-  </View>
+  </FlexContainer>
 );
 
 export default ChatScreenComponent;
