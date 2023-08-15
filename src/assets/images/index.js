@@ -11,4 +11,5 @@ export default {
   ic_search: require('./ic_search.png'),
   ic_send: require('./ic_send.png'),
   ic_settings: require('./ic_settings.png'),
+  ic_dropdown: require('./ic_dropdown.png'),
 };

@@ -40,7 +40,7 @@ const typography = {
   light: '#CCCCCC',
   gray1: gray.gray1,
   darkGray: gray.darkGray,
-  error: '#C73232',
+  error: '#FF0000',
   blue1: '#EBDAFF',
   blue2: '#B7A5CD',
   _475569: '#475569',

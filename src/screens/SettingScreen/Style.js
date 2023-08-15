@@ -15,6 +15,19 @@ const styles = StyleSheet.create({
   container: {
     padding: theme.sizes.spacing.ph,
   },
+  rowContainer: {
+    height: theme.sizes.xl16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    backgroundColor: '#F5F5F5',
+    height: theme.sizes.icons.xl9,
+    flex: 1,
+    padding: theme.sizes.spacing.xs10,
+    flexDirection: 'row',
+    alignItems:"center"
+  },
 });
 
 export default styles;
