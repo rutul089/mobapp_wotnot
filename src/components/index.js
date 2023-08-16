@@ -10,3 +10,5 @@ export {default as Text} from './Text';
 export {default as UserItem} from './UserItem';
 export {default as Header} from './Header';
 export {default as Spacing} from './Spacing';
+export {default as Chip} from './Chip';
+export {default as ActionItem} from './ActionItem';
