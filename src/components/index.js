@@ -8,3 +8,5 @@ export {default as Switch} from './Switch';
 export {default as SwitchToggle} from './SwithToggle';
 export {default as Text} from './Text';
 export {default as UserItem} from './UserItem';
+export {default as Header} from './Header';
+export {default as Spacing} from './Spacing';

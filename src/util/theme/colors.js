@@ -20,6 +20,7 @@ const wotnotColor = {
   silver: '#858585',
   lightGreen: '#13BE66',
   yellow: '#F1B000',
+  borderColor:'#EEEFF3'
 };
 
 const gray = {
@@ -64,7 +65,7 @@ const colors = {
     background: '#F4F4F4',
     shadow: gray.gray,
   },
-  borderColor: '#F1f1f1',
+  borderColor: '#EEEFF3',
   focusBorderColor: '#DDDDDD',
   typography,
   gray,

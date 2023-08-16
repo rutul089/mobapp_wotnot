@@ -5,6 +5,8 @@ import {strings} from '../../locales/i18n';
 import {hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
 import ChatItem from '../ChatItem';
+import { navigate } from '../../navigator/NavigationUtils';
+
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -17,7 +19,7 @@ const renderItem = () => {
       }
       uri={'https://i.pravatar.cc/512'}
       subTittle={'Bot: Great! in that case could you p...'}
-      onPress={() => {}}
+      onPress={() => navigate('ConversationScreen')}
     />
   );
 };

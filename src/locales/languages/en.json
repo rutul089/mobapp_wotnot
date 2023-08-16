@@ -23,7 +23,7 @@
     "closed": "Closed"
   },
   "chat": {
-    "join_conversation_message": "This conversation is not assigned to you. In order to write a message, click 'Join Conversation",
+    "join_conversation_message": "This conversation is not assigned to you. In order to write a message, click 'Join Conversation'",
     "saved_reply": "Saved Reply",
     "calendar": "Calendar",
     "attachment": "Attachment",

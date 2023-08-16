@@ -12,4 +12,11 @@ export default {
   ic_send: require('./ic_send.png'),
   ic_settings: require('./ic_settings.png'),
   ic_dropdown: require('./ic_dropdown.png'),
+  ic_phone: require('./ic_phone.png'),
+  ic_zip_code: require('./ic_zip_code.png'),
+  ic_email: require('./ic_email.png'),
+  ic_city: require('./ic_city.png'),
+  ic_country: require('./ic_country.png'),
+  ic_name: require('./ic_name.png'),
+  ic_url: require('./ic_url.png'),
 };
