@@ -28,6 +28,15 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     alignSelf: 'flex-end',
   },
+  labelContainer: {
+    borderWidth: 1,
+    borderColor: theme.colors.borderColor,
+    padding: theme.sizes.spacing.xs10,
+    borderRadius: 5,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
 });
 
 export default styles;

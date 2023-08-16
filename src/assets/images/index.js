@@ -19,4 +19,5 @@ export default {
   ic_country: require('./ic_country.png'),
   ic_name: require('./ic_name.png'),
   ic_url: require('./ic_url.png'),
+  ic_cross: require('./ic_cross.png'),
 };

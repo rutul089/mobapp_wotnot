@@ -72,6 +72,7 @@ const colors = {
   drawerActive: '#141322',
   drawerInActive: '#1F1D35',
   334155: '#334155',
+  F0F0F0:"#F0F0F0"
 };
 
 export default colors;

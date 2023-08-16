@@ -1,11 +1,20 @@
 import React from 'react';
 import {View, ScrollView, Image, TouchableOpacity} from 'react-native';
-import {Header, FlexContainer, Text, Spacing} from '../../../components/';
+import {
+  Header,
+  FlexContainer,
+  Text,
+  Spacing,
+  Chip,
+  BottomSheet,
+  ActionItem,
+} from '../../../components/';
 import theme from '../../../util/theme';
 import styles from '../Style';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import {strings} from '../../../locales/i18n';
 import images from '../../../assets/images';
+import {Actionsheet, useDisclose} from 'native-base';
 
 const renderQualificationRow = (icon, label, value) => {
   return (
@@ -26,7 +35,18 @@ const renderQualificationRow = (icon, label, value) => {
   );
 };
 
-const UserDetailComponent = ({onPressLeftContent, data,addLabelPress}) => {
+const UserDetailComponent = ({
+  onPressLeftContent,
+  data,
+  addLabelPress,
+  chipList,
+  removeLabel,
+  showLabelModal,
+  onCloseModal,
+  allLabelModalRef,
+  onLabelPress = () => {},
+}) => {
+  const {isOpen, onOpen} = useDisclose();
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header
@@ -87,13 +107,15 @@ const UserDetailComponent = ({onPressLeftContent, data,addLabelPress}) => {
         <Spacing size="xl" />
         <Text type={'h4'}>{strings('chat.user_info.system_details')}</Text>
         <Spacing size="xs10" />
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: theme.colors.borderColor,
-            padding: theme.sizes.spacing.xs10,
-            borderRadius: 5,
-          }}></View>
+        <View style={styles.labelContainer}>
+          {chipList.map((item, index) => (
+            <Chip
+              key={index}
+              value={item?.label}
+              onPress={() => removeLabel(index)}
+            />
+          ))}
+        </View>
         <Spacing size="xs10" />
         <TouchableOpacity
           activeOpacity={0.7}
@@ -104,6 +126,28 @@ const UserDetailComponent = ({onPressLeftContent, data,addLabelPress}) => {
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingScrollView>
+      <BottomSheet
+        ref={allLabelModalRef}
+        height={theme.normalize(250)}
+        closeOnDragDown
+        customStyles={{
+          mask: {backgroundColor: 'transparent'},
+          container: {
+            elevation: 100,
+            borderTopLeftRadius: theme.normalize(2),
+            borderTopRightRadius: theme.normalize(2),
+          },
+        }}>
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
+          {chipList.map((item, index) => (
+            <ActionItem
+              key={index}
+              label={item?.label}
+              onItemPress={() => onLabelPress(item, index)}
+            />
+          ))}
+        </ScrollView>
+      </BottomSheet>
     </FlexContainer>
   );
 };
