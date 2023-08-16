@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import ConversationComponent from '../component/ConversationComponent';
 import {strings} from '../../../locales/i18n';
-import { navigate } from '../../../navigator/NavigationUtils';
+import {navigate} from '../../../navigator/NavigationUtils';
 
 export default class ConversationContainer extends Component {
   constructor(props) {
@@ -10,14 +10,29 @@ export default class ConversationContainer extends Component {
     this.state = {};
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
+    this.onChangeAssignee = this.onChangeAssignee.bind(this);
+    this.onCloseConversation = this.onCloseConversation.bind(this);
+    this.moreInfoModalRef = React.createRef();
   }
 
   onPressMore = () => {
-    navigate('UserDetailScreen')
-  }
+    this.moreInfoModalRef?.current?.open();
+  };
   onPressInfo = () => {
-    navigate('UserDetailScreen')
-  }
+    navigate('UserDetailScreen');
+  };
+
+  onChangeAssignee = () => {
+    this.closeMoreInfoModal();
+  };
+
+  onCloseConversation = () => {
+    this.closeMoreInfoModal();
+  };
+
+  closeMoreInfoModal = () => {
+    this.moreInfoModalRef?.current?.close();
+  };
 
   render() {
     return (
@@ -27,6 +42,9 @@ export default class ConversationContainer extends Component {
           joinConversationBtn={strings('button.join_conversation')}
           onPressMore={this.onPressMore}
           onPressInfo={this.onPressInfo}
+          moreInfoModalRef={this.moreInfoModalRef}
+          onChangeAssignee={this.onChangeAssignee}
+          onCloseConversation={this.onCloseConversation}
         />
       </>
     );

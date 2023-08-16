@@ -8,6 +8,7 @@ const ActionItem = ({label, onItemPress}) => (
     _text={{
       fontFamily: theme.typography.fonts.circularStdBook,
       fontSize: theme.typography.fontSizes.md,
+      color:theme.colors.typography.dark
     }}
     background={'white'}
     _pressed={{

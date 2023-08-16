@@ -2,16 +2,27 @@ import React from 'react';
 import {Image, View, TouchableOpacity} from 'react-native';
 import images from '../../../assets/images';
 import styles from '../Style';
-import {FlexContainer, Header, Text, Button} from '../../../components';
+import {
+  FlexContainer,
+  Header,
+  Text,
+  Button,
+  BottomSheet,
+  ActionItem,
+} from '../../../components';
 import theme from '../../../util/theme';
 import Spacing from '../../../components/Spacing';
+import {strings} from '../../../locales/i18n';
 
 const ConversationComponent = ({
   joinConversation,
   joinConversationBtn,
   joinConversationPress,
   onPressMore,
-  onPressInfo
+  onPressInfo,
+  moreInfoModalRef,
+  onChangeAssignee,
+  onCloseConversation,
 }) => {
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
@@ -38,6 +49,29 @@ const ConversationComponent = ({
           </Text>
         </TouchableOpacity>
       </View>
+      <BottomSheet
+        ref={moreInfoModalRef}
+        height={theme.normalize(160)}
+        closeOnDragDown
+        customStyles={{
+          mask: {backgroundColor: 'transparent'},
+          container: {
+            elevation: 100,
+            borderTopLeftRadius: theme.normalize(2),
+            borderTopRightRadius: theme.normalize(2),
+          },
+        }}>
+        <>
+          <ActionItem
+            label={strings('chat.change_assignee')}
+            onItemPress={onChangeAssignee}
+          />
+          <ActionItem
+            label={strings('chat.close_conversation')}
+            onItemPress={onCloseConversation}
+          />
+        </>
+      </BottomSheet>
     </FlexContainer>
   );
 };

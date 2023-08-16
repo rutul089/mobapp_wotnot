@@ -34,7 +34,7 @@ const gray = {
 };
 
 const typography = {
-  dark: '#000000',
+  dark: '#101010',
   secondary: '#858585',
   placeHolder: '#DDDDDD',
   secondaryLight: 'rgba(130, 130, 130, 0.7)',
