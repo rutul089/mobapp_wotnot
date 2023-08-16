@@ -26,7 +26,6 @@ function renderIcon(image, focused) {
 
 const MainNavigator = ({badgeValue}) => {
   return (
-    <SafeAreaView style={{height: '100%', width: '100%'}}>
       <Tab.Navigator
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, color, size}) => {
@@ -72,7 +71,6 @@ const MainNavigator = ({badgeValue}) => {
           }
         />
       </Tab.Navigator>
-    </SafeAreaView>
   );
 };
 

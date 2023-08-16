@@ -1,7 +1,13 @@
 import React from 'react';
 import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
 import images from '../../../assets/images';
-import {FlexContainer, SwitchToggle, Text, UserItem} from '../../../components';
+import {
+  FlexContainer,
+  SwitchToggle,
+  Text,
+  UserItem,
+  Header,
+} from '../../../components';
 import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
 import theme from '../../../util/theme';
@@ -51,13 +57,14 @@ const SettingScreenComponent = ({
 }) => {
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
-      <View style={styles.headerStyle}>
+      <Header isLeftIconHidden={true} isRightIconHidden={true} />
+      {/* <View style={styles.headerStyle}>
         <Image
           source={images.ic_wotnot_logo}
           resizeMode={'contain'}
           style={styles.logoStyle}
         />
-      </View>
+      </View> */}
       <ScrollView contentContainerStyle={styles.container}>
         <UserItem
           name={'Sagar Shah'}

@@ -26,7 +26,7 @@ const UserItem = ({name, email, uri, subTittle, isOnline}) => (
         <Text type={'body2'} weight={theme.typography.fontWeights.medium}>
           {name}
         </Text>
-        <Text type={'caption12'}>{email}</Text>
+        <Text type={'caption12'} numberOfLines={1}>{email}</Text>
       </View>
     </View>
     {subTittle && (

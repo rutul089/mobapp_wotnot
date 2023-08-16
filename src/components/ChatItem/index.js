@@ -72,14 +72,19 @@ const ChatItem = ({name, email, uri, subTittle, isOnline, onPress}) => (
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text style={{color: colors.brandColor.blue}}>258</Text>
+        <Text
+          type={'caption12'}
+          weight={theme.typography.fontWeights.bold}
+          style={{color: colors.brandColor.blue}}>
+          258
+        </Text>
       </View>
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{color: colors.brandColor.silver}}>29d</Text>
+        <Text type={'caption12'} style={{color: colors.brandColor.silver}}>29d</Text>
         <View
           style={{
-            height: 20,
-            width: 20,
+            height: 12,
+            width: 12,
             backgroundColor: colors.brandColor.lightGreen,
             borderRadius: 20,
           }}

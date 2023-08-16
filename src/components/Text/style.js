@@ -82,9 +82,9 @@ export const styles = {
     lineHeight: theme.typography.lineHeights.xl,
   },
   button2: {
-    fontFamily: theme.typography.fonts.circularStdBold,
+    fontFamily: theme.typography.fonts.circularStdMedium,
     color: theme.colors.typography.black,
-    fontWeight: theme.typography.fontWeights.bold,
+    fontWeight: theme.typography.fontWeights.medium,
     fontSize: theme.typography.fontSizes.sm,
     lineHeight: theme.typography.lineHeights.xl,
   },
