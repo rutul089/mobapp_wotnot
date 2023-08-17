@@ -34,12 +34,6 @@ const heightPercentageToDP = heightPercent => {
     typeof heightPercent === 'number'
       ? heightPercent
       : parseFloat(heightPercent);
-
-  console.log(
-    '(screenHeight * elemHeight) / 100: ' + heightPercent + '--->',
-    (screenHeight * elemHeight) / 100,
-  );
-
   // Use PixelRatio.roundToNearestPixel method in order to round the layout
   // size (dp) to the nearest one that corresponds to an integer number of pixels.
   return PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100);
