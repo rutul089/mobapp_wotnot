@@ -26,7 +26,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: theme.sizes.spacing.xs10,
     flexDirection: 'row',
-    alignItems:"center"
+    alignItems: 'center',
+  },
+  bottomSheetStyle: {
+    elevation: 100,
+    borderTopLeftRadius: theme.normalize(2),
+    borderTopRightRadius: theme.normalize(2),
   },
 });
 

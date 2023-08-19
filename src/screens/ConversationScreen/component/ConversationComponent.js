@@ -57,8 +57,8 @@ const ConversationComponent = ({
           mask: {backgroundColor: 'transparent'},
           container: {
             elevation: 100,
-            borderTopLeftRadius: theme.normalize(2),
-            borderTopRightRadius: theme.normalize(2),
+            borderTopLeftRadius: theme.normalize(10),
+            borderTopRightRadius: theme.normalize(10),
           },
         }}>
         <>
