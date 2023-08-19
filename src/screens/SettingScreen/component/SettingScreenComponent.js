@@ -7,6 +7,8 @@ import {
   Text,
   UserItem,
   Header,
+  BottomSheet,
+  ActionItem,
 } from '../../../components';
 import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
@@ -54,31 +56,31 @@ const SettingScreenComponent = ({
   onLogoutClick,
   onPressAccountDropdown,
   onPressLanguageDropdown,
+  name,
+  email,
+  profilePhoto,
+  isActive,
+  onSwitchToggle,
+  accountModalRef,
+  accountList,
+  onAccountListPress,
+  languageModalRef,
+  languageList,
+  onLanguageSelected,
 }) => {
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header isLeftIconHidden={true} isRightIconHidden={true} />
-      {/* <View style={styles.headerStyle}>
-        <Image
-          source={images.ic_wotnot_logo}
-          resizeMode={'contain'}
-          style={styles.logoStyle}
-        />
-      </View> */}
       <ScrollView contentContainerStyle={styles.container}>
-        <UserItem
-          name={'Sagar Shah'}
-          email={'sagar.shah@wotnot.io'}
-          uri={'https://i.pravatar.cc/512'}
-        />
+        <UserItem name={name} email={email} uri={profilePhoto} />
         <Spacing size="md" />
         <View style={{flexDirection: 'row'}}>
           <Text type={'body1'} style={{flex: 1}}>
             {strings('settings.active_status')}
           </Text>
           <SwitchToggle
-            switchOn={true}
-            onPress={() => {}}
+            switchOn={isActive}
+            onPress={onSwitchToggle}
             circleColorOff="white"
             circleColorOn="white"
             backgroundColorOn="#13BE66"
@@ -123,6 +125,42 @@ const SettingScreenComponent = ({
           onPress={onLogoutClick}
         />
       </ScrollView>
+      <BottomSheet
+        ref={accountModalRef}
+        height={theme.normalize(220)}
+        closeOnDragDown
+        customStyles={{
+          mask: {backgroundColor: 'transparent'},
+          container: styles.bottomSheetStyle,
+        }}>
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
+          {accountList?.map((item, index) => (
+            <ActionItem
+              key={index}
+              label={item?.label}
+              onItemPress={() => onAccountListPress(item, index)}
+            />
+          ))}
+        </ScrollView>
+      </BottomSheet>
+      <BottomSheet
+        ref={languageModalRef}
+        height={theme.normalize(220)}
+        closeOnDragDown
+        customStyles={{
+          mask: {backgroundColor: 'transparent'},
+          container: styles.bottomSheetStyle,
+        }}>
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
+          {languageList?.map((item, index) => (
+            <ActionItem
+              key={index}
+              label={item?.languageName}
+              onItemPress={() => onLanguageSelected(item, index)}
+            />
+          ))}
+        </ScrollView>
+      </BottomSheet>
     </FlexContainer>
   );
 };

@@ -1,12 +1,11 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {FlatList} from 'react-native';
 import {strings} from '../../locales/i18n';
+import {navigate} from '../../navigator/NavigationUtils';
 import {hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
 import ChatItem from '../ChatItem';
-import { navigate } from '../../navigator/NavigationUtils';
-
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -43,8 +42,28 @@ const DashboardTab = ({data}) => {
   ]);
 
   useEffect(() => {
-    setState(prev => [...prev]);
+    setTimeout(
+      () =>
+        setState([
+          {id: 0, title: strings('tab.you'), value: 1},
+          {id: 1, title: strings('tab.assigned'), value: 2},
+          {id: 2, title: strings('tab.unassigned'), value: 3},
+          {id: 3, title: strings('tab.closed'), value: 4},
+        ]),
+      3000,
+    );
   }, []);
+
+  const TabScreen = useMemo(() => {
+    console.log('here...');
+    return state.map(_it => (
+      <Tab.Screen
+        key={_it.id + _it.title}
+        name={`(${_it.value}) ${_it.title}`}
+        component={ChatListView}
+      />
+    ));
+  }, [state]);
 
   return (
     <Tab.Navigator
@@ -53,13 +72,7 @@ const DashboardTab = ({data}) => {
         tabBarStyle: {backgroundColor: colors.card.background},
       }}
       sceneContainerStyle={{backgroundColor: colors.white}}>
-      {state.map(_it => (
-        <Tab.Screen
-          key={_it.id + _it.title}
-          name={`(${_it.value}) ${_it.title}`}
-          component={() => <ChatListView />}
-        />
-      ))}
+      {TabScreen}
     </Tab.Navigator>
   );
 };
