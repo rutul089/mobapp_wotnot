@@ -20,4 +20,6 @@ export default {
   ic_name: require('./ic_name.png'),
   ic_url: require('./ic_url.png'),
   ic_cross: require('./ic_cross.png'),
+  ic_showPwd: require('./ic_showPwd.png'),
+  ic_hidePwd: require('./ic_hidePwd.png'),
 };

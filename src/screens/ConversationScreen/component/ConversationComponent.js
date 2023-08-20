@@ -23,6 +23,7 @@ const ConversationComponent = ({
   moreInfoModalRef,
   onChangeAssignee,
   onCloseConversation,
+  onPressLeftContent
 }) => {
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
@@ -31,6 +32,7 @@ const ConversationComponent = ({
         centerElement={'userInput'}
         onPressMore={onPressMore}
         onPressInfo={onPressInfo}
+        onPressLeftContent={onPressLeftContent}
       />
       <View style={styles.container}>
         <Text>Thies is test</Text>

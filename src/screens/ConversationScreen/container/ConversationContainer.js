@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import ConversationComponent from '../component/ConversationComponent';
 import {strings} from '../../../locales/i18n';
-import {navigate} from '../../../navigator/NavigationUtils';
+import {goBack, navigate} from '../../../navigator/NavigationUtils';
 
 export default class ConversationContainer extends Component {
   constructor(props) {
@@ -34,6 +34,10 @@ export default class ConversationContainer extends Component {
     this.moreInfoModalRef?.current?.close();
   };
 
+  onPressLeftContent = () => {
+    goBack()
+  }
+
   render() {
     return (
       <>
@@ -45,6 +49,7 @@ export default class ConversationContainer extends Component {
           moreInfoModalRef={this.moreInfoModalRef}
           onChangeAssignee={this.onChangeAssignee}
           onCloseConversation={this.onCloseConversation}
+          onPressLeftContent={this.onPressLeftContent}
         />
       </>
     );

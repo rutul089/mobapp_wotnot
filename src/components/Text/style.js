@@ -113,4 +113,11 @@ export const styles = {
     fontWeight: theme.typography.fontWeights.normal,
     fontSize: theme.typography.fontSizes.sm,
   },
+  error: {
+    fontFamily: theme.typography.fonts.circularStdBook,
+    color: theme.colors.typography.error,
+    fontWeight: theme.typography.fontWeights.normal,
+    fontSize: theme.typography.fontSizes.sm,
+    lineHeight: theme.typography.lineHeights.xs,
+  },
 };
