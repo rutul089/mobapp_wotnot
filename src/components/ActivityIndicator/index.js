@@ -1,34 +1,111 @@
-import React, {Dimensions} from 'react-native';
-import {Circle, Svg} from 'react-native-svg';
+import React, {FC, useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
+import Animated, {
+  useAnimatedProps,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import Svg, {Circle} from 'react-native-svg';
 
-const {width, height} = Dimensions.get('screen');
-const Circle_Length = 5;
-const Radius = Circle_Length / (2 * Math.PI);
+type CircularProgressProps = {
+  strokeWidth: number,
+  radius: number,
+  backgroundColor: string,
+  percentageComplete: number,
+};
 
-const ActivityIndicator = () => {
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+export const ActivityIndicator: FC<CircularProgressProps> = ({
+  radius,
+  strokeWidth,
+  backgroundColor,
+  percentageComplete,
+}) => {
+  const innerRadius = radius - strokeWidth / 2;
+  const circumfrence = 2 * Math.PI * innerRadius;
+  const invertedCompletion = (100 - percentageComplete) / 100;
+
+  const theta = useSharedValue(2 * Math.PI * 1.001);
+  const animateTo = useDerivedValue(() => 2 * Math.PI * invertedCompletion);
+  const textOpacity = useSharedValue(0);
+
+  const FADE_DELAY = 1500;
+
+  useEffect(() => {
+    // if (!textOpacity.value) {
+    theta.value = animateTo.value;
+    textOpacity.value = 1;
+    // } else {
+    // theta.value = 2 * Math.PI * 1.001;
+    // textOpacity.value = 0;
+    // }
+  }, []);
+
+  const animatedProps = useAnimatedProps(() => {
+    return {
+      strokeDashoffset: withTiming(theta.value * innerRadius, {
+        duration: FADE_DELAY,
+      }),
+    };
+  });
+
+  const powerTextStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(textOpacity.value, {
+        duration: FADE_DELAY,
+      }),
+    };
+  });
+
+  const powerPercentTextStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(textOpacity.value, {
+        duration: FADE_DELAY,
+      }),
+    };
+  });
+
   return (
-    // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-    <Svg style={{height: 30, width: 30, backgroundColor: 'yellow'}}>
-      {/* <Circle
-          cx={width / 2}
-          cy={height / 2}
-          r={Radius}
-          stroke="#404258"
-          fill="#fff"
-          strokeWidth={35}
-        /> */}
-      <Circle
-        viewBox="0 0 40 40"
-        cx={30}
-        cy={30}
-        r={Radius}
-        fill="#82CD47"
-        strokeDasharray={Circle_Length}
-        strokeLinecap="round"
-      />
-    </Svg>
-    // </View>
+    <View style={styles.container}>
+      <Svg style={StyleSheet.absoluteFill}>
+        <AnimatedCircle
+          animatedProps={animatedProps}
+          cx={radius}
+          cy={radius}
+          fill={backgroundColor}
+          r={innerRadius}
+
+          // stroke={backgroundColor}
+          // strokeDasharray={`${circumfrence} ${circumfrence}`}
+          // strokeWidth={strokeWidth}
+          // strokeLinecap="round"
+        />
+      </Svg>
+      {/* <Animated.Text style={[styles.powerText, powerTextStyle]}>
+        Power %
+      </Animated.Text> */}
+      {/* <Animated.Text style={[styles.powerPercentage, powerPercentTextStyle]}>
+        {percentageComplete}
+      </Animated.Text> */}
+    </View>
   );
 };
 
-export default ActivityIndicator;
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  powerText: {
+    fontSize: 30,
+    fontWeight: '300',
+  },
+  powerPercentage: {
+    fontSize: 60,
+    fontWeight: '200',
+  },
+});
