@@ -159,7 +159,7 @@ class API {
           })
           .then(res => {
             this.helperLog('SuccessCallback', JSON.stringify(res));
-            if (res.status === 200) {
+            if (res.status === 200 || res.status === 201) {
               SuccessCallback(res.data);
             } else {
               this.helperLog('FailureCallback', JSON.stringify(res));

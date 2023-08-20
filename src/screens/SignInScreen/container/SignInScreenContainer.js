@@ -82,7 +82,7 @@ class SignInScreenContainer extends Component {
       },
     });
 
-    // navigate('MainNavigator');
+    navigate('MainNavigator');
   };
 
   isValidEmail = () => {

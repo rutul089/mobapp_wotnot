@@ -25,3 +25,13 @@ export const userProfile = userData => ({
   type: types.USER_PROFILE,
   payload: userData,
 });
+
+export const setLabelData = labelData => ({
+  type: types.USER_LABEL,
+  payload: labelData,
+});
+
+export const setUserPreference = labelData => ({
+  type: types.USER_PREFERENCE,
+  payload: labelData,
+});

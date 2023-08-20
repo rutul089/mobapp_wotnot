@@ -45,6 +45,7 @@ const UserDetailComponent = ({
   onCloseModal,
   allLabelModalRef,
   onLabelPress = () => {},
+  labelData,
 }) => {
   const {isOpen, onOpen} = useDisclose();
   return (
@@ -111,7 +112,7 @@ const UserDetailComponent = ({
           {chipList.map((item, index) => (
             <Chip
               key={index}
-              value={item?.label}
+              value={item?.name}
               onPress={() => removeLabel(index)}
             />
           ))}
@@ -128,7 +129,9 @@ const UserDetailComponent = ({
       </KeyboardAvoidingScrollView>
       <BottomSheet
         ref={allLabelModalRef}
-        height={theme.normalize(250)}
+        height={
+          labelData?.length > 0 ? theme.normalize(220) : theme.normalize(120)
+        }
         closeOnDragDown
         customStyles={{
           mask: {backgroundColor: 'transparent'},
@@ -139,13 +142,21 @@ const UserDetailComponent = ({
           },
         }}>
         <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
-          {chipList.map((item, index) => (
-            <ActionItem
-              key={index}
-              label={item?.label}
-              onItemPress={() => onLabelPress(item, index)}
-            />
-          ))}
+          {labelData && labelData?.length > 0 ? (
+            labelData.map((item, index) => (
+              <ActionItem
+                key={index}
+                label={item?.name}
+                onItemPress={() => onLabelPress(item, index)}
+              />
+            ))
+          ) : (
+            <View style={{marginVertical: theme.normalize(15)}}>
+              <Text type={'error'} textAlign={'center'}>
+                No label found
+              </Text>
+            </View>
+          )}
         </ScrollView>
       </BottomSheet>
     </FlexContainer>

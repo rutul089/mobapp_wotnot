@@ -14,14 +14,12 @@ export const apiConfig = {
     },
     fetchLabel: userID => {
       return {
-        endpoint: `/account/${userID}/labels?account_id=${userID}`,
+        endpoint: `/v1/account/${userID}/labels?account_id=${userID}`,
         method: Method.GET,
       };
     },
-    fetchComment: (user_id, message_id) => {
-      return {
-        endpoint: `/api/v1/users/${user_id}/messages/${message_id}/comments`,
-        method: Method.POST,
-      };
-    },
+    fetchUserPreference: {
+      endpoint: '/v1/user-preference',
+      method: Method.POST,
+    }
   };
