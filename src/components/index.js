@@ -12,3 +12,5 @@ export {default as Header} from './Header';
 export {default as Spacing} from './Spacing';
 export {default as Chip} from './Chip';
 export {default as ActionItem} from './ActionItem';
+export {default as Input} from './Input';
+export {default as Loader} from './Loader';

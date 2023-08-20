@@ -53,5 +53,9 @@
     "language": "Language",
     "notifications": "Notifications",
     "logout": "Logout"
+  },
+  "error": {
+    "errEmail": "Valid email is required.",
+    "errPwd": "Password must be greater than 5 characters"
   }
 }

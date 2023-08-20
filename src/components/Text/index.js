@@ -41,6 +41,8 @@ const getTextComputedStyles = type => {
     return styles.link;
   } else if (type === 'body3-10') {
     return styles.body3_10;
+  } else if (type === 'error') {
+    return styles.error;
   } else {
     return styles.body1;
   }
