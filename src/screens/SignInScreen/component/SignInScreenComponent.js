@@ -1,19 +1,19 @@
-import React, {useState} from 'react';
-import {TouchableOpacity, View, ScrollView} from 'react-native';
+import {default as React} from 'react';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
+import images from '../../../assets/images';
 import {SVG} from '../../../assets/svg';
 import {
   Button,
   FlexContainer,
-  Text,
   Input,
-  Spacing,
   Loader,
+  Spacing,
+  Text,
 } from '../../../components';
 import {strings} from '../../../locales/i18n';
 import theme from '../../../util/theme';
 import styles from '../Style';
-import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
-import images from '../../../assets/images';
 
 const SignInScreenComponent = ({
   onSubmit,
@@ -26,7 +26,7 @@ const SignInScreenComponent = ({
   onSubmitEditingPwd,
   rightIconClick,
   scrollViewRef,
-  isLoading
+  isLoading,
 }) => {
   return (
     <FlexContainer>

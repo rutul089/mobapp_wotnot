@@ -1,10 +1,9 @@
 import React from 'react';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import theme from '../../util/theme';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import images from '../../assets/images';
-import Text from '../Text/index';
-import UserItem from '../UserItem/index';
+import theme from '../../util/theme';
 import Spacing from '../Spacing';
+import UserItem from '../UserItem/index';
 
 const styles = StyleSheet.create({
   container: {
