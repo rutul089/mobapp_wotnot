@@ -35,3 +35,13 @@ export const setUserPreference = labelData => ({
   type: types.USER_PREFERENCE,
   payload: labelData,
 });
+
+export const setTeamData = data => ({
+  type: types.FETCH_TEAMS,
+  payload: data,
+});
+
+export const setTeammateData = data => ({
+  type: types.FETCH_TEAMMATES,
+  payload: data,
+});

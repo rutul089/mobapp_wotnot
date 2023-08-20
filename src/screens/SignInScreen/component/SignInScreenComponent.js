@@ -1,4 +1,9 @@
-import {default as React} from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useState
+} from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import images from '../../../assets/images';
@@ -27,7 +32,7 @@ const SignInScreenComponent = ({
   rightIconClick,
   scrollViewRef,
   isLoading,
-}) => {
+},ref) => {
   return (
     <FlexContainer>
       <KeyboardAvoidingScrollView
@@ -106,4 +111,4 @@ const SignInScreenComponent = ({
     </FlexContainer>
   );
 };
-export default SignInScreenComponent;
+export default forwardRef(SignInScreenComponent)

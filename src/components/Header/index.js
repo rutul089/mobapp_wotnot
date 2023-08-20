@@ -36,9 +36,11 @@ const Header = ({
   isLeftDisabled,
   onPressMore,
   onPressInfo,
+  backgroundColor = theme.colors.brandColor.FAFAFA,
+  rightIcon,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: backgroundColor}]}>
       <View style={{flex: 1}}>
         {!isLeftIconHidden ? (
           <TouchableOpacity
@@ -83,29 +85,33 @@ const Header = ({
       ) : null}
       <View style={{flex: isRightIconHidden ? 1 : 1.5, paddingHorizontal: 5}}>
         {!isRightIconHidden ? (
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={onPressInfo}
-              disabled={isRightDisabled}>
-              <Image
-                source={images.ic_info}
-                resizeMode="contain"
-                style={[styles.iconStyle, {tintColor: tintColor}]}
-              />
-            </TouchableOpacity>
-            <Spacing direction="y" />
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={onPressMore}
-              disabled={isRightDisabled}>
-              <Image
-                source={images.ic_more}
-                resizeMode="contain"
-                style={[styles.iconStyle, {tintColor: tintColor}]}
-              />
-            </TouchableOpacity>
-          </View>
+          rightIcon ? (
+            rightIcon
+          ) : (
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={onPressInfo}
+                disabled={isRightDisabled}>
+                <Image
+                  source={images.ic_info}
+                  resizeMode="contain"
+                  style={[styles.iconStyle, {tintColor: tintColor}]}
+                />
+              </TouchableOpacity>
+              <Spacing direction="y" />
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={onPressMore}
+                disabled={isRightDisabled}>
+                <Image
+                  source={images.ic_more}
+                  resizeMode="contain"
+                  style={[styles.iconStyle, {tintColor: tintColor}]}
+                />
+              </TouchableOpacity>
+            </View>
+          )
         ) : null}
       </View>
     </View>

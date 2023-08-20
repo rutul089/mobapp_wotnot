@@ -15,7 +15,7 @@ const wotnotColor = {
   darkestBlue: '#1a5064',
   lightestBlue: '#cbe8f2',
   skyBlue: '#76BED8',
-  FAFAFA: '#FAFAFA',
+  FAFAFA: '#F4F4F4',
   green: '#00B600',
   silver: '#858585',
   lightGreen: '#13BE66',
