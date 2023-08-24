@@ -22,4 +22,5 @@ export default {
   ic_cross: require('./ic_cross.png'),
   ic_showPwd: require('./ic_showPwd.png'),
   ic_hidePwd: require('./ic_hidePwd.png'),
+  ic_userprofile: require('./ic_userprofile.png'),
 };

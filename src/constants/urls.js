@@ -34,4 +34,16 @@ export const endPoints = {
       method: Method.POST,
     };
   },
+  fetchSavedReply: (userID, from, limit) => {
+    return {
+      endpoint: `/v1/account/${userID}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=created_at`,
+      method: Method.GET,
+    };
+  },
+  fetchConversation: (userID, status_id, limit) => {
+    return {
+      endpoint: `/v1/accounts/${userID}/conversations?status_ids=${status_id}&is_order_by_asc=false&limit=${limit}&assignee_ids=74692,74874,32756`,
+      method: Method.GET,
+    };
+  },
 };

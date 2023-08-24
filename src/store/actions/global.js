@@ -45,3 +45,13 @@ export const setTeammateData = data => ({
   type: types.FETCH_TEAMMATES,
   payload: data,
 });
+
+export const saveReply = data => ({
+  type: types.FETCH_SAVE_REPLY,
+  payload: data,
+})
+
+export const setAssignedChat = data => ({
+  type: types.ASSIGNED_CHAT,
+  payload: data,
+})
