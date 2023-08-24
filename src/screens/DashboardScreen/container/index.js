@@ -18,7 +18,9 @@ class index extends Component {
 
   callFetchTeamData = () => {
     this.props.fetchTeamData('47734', 1, {
-      SuccessCallback: res => {},
+      SuccessCallback: res => {
+        console.log("callFetchTeamData",JSON.stringify(res))
+      },
       FailureCallback: res => {
         handleFailureCallback(res);
       },
@@ -32,7 +34,9 @@ class index extends Component {
       pagination: {limit: 20, offset: 1},
     };
     this.props.fetchTeammateData('47734', param, {
-      SuccessCallback: res => {},
+      SuccessCallback: res => {
+        console.log("callFetchTeammateData",JSON.stringify(res))
+      },
       FailureCallback: res => {
         handleFailureCallback(res);
       },

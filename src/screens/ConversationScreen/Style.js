@@ -128,6 +128,26 @@ const styles = StyleSheet.create({
     },
     actionItemIcon: {height: 20, width: 20},
   },
+  assigneeHeader: {
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    height: theme.sizes.spacing.xl3,
+    paddingHorizontal: theme.sizes.spacing.ph,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  assigneeIcon: {
+    height: theme.sizes.image.xl,
+    width: theme.sizes.image.xl,
+    tintColor: 'black',
+  },
 });
 
 export default styles;

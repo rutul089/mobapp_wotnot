@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {Alert, Keyboard} from 'react-native';
+import {connect} from 'react-redux';
 import {strings} from '../../../locales/i18n';
 import {goBack, navigate} from '../../../navigator/NavigationUtils';
 import ConversationComponent from '../component/ConversationComponent';
 
-export default class ConversationContainer extends Component {
+class ConversationContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,6 +66,8 @@ export default class ConversationContainer extends Component {
           timeStamp: '12:30',
         },
       ],
+      showChangeAssignee: false,
+      isTeamSelected: false,
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -89,6 +92,9 @@ export default class ConversationContainer extends Component {
   };
   onChangeAssignee = () => {
     this.closeMoreInfoModal();
+    setTimeout(() => {
+      this.setState({showChangeAssignee: true}, () => {});
+    }, 200);
   };
   onCloseConversation = () => {
     this.closeMoreInfoModal();
@@ -139,7 +145,20 @@ export default class ConversationContainer extends Component {
     this.attachmentBottomSheetRef?.current?.close();
   };
 
+  onChangeAssigneeModalClose = () => {
+    this.setState({showChangeAssignee: false});
+  };
+
+  onTeamClick = () => {
+    this.setState({isTeamSelected: true});
+  };
+
+  onTeamMateClick = () => {
+    this.setState({isTeamSelected: false});
+  };
+
   render() {
+    const {teamMateData,teamData} = this.props
     return (
       <>
         <ConversationComponent
@@ -169,8 +188,27 @@ export default class ConversationContainer extends Component {
           onCalendarPress={this.onCalendarPress}
           pnAttachmentsPress={this.onAttachmentsPress}
           messageList={this.state.messageList}
+          showChangeAssignee={this.state.showChangeAssignee}
+          onChangeAssigneeModalClose={this.onChangeAssigneeModalClose}
+          onTeamClick={this.onTeamClick}
+          onTeamMateClick={this.onTeamMateClick}
+          isTeamSelected={this.state.isTeamSelected}
+          teamMateData={teamMateData}
+          teamData={teamData}
         />
       </>
     );
   }
 }
+
+const mapActionCreators = {};
+const mapStateToProps = state => {
+  return {
+    teamData: state.accountReducer?.teamData?.teams,
+    teamMateData: state.accountReducer?.teamMateData?.users,
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapActionCreators,
+)(ConversationContainer);

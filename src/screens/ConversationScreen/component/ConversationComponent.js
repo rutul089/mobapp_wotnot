@@ -1,5 +1,13 @@
 import React from 'react';
-import {FlatList, Image, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Modal,
+  SafeAreaView,
+} from 'react-native';
 import images from '../../../assets/images';
 import {
   ActionItem,
@@ -13,6 +21,8 @@ import {strings} from '../../../locales/i18n';
 import theme from '../../../util/theme';
 import colors from '../../../util/theme/colors';
 import styles from '../Style';
+import ButtonTeammate from './ButtonTeammate';
+import AssigneeItem from './AssigneeItem';
 
 const ConversationComponent = ({
   joinConversation,
@@ -38,6 +48,13 @@ const ConversationComponent = ({
   onSavedReplyPress,
   onCalendarPress,
   onAttachmentsPress,
+  showChangeAssignee,
+  onChangeAssigneeModalClose,
+  onTeamMateClick,
+  onTeamClick,
+  isTeamSelected,
+  teamMateData,
+  teamData,
 }) => {
   const _renderListHeaderView = () => {
     return (
@@ -85,6 +102,61 @@ const ConversationComponent = ({
           <Text style={styles.renderItem.timeStamp}>{timeStamp}</Text>
         </View>
       </View>
+    );
+  };
+  const _renderAssigneeItemView = ({item}) => {
+    return <AssigneeItem item={item} isTeamSelected={isTeamSelected} />;
+  };
+  const _renderChangeAssigneeView = () => {
+    return (
+      <Modal
+        animationType="slide"
+        visible={showChangeAssignee}
+        style={{backgroundColor: 'black'}}
+        statusBarTranslucent={false}>
+        <SafeAreaView style={{flex:1}}>
+          <View style={{overflow: 'hidden', paddingBottom: 5}}>
+            <View style={styles.assigneeHeader}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={onChangeAssigneeModalClose}>
+                <Image
+                  source={images.ic_cross}
+                  resizeMode="contain"
+                  style={styles.assigneeIcon}
+                />
+              </TouchableOpacity>
+              <Text type={'subtitle1'} textAlign={'center'} style={{flex: 1}}>
+                {strings('chat.change_assignee')}
+              </Text>
+              <View style={styles.assigneeIcon} />
+            </View>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <ButtonTeammate
+              tittle={'Teammates'}
+              onPress={onTeamMateClick}
+              isSelected={!isTeamSelected}
+            />
+            <ButtonTeammate
+              tittle={'Team'}
+              onPress={onTeamClick}
+              isSelected={isTeamSelected}
+            />
+          </View>
+          <FlatList
+            ref={listRef}
+            data={isTeamSelected ? teamData : teamMateData}
+            renderItem={_renderAssigneeItemView}
+            style={{
+              paddingBottom: theme.sizes.spacing.xl,
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        </SafeAreaView>
+
+        {/* <View /> */}
+      </Modal>
     );
   };
   return (
@@ -215,6 +287,7 @@ const ConversationComponent = ({
           />
         </>
       </BottomSheet>
+      {_renderChangeAssigneeView()}
     </FlexContainer>
   );
 };
