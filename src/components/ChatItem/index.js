@@ -7,7 +7,16 @@ import {ActivityIndicator} from '../ActivityIndicator';
 import Spacing from '../Spacing';
 import Text from '../Text/index';
 
-const ChatItem = ({name, email, uri, subTittle, isOnline, onPress}) => {
+const ChatItem = ({
+  name,
+  email,
+  uri,
+  subTittle,
+  isOnline,
+  unreadCount,
+  lastMessageDay,
+  onPress,
+}) => {
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
   return (
@@ -80,12 +89,12 @@ const ChatItem = ({name, email, uri, subTittle, isOnline, onPress}) => {
             type={'caption12'}
             weight={theme.typography.fontWeights.bold}
             style={{color: colors.brandColor.blue}}>
-            258
+            {unreadCount}
           </Text>
         </View>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text type={'caption12'} style={{color: colors.brandColor.silver}}>
-            29d
+            {lastMessageDay}
           </Text>
           <View style={{width: radius * 2, height: radius * 2}}>
             <ActivityIndicator
