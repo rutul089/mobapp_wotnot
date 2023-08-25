@@ -3,12 +3,14 @@ import global from './global';
 import authReducer from './authReducer';
 import detail from './detail';
 import accountReducer from './accountReducer';
+import qualifications from './qualifications';
 
 const rootReducer = combineReducers({
   global,
   authReducer,
   detail,
-  accountReducer
+  accountReducer,
+  qualifications
 });
 
 export default rootReducer;

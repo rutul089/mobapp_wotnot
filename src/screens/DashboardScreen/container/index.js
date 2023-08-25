@@ -19,7 +19,7 @@ class index extends Component {
   callFetchTeamData = () => {
     this.props.fetchTeamData('47734', 1, {
       SuccessCallback: res => {
-        console.log("callFetchTeamData",JSON.stringify(res))
+        // console.log("callFetchTeamData",JSON.stringify(res))
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -35,7 +35,7 @@ class index extends Component {
     };
     this.props.fetchTeammateData('47734', param, {
       SuccessCallback: res => {
-        console.log("callFetchTeammateData",JSON.stringify(res))
+        // console.log("callFetchTeammateData",JSON.stringify(res))
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -45,8 +45,8 @@ class index extends Component {
 
   render() {
     const {teamData, teamMateData} = this.props;
-    console.log("teamData",JSON.stringify(teamData))
-    console.log("teamMateData",JSON.stringify(teamMateData))
+    // console.log("teamData",JSON.stringify(teamData))
+    // console.log("teamMateData",JSON.stringify(teamMateData))
     return (
       <SafeAreaView style={{flex: 1}}>
         <DashboardComponent data={{}} />

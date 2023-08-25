@@ -4,6 +4,7 @@ const initialState = {
   teamData: [],
   teamMateData: [],
   savedReply: [],
+  userQualifications:[]
 };
 
 const global = (state = initialState, action) => {
@@ -14,6 +15,8 @@ const global = (state = initialState, action) => {
       return {...state, teamMateData: action.payload};
     case types.FETCH_SAVE_REPLY:
       return {...state, savedReply: action.payload};
+    case types.SET_QUALIFICATIONS:
+      return {...state, userQualifications: action.payload};
     default:
       return state;
   }

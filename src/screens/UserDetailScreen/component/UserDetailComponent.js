@@ -18,20 +18,27 @@ import {Actionsheet, useDisclose} from 'native-base';
 
 const renderQualificationRow = (icon, label, value) => {
   return (
-    <View style={{flexDirection: 'row'}}>
-      <View style={styles.labelStyle}>
-        <Image source={icon} resizeMode={'contain'} style={styles.iconStyle} />
-        <Spacing direction="y" size="xs" />
-        <Text type={'body2'} color={theme.colors.typography.silver}>
-          {label}
-        </Text>
+    <>
+      <View style={{flexDirection: 'row'}}>
+        <View style={styles.labelStyle}>
+          <Image
+            source={icon}
+            resizeMode={'contain'}
+            style={styles.iconStyle}
+          />
+          <Spacing direction="y" size="xs" />
+          <Text type={'body2'} color={theme.colors.typography.silver}>
+            {label}
+          </Text>
+        </View>
+        <View style={styles.valueStyle}>
+          <Text type={'body2'} numberOfLines={1}>
+            {value}
+          </Text>
+        </View>
       </View>
-      <View style={styles.valueStyle}>
-        <Text type={'body2'} numberOfLines={1}>
-          {value}
-        </Text>
-      </View>
-    </View>
+      <Spacing />
+    </>
   );
 };
 
@@ -46,6 +53,7 @@ const UserDetailComponent = ({
   allLabelModalRef,
   onLabelPress = () => {},
   labelData,
+  qualifications,
 }) => {
   const {isOpen, onOpen} = useDisclose();
   return (
@@ -57,47 +65,55 @@ const UserDetailComponent = ({
       <KeyboardAvoidingScrollView contentContainerStyle={styles.container}>
         <Text type={'h4'}>{strings('chat.user_info.qualification')}</Text>
         <Spacing />
-        {renderQualificationRow(
-          images.ic_name,
-          strings('chat.user_info.name'),
-          data?.name,
-        )}
-        <Spacing />
-        {renderQualificationRow(
-          images.ic_email,
-          strings('chat.user_info.email'),
-          data?.email,
-        )}
-        <Spacing />
-        {renderQualificationRow(
-          images.ic_phone,
-          strings('chat.user_info.phone'),
-          data?.phone,
-        )}
-        <Spacing />
-        {renderQualificationRow(
-          images.ic_url,
-          strings('chat.user_info.url'),
-          data?.url,
-        )}
-        <Spacing />
-        {renderQualificationRow(
-          images.ic_city,
-          strings('chat.user_info.city'),
-          data?.city,
-        )}
-        <Spacing />
-        {renderQualificationRow(
-          images.ic_zip_code,
-          strings('chat.user_info.zip_code'),
-          data?.zipcode,
-        )}
-        <Spacing />
-        {renderQualificationRow(
-          images.ic_country,
-          strings('chat.user_info.country_code'),
-          data?.countrycode,
-        )}
+        {qualifications &&
+          qualifications.map((item, index) => {
+            switch (item?.key) {
+              case '¿·$user.info.name·?':
+                return renderQualificationRow(
+                  images.ic_name,
+                  item?.label,
+                  item?.value,
+                );
+              case '¿·$user.info.email·?':
+                return renderQualificationRow(
+                  images.ic_email,
+                  item?.label,
+                  item?.value,
+                );
+              case '¿·$user.info.phone·?':
+                return renderQualificationRow(
+                  images.ic_phone,
+                  item?.label,
+                  item?.value,
+                );
+              case 'source_url':
+                return renderQualificationRow(
+                  images.ic_url,
+                  item?.label,
+                  item?.value,
+                );
+              case 'city_name':
+                return renderQualificationRow(
+                  images.ic_city,
+                  item?.label,
+                  item?.value,
+                );
+              case 'zip_code':
+                return renderQualificationRow(
+                  images.ic_zip_code,
+                  item?.label,
+                  item?.value,
+                );
+              case 'country_code':
+                return renderQualificationRow(
+                  images.ic_country,
+                  item?.label,
+                  item?.value,
+                );
+              default:
+                break;
+            }
+          })}
         <Spacing size="md" />
         <View
           style={{
@@ -113,7 +129,7 @@ const UserDetailComponent = ({
             <Chip
               key={index}
               value={item?.name}
-              onPress={() => removeLabel(index)}
+              onPress={() => removeLabel(item,index)}
             />
           ))}
         </View>

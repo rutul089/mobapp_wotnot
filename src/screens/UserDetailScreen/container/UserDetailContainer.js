@@ -2,11 +2,21 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import {connect} from 'react-redux';
 import {goBack} from '../../../navigator/NavigationUtils';
-import {fetchLabel, fetchUserPreference} from '../../../store/actions';
+import {
+  fetchLabel,
+  fetchUserPreference,
+  fetchQualifications,
+  saveLabel,
+  deleteLabel,
+} from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import UserDetailComponent from '../component/UserDetailComponent';
 import _, {orderBy} from 'lodash';
 import {showToast} from '../../../util/helper';
+import {
+  STATIC_USER_ID,
+  static_conversation_key,
+} from '../../../constants/storage';
 
 class UserDetailContainer extends Component {
   constructor(props) {
@@ -14,26 +24,29 @@ class UserDetailContainer extends Component {
     this.state = {
       chipList: [],
       showLabelModal: false,
+      labels: [],
     };
     this.onPressLeftContent = this.onPressLeftContent.bind(this);
     this.allLabelModalRef = React.createRef();
   }
 
   componentDidMount() {
-    this.callFetchUserPreference()
+    this.callFetchUserPreference();
     this.callFetchLabel();
+    this.callFetchQualifications();
   }
 
   onPressLeftContent = () => {
     goBack();
   };
 
-  removeLabel = index => {
-    const newArray = [...this.state.chipList];
-    newArray.splice(index, 1);
-    this.setState({
-      chipList: newArray,
-    });
+  removeLabel = (item, index) => {
+    // const newArray = [...this.state.chipList];
+    // newArray.splice(index, 1);
+    // this.setState({
+    //   chipList: newArray,
+    // });
+    this.deleteLabel(item?.id, index);
   };
 
   addLabelPress = () => {
@@ -41,25 +54,36 @@ class UserDetailContainer extends Component {
   };
 
   onLabelPress = (item, index) => {
-    const newArray = [...this.state.chipList];
+    const newArray = [...this.state.labels];
     if (this.checkForDuplicateValue(newArray, item?.name)) {
       this.allLabelModalRef?.current?.close();
       showToast('Same Labels Exists');
       return;
     }
     newArray.push(item);
+    let param = {
+      labels: [
+        {
+          name: item?.name,
+          id: item?.id,
+        },
+      ],
+    };
     this.setState(
       {
-        chipList: newArray,
+        labels: newArray,
       },
-      () => this.allLabelModalRef?.current?.close(),
+      () => {
+        this.allLabelModalRef?.current?.close();
+        this.saveLabel(param);
+      },
     );
   };
 
   callFetchLabel = () => {
-    this.props.fetchLabel('47896', {
+    this.props.fetchLabel(STATIC_USER_ID, {
       SuccessCallback: res => {
-        console.log('SuccessCallback', JSON.stringify(res));
+        // console.log('SuccessCallback', JSON.stringify(res));
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -75,7 +99,55 @@ class UserDetailContainer extends Component {
     let param = {account_key: 'JJsqDeYRudZs101210993250gRK3gAQY'};
     this.props.fetchUserPreference(param, {
       SuccessCallback: res => {
-        console.log('SuccessCallback', JSON.stringify(res));
+        // console.log('SuccessCallback', JSON.stringify(res));
+      },
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
+  callFetchQualifications = () => {
+    this.props.fetchQualifications(static_conversation_key, {
+      SuccessCallback: res => {
+        // console.log('SuccessCallback', JSON.stringify(res));
+      },
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
+  saveLabel = param => {
+    this.props.saveLabel(static_conversation_key, param, {
+      SuccessCallback: res => {
+        // console.log('SuccessCallback', JSON.stringify(res));
+        // const newArray = [...this.state.labels];
+        // newArray.push(item);
+        // this.setState({
+        //   labels: newArray
+        // })
+      },
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
+  deleteLabel = (label_id, index) => {
+    this.props.deleteLabel(static_conversation_key, label_id, {
+      SuccessCallback: res => {
+        const newArray = [...this.state.labels];
+        newArray.splice(index, 1);
+        this.setState({
+          labels: newArray,
+        });
+        // console.log('SuccessCallback', JSON.stringify(res));
+        // const newArray = [...this.state.labels];
+        // newArray.push(item);
+        // this.setState({
+        //   labels: newArray
+        // })
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -85,7 +157,7 @@ class UserDetailContainer extends Component {
 
   render() {
     let state = this.state;
-    let {userPreference,labelData} = this.props
+    let {userPreference, labelData, qualifications} = this.props;
     return (
       <>
         <UserDetailComponent
@@ -99,25 +171,34 @@ class UserDetailContainer extends Component {
             url: 'http://app.wotnot.io/bo',
             city: 'Ahmedabad',
           }}
-          chipList={state.chipList}
-          removeLabel={index => this.removeLabel(index)}
+          chipList={state.labels}
+          removeLabel={(item, index) => this.removeLabel(item, index)}
           addLabelPress={this.addLabelPress}
           showLabelModal={state.showLabelModal}
           allLabelModalRef={this.allLabelModalRef}
           onLabelPress={(item, index) => this.onLabelPress(item, index)}
           labelData={labelData}
+          qualifications={qualifications}
         />
       </>
     );
   }
 }
 
-const mapActionCreators = {fetchLabel, fetchUserPreference};
+const mapActionCreators = {
+  fetchLabel,
+  fetchUserPreference,
+  fetchQualifications,
+  saveLabel,
+  deleteLabel,
+};
 const mapStateToProps = state => {
+  // console.log("qualifications ------",JSON.stringify(state.qualifications?.qualifications?.qualifications))
   return {
     isLoading: state.global.loading,
     labelData: state.detail?.labelData,
     userPreference: state.detail?.userPreference,
+    qualifications: state.qualifications?.qualifications?.qualifications,
   };
 };
 export default connect(mapStateToProps, mapActionCreators)(UserDetailContainer);
