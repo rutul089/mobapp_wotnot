@@ -48,7 +48,7 @@ export const endPoints = {
   },
   conversationSummary: account_id => {
     return {
-      endpoint: `/v1/accounts/${{account_id}}/conversations/summary`,
+      endpoint: `/v1/accounts/${account_id}/conversations/summary`,
       method: Method.GET,
     };
   },
