@@ -40,9 +40,15 @@ export const endPoints = {
       method: Method.GET,
     };
   },
-  fetchConversation: (userID, status_id, limit) => {
+  fetchConversation: (account_id, status_id, limit) => {
     return {
-      endpoint: `/v1/accounts/${userID}/conversations?status_ids=${status_id}&is_order_by_asc=false&limit=${limit}&assignee_ids=74692,74874,32756`,
+      endpoint: `/v1/accounts/${account_id}/conversations?status_ids=${status_id}&is_order_by_asc=false&limit=${limit}`,
+      method: Method.GET,
+    };
+  },
+  conversationSummary: (account_id) => {
+    return {
+      endpoint: `/v1/accounts/${{account_id}}/conversations/summary`,
       method: Method.GET,
     };
   },

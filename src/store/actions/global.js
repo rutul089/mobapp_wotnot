@@ -49,9 +49,19 @@ export const setTeammateData = data => ({
 export const saveReply = data => ({
   type: types.FETCH_SAVE_REPLY,
   payload: data,
-})
+});
 
 export const setAssignedChat = data => ({
   type: types.ASSIGNED_CHAT,
   payload: data,
-})
+});
+
+export const setConversations = data => ({
+  type: types.SET_CONVERSATIONS,
+  payload: data,
+});
+
+export const setConversationsCount = data => ({
+  type: types.SET_CONVERSATIONS_COUNT,
+  payload: data,
+});

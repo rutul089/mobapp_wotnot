@@ -1,12 +1,17 @@
 import {API} from '../../apiService';
 import {endPoints} from '../../constants/urls';
-import {loadingSet, loadingUnset, setAssignedChat} from './global';
+import {
+  loadingSet,
+  loadingUnset,
+  setConversationsCount,
+  setConversations,
+} from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-export const getAssignedChat = (
-  userID,
+export const fetchConversation = (
+  account_id,
   status_id,
   limit,
   {SuccessCallback, FailureCallback},
@@ -14,13 +19,38 @@ export const getAssignedChat = (
   return dispatch => {
     dispatch(loadingSet());
     API.getInstance().Fetch(
-      endPoints.fetchConversation(userID, status_id, limit),
+      endPoints.fetchConversation(account_id, status_id, limit),
       defaultHeaders,
       '',
       {
         SuccessCallback: response => {
           dispatch(loadingUnset());
-          dispatch(setAssignedChat(response));
+          dispatch(setConversations(response));
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
+  };
+};
+
+export const fetchConversationSummary = (
+  account_id,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    dispatch(loadingSet());
+    API.getInstance().Fetch(
+      endPoints.conversationSummary(account_id),
+      defaultHeaders,
+      '',
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          dispatch(setConversationsCount(response));
           SuccessCallback(response);
         },
         FailureCallback: response => {
