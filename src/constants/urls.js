@@ -46,10 +46,28 @@ export const endPoints = {
       method: Method.GET,
     };
   },
-  conversationSummary: (account_id) => {
+  conversationSummary: account_id => {
     return {
       endpoint: `/v1/accounts/${{account_id}}/conversations/summary`,
       method: Method.GET,
+    };
+  },
+  fetchQualifications: conversation_key => {
+    return {
+      endpoint: `/v2/conversations/${conversation_key}/qualifications`,
+      method: Method.GET,
+    };
+  },
+  saveLabel: conversation_key => {
+    return {
+      endpoint: `/v1/conversations/${conversation_key}/labels`,
+      method: Method.PUT,
+    };
+  },
+  deleteLabel: (conversation_key,label_id) => {
+    return {
+      endpoint: `/v1/conversations/${conversation_key}/labels?ids=${label_id}`,
+      method: Method.DELETE,
     };
   },
 };

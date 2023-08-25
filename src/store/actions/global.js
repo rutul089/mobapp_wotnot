@@ -65,3 +65,7 @@ export const setConversationsCount = data => ({
   type: types.SET_CONVERSATIONS_COUNT,
   payload: data,
 });
+export const setQualifications = data => ({
+  type: types.SET_QUALIFICATIONS,
+  payload: data,
+});
