@@ -3,8 +3,8 @@ import {endPoints} from '../../constants/urls';
 import {
   loadingSet,
   loadingUnset,
-  setConversationsCount,
   setConversations,
+  setConversationsCount,
 } from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -26,6 +26,30 @@ export const fetchConversation = (
         SuccessCallback: response => {
           dispatch(loadingUnset());
           dispatch(setConversations(response));
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
+  };
+};
+export const fetchConversationBySearch = (
+  account_id,
+  query,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    dispatch(loadingSet());
+    API.getInstance().Fetch(
+      endPoints.fetchConversationBySearch(account_id, query),
+      defaultHeaders,
+      '',
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
           SuccessCallback(response);
         },
         FailureCallback: response => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Image, PixelRatio, Pressable, StyleSheet, View} from 'react-native';
+import images from '../../assets/images';
 import {hp, wp} from '../../util/helper';
 import theme from '../../util/theme';
 import colors from '../../util/theme/colors';
@@ -19,20 +20,17 @@ const ChatItem = ({
 }) => {
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
+
   return (
-    <Pressable
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: hp(0.8),
-        gap: wp(2),
-      }}
-      onPress={onPress}>
+    <Pressable style={styles.pressableContainer} onPress={onPress}>
       <View style={{flex: 0.8}}>
         <View style={{gap: hp(0.1)}}>
           <View style={styles.container}>
             <View>
-              <Image source={{uri: uri}} style={styles.image} />
+              <Image
+                source={uri.length > 0 ? {uri: uri} : images.ic_userprofile}
+                style={styles.image}
+              />
               <View
                 style={[
                   styles.badgeContainer,
@@ -68,23 +66,8 @@ const ChatItem = ({
           </Text>
         )}
       </View>
-      <View
-        style={{
-          flex: 0.2,
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: wp(2),
-        }}>
-        <View
-          style={{
-            height: hp(4),
-            width: hp(4),
-            backgroundColor: colors.brandColor.lightBlue,
-            padding: 2,
-            borderRadius: hp(4),
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+      <View style={styles.rightSideContainer}>
+        <View style={styles.unreadCountContainer}>
           <Text
             type={'caption12'}
             weight={theme.typography.fontWeights.bold}
@@ -92,16 +75,16 @@ const ChatItem = ({
             {unreadCount}
           </Text>
         </View>
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View style={styles.statusContainer}>
           <Text type={'caption12'} style={{color: colors.brandColor.silver}}>
             {lastMessageDay}
           </Text>
           <View style={{width: radius * 2, height: radius * 2}}>
             <ActivityIndicator
-              strokeWidth={STROKE_WIDTH}
+              // strokeWidth={STROKE_WIDTH}
               radius={radius}
-              backgroundColor="#f93986"
-              percentageComplete={89}
+              // backgroundColor="#f93986"
+              percentageComplete={30}
             />
           </View>
         </View>
@@ -113,6 +96,12 @@ const ChatItem = ({
 export default ChatItem;
 
 const styles = StyleSheet.create({
+  pressableContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: hp(0.8),
+    gap: wp(2),
+  },
   container: {
     flexDirection: 'row',
   },
@@ -137,6 +126,22 @@ const styles = StyleSheet.create({
     width: 'auto',
     justifyContent: 'center',
   },
+  rightSideContainer: {
+    flex: 0.2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: wp(2),
+  },
+  unreadCountContainer: {
+    height: hp(4),
+    width: hp(4),
+    backgroundColor: colors.brandColor.lightBlue,
+    padding: 2,
+    borderRadius: hp(4),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusContainer: {justifyContent: 'center', alignItems: 'center'},
   subTittle: {
     marginTop: theme.sizes.spacing.xs2,
   },

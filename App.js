@@ -1,14 +1,15 @@
 import {NativeBaseProvider} from 'native-base';
-import React, {Component} from 'react';
+import React from 'react';
 import {LogBox} from 'react-native';
-import RootContainer from './src/navigator/RootContainer';
+import {RootSiblingParent} from 'react-native-root-siblings';
+import {Provider} from 'react-redux';
 import API, {DevelopmentMode} from './src/apiService';
+import {withHooksHOC} from './src/components/withHooksHOC';
 import {apiConfig} from './src/constants/urls';
+import RootContainer from './src/navigator/RootContainer';
+import {configureStore} from './src/store';
 LogBox.ignoreAllLogs(true);
 API.getInstance().build(DevelopmentMode.DEVELOPMENT, apiConfig);
-import {Provider} from 'react-redux';
-import {configureStore} from './src/store';
-import {RootSiblingParent} from 'react-native-root-siblings';
 const store = configureStore();
 
 const App = () => {
@@ -23,4 +24,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default withHooksHOC(App);

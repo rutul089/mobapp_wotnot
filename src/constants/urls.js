@@ -64,10 +64,16 @@ export const endPoints = {
       method: Method.PUT,
     };
   },
-  deleteLabel: (conversation_key,label_id) => {
+  deleteLabel: (conversation_key, label_id) => {
     return {
       endpoint: `/v1/conversations/${conversation_key}/labels?ids=${label_id}`,
       method: Method.DELETE,
+    };
+  },
+  fetchConversationBySearch: (account_id, query) => {
+    return {
+      endpoint: `/v1/accounts/${account_id}/conversations?${query}`,
+      method: Method.GET,
     };
   },
 };
