@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Alert, Keyboard} from 'react-native';
 import {connect} from 'react-redux';
+import {CONVERSATION} from '../../../constants/global';
 import {strings} from '../../../locales/i18n';
 import {goBack, navigate} from '../../../navigator/NavigationUtils';
 import ConversationComponent from '../component/ConversationComponent';
@@ -9,7 +10,7 @@ class ConversationContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      conversationJoined: true,
+      conversationJoined: false,
       keyboardHeight: 0,
       inputHeight: 40,
       messageToSend: '',
@@ -158,7 +159,13 @@ class ConversationContainer extends Component {
   };
 
   render() {
-    const {teamMateData,teamData} = this.props
+    const {
+      teamMateData,
+      teamData,
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
     return (
       <>
         <ConversationComponent
@@ -173,7 +180,9 @@ class ConversationContainer extends Component {
           joinConversationPress={() => {
             this.setState(prev => ({...prev, conversationJoined: true}));
           }}
-          conversationJoined={this.state.conversationJoined}
+          conversationJoined={
+            itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE
+          }
           scrollViewRef={this.scrollViewRef}
           keyboardHeight={this.state.keyboardHeight}
           inputHeight={this.state.inputHeight}

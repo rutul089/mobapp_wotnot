@@ -1,149 +1,24 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useEffect, useMemo, useState} from 'react';
-import {FlatList, TextInput, View} from 'react-native';
-import {RefreshControl} from 'react-native-gesture-handler';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {useDispatch} from 'react-redux';
+import images from '../../assets/images';
 import {CONVERSATION} from '../../constants/global';
 import {strings} from '../../locales/i18n';
-import {navigate} from '../../navigator/NavigationUtils';
-import {fetchConversation, fetchConversationSummary} from '../../store/actions';
+import {fetchConversationSummary} from '../../store/actions';
 import {hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
-import ChatItem from '../ChatItem';
-import Text from '../Text';
+import {styles as fontStyle} from '../Text/style';
+import ConversationList from './ConversationList';
 
 const Tab = createMaterialTopTabNavigator();
-
-const USER_ID = '47734';
-
-const renderItem = ({item}) => {
-  return (
-    <ChatItem
-      key={item?.assignee?.id}
-      name={item?.assignee?.name ?? 'Unknown'}
-      email={item?.assignee?.email}
-      uri={item?.assignee?.image_url ?? 'https://ipravatar.cc/512'}
-      unreadCount={item?.unread_messages_count}
-      lastMessageDay={'23d'}
-      subTittle={'Bot: Great! in that case could you p...'}
-      onPress={() => navigate('ConversationScreen')}
-    />
-  );
-};
-
-const EmptyListView = () => {
-  return (
-    <View style={{}}>
-      <Text>No conversations yet!</Text>
-    </View>
-  );
-};
-
-const ChatListView = ({
-  tabData,
-  totalCount = () => {},
-  isSearchView = false,
-  searchQuery = '',
-}) => {
-  console.log('searchQuery-==-=-=-=-=-=-=-=-=-=-=-=->', searchQuery);
-  const dispatch = useDispatch();
-  const [state, setState] = useState({
-    isRefreshing: false,
-    conversationData: [],
-  });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => _getConversationsAPI(), [tabData, searchQuery]);
-  const _getConversationsAPI = () => {
-    setState(prev => ({
-      ...prev,
-      isRefreshing: true,
-    }));
-    const fetchAllConversations = statusId => {
-      dispatch(
-        fetchConversation(CONVERSATION.USER_ID, statusId, CONVERSATION.LIMIT, {
-          SuccessCallback: response => {
-            if (isSearchView) {
-              setState(prev => ({
-                ...prev,
-                isRefreshing: false,
-                conversationData: response?.conversations.filter(user =>
-                  searchQuery.length > 0
-                    ? user?.assignee?.name
-                        ?.trim()
-                        ?.toLowerCase()
-                        ?.includes(searchQuery?.trim()?.toLocaleLowerCase())
-                    : true,
-                ),
-              }));
-            } else {
-              const sortedData = response?.conversations ?? [];
-              switch (tabData.conversationType) {
-                case 'you':
-                  sortedData.filter(_it => _it.assignee?.id === '');
-                  break;
-                case 'assigned':
-                  sortedData.filter(
-                    _it => Object.entries(_it.assignee).length > 0,
-                  );
-                  break;
-                case 'unassigned':
-                  sortedData.filter(
-                    _it => Object.entries(_it.assignee).length === 0,
-                  );
-                  break;
-                default:
-                  totalCount(tabData.conversationType, response?.conversations);
-                  break;
-              }
-              setState(prev => ({
-                ...prev,
-                isRefreshing: false,
-                conversationData: sortedData,
-              }));
-            }
-          },
-          FailureCallback: error => {
-            console.log('Error: ' + error);
-            setState(prev => ({
-              ...prev,
-              isRefreshing: false,
-            }));
-          },
-        }),
-      );
-    };
-    if (isSearchView) {
-      (async () => {
-        await Promise.all([
-          fetchAllConversations('1'),
-          fetchAllConversations('2'),
-        ]).finally(() =>
-          setState(prev => ({
-            ...prev,
-            isRefreshing: false,
-          })),
-        );
-      })();
-      return;
-    } else {
-      fetchAllConversations(tabData?.statusId);
-    }
-  };
-  return (
-    <FlatList
-      data={state?.conversationData}
-      renderItem={renderItem}
-      style={{paddingHorizontal: wp(4), paddingVertical: hp(2)}}
-      refreshControl={
-        <RefreshControl
-          refreshing={state.isRefreshing}
-          onRefresh={_getConversationsAPI}
-        />
-      }
-      // ListEmptyComponent={<EmptyListView />}
-    />
-  );
-};
 
 const DashboardTab = ({isSearchView}) => {
   const dispatch = useDispatch();
@@ -156,7 +31,7 @@ const DashboardTab = ({isSearchView}) => {
 
   const _getConversationSummary = () => {
     dispatch(
-      fetchConversationSummary(USER_ID, {
+      fetchConversationSummary(CONVERSATION.USER_ID, {
         SuccessCallback: response => {
           const defaultTabJson = [
             {
@@ -201,7 +76,7 @@ const DashboardTab = ({isSearchView}) => {
         key={_it.id + _it.title}
         name={`(${_it.count}) ${_it.title}`}
         children={() => (
-          <ChatListView
+          <ConversationList
             tabData={_it}
             totalCount={(type, count) => {
               setState(prev => ({
@@ -221,14 +96,25 @@ const DashboardTab = ({isSearchView}) => {
   }, [state]);
 
   return isSearchView ? (
-    <View style={{flex: 1}}>
-      <TextInput
-        value={state.searchQuery}
-        onChangeText={_text =>
-          setState(prev => ({...prev, searchQuery: _text}))
-        }
-      />
-      <ChatListView
+    <View style={styles.searchViewContainer}>
+      <View style={styles.searchBarContainer}>
+        <TouchableWithoutFeedback>
+          <Image
+            source={images.ic_search}
+            style={{height: hp(3), width: hp(3)}}
+            tintColor={colors.brandColor.blue}
+          />
+        </TouchableWithoutFeedback>
+        <TextInput
+          style={[styles.textInputStyle, fontStyle.body1]}
+          placeholder="Search here...."
+          value={state.searchQuery}
+          onChangeText={_text =>
+            setState(prev => ({...prev, searchQuery: _text}))
+          }
+        />
+      </View>
+      <ConversationList
         searchQuery={state.searchQuery}
         isSearchView={isSearchView}
       />
@@ -245,8 +131,8 @@ const DashboardTab = ({isSearchView}) => {
           {TabScreen}
         </Tab.Navigator>
       ) : (
-        <View>
-          <Text>SOMETHING WENT WRONG</Text>
+        <View style={styles.activityLoaderContainer}>
+          <ActivityIndicator size={'large'} color={colors.brandColor.blue} />
         </View>
       )}
     </>
@@ -254,3 +140,24 @@ const DashboardTab = ({isSearchView}) => {
 };
 
 export default DashboardTab;
+
+const styles = StyleSheet.create({
+  searchViewContainer: {flex: 1},
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: hp(1),
+    padding: hp(1),
+    borderRadius: hp(1),
+    borderWidth: hp(0.1),
+    gap: wp(3),
+    borderColor: colors.typography.silver,
+  },
+  activityLoaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textInputStyle: {flex: 1},
+});

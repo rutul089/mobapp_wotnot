@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import images from '../../../assets/images';
 import {Header} from '../../../components';
