@@ -99,6 +99,10 @@ class SignInScreenContainer extends Component {
     );
   };
 
+  onForgotPwdClick = ( ) => {
+    navigate('ForgotPasswordScreen')
+  }
+
   render() {
     let state = this.state;
     return (
@@ -115,6 +119,7 @@ class SignInScreenContainer extends Component {
           onSubmit={this.onSubmit}
           scrollViewRef={this.scrollViewRef}
           isLoading={this.props.isLoading}
+          onForgotPwdClick={this.onForgotPwdClick}
         />
       </>
     );

@@ -17,6 +17,7 @@ const ChatItem = ({
   unreadCount,
   lastMessageDay,
   onPress,
+  isClosedMode,
 }) => {
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
@@ -67,14 +68,18 @@ const ChatItem = ({
         )}
       </View>
       <View style={styles.rightSideContainer}>
-        <View style={styles.unreadCountContainer}>
-          <Text
-            type={'caption12'}
-            weight={theme.typography.fontWeights.bold}
-            style={{color: colors.brandColor.blue}}>
-            {unreadCount}
-          </Text>
-        </View>
+        {!isClosedMode ? (
+          <View style={styles.unreadCountContainer}>
+            <Text
+              type={'caption12'}
+              weight={theme.typography.fontWeights.bold}
+              style={{color: colors.brandColor.blue}}>
+              {unreadCount}
+            </Text>
+          </View>
+        ) : (
+          <View style={[styles.unreadCountContainer,{backgroundColor:'#00000000'}]} />
+        )}
         <View style={styles.statusContainer}>
           <Text type={'caption12'} style={{color: colors.brandColor.silver}}>
             {lastMessageDay}

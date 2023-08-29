@@ -23,6 +23,8 @@ import colors from '../../../util/theme/colors';
 import styles from '../Style';
 import ButtonTeammate from './ButtonTeammate';
 import AssigneeItem from './AssigneeItem';
+import { CONVERSATION } from '../../../constants/global';
+
 
 const ConversationComponent = ({
   joinConversation,
@@ -55,6 +57,7 @@ const ConversationComponent = ({
   isTeamSelected,
   teamMateData,
   teamData,
+  itemData,
 }) => {
   const _renderListHeaderView = () => {
     return (
@@ -114,7 +117,7 @@ const ConversationComponent = ({
         visible={showChangeAssignee}
         style={{backgroundColor: 'black'}}
         statusBarTranslucent={false}>
-        <SafeAreaView style={{flex:1}}>
+        <SafeAreaView style={{flex: 1}}>
           <View style={{overflow: 'hidden', paddingBottom: 5}}>
             <View style={styles.assigneeHeader}>
               <TouchableOpacity
@@ -167,6 +170,12 @@ const ConversationComponent = ({
         onPressMore={onPressMore}
         onPressInfo={onPressInfo}
         onPressLeftContent={onPressLeftContent}
+        userItem={{
+          name: itemData?.title,
+          subTittle: `${itemData?.assignee?.name} | ${itemData?.city_name},${itemData?.country_name}`,
+          isOnline:
+            itemData?.visitor_status === CONVERSATION.USER_STATUS.ONLINE,
+        }}
       />
       {conversationJoined ? (
         <View style={styles.container}>

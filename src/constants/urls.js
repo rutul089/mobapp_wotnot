@@ -76,4 +76,10 @@ export const endPoints = {
       method: Method.GET,
     };
   },
+  resetPwdLink: {
+    endpoint: '/v1/reset-password-link',
+    method: Method.POST,
+  },
 };
+
+

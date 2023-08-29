@@ -5,13 +5,16 @@
     "welcome_message_2": "Sign in and build come cool bots",
     "sign_in_as": "Sign in as %s",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "forgotPWd":"Forgot Password",
+    "forgotPWdNote":"Don't worry. Resetting your password is easy, just tell us the email address you registered with WotNot."
   },
   "button": {
     "sign_in": "Sign In",
     "join_conversation": "Join Conversation",
     "add_labels": "Add Labels",
-    "forgot_password": "Forgot Password?"
+    "forgot_password": "Forgot Password?",
+    "send_me_instructions":"Send me instructions"
   },
   "switch": {"on": "ON", "off": "OFF"},
   "tab": {

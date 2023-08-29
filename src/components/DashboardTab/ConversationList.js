@@ -8,7 +8,7 @@ import {
   fetchConversation,
   fetchConversationBySearch,
 } from '../../store/actions';
-import {hp, wp} from '../../util/helper';
+import {getDayDifference, hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
 import ChatItem from '../ChatItem';
 import Text from '../Text';
@@ -22,11 +22,13 @@ const renderItem = ({item}) => {
       uri={item?.assignee?.image_url}
       isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
       unreadCount={item?.unread_messages_count}
-      lastMessageDay={'23d'}
+      lastMessageDay={getDayDifference(item?.last_activity_at)}
       subTittle={`${item?.assignee?.name}: `}
       onPress={() => {
         navigate('ConversationScreen', {itemData: item});
       }}
+      item={item}
+      isClosedMode={item?.status_id === 2}
     />
   );
 };

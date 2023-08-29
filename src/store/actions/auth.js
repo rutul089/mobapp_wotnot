@@ -22,3 +22,19 @@ export const userLogin = (param, {SuccessCallback, FailureCallback}) => {
     });
   };
 };
+
+export const forgotPassword = (param, {SuccessCallback, FailureCallback}) => {
+  return dispatch => {
+    dispatch(loadingSet());
+    API.getInstance().Fetch(endPoints.resetPwdLink, defaultHeaders, param, {
+      SuccessCallback: response => {
+        dispatch(loadingUnset());
+        SuccessCallback(response);
+      },
+      FailureCallback: response => {
+        dispatch(loadingUnset());
+        FailureCallback(response);
+      },
+    });
+  };
+};

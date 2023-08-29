@@ -89,7 +89,12 @@ class ConversationContainer extends Component {
     this.moreInfoModalRef?.current?.open();
   };
   onPressInfo = () => {
-    navigate('UserDetailScreen');
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    navigate('UserDetailScreen', {itemData: itemData});
   };
   onChangeAssignee = () => {
     this.closeMoreInfoModal();
@@ -166,6 +171,7 @@ class ConversationContainer extends Component {
         params: {itemData},
       },
     } = this.props;
+    console.log('itemData', JSON.stringify(itemData));
     return (
       <>
         <ConversationComponent
@@ -204,6 +210,7 @@ class ConversationContainer extends Component {
           isTeamSelected={this.state.isTeamSelected}
           teamMateData={teamMateData}
           teamData={teamData}
+          itemData={itemData}
         />
       </>
     );
