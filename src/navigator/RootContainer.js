@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/stack';
 import React, {Component} from 'react';
 import {AppState, Keyboard, View} from 'react-native';
-import {SignInScreen, SplashScreen,ConversationScreen,UserDetailScreen} from '../screens';
+import {SignInScreen, SplashScreen,ConversationScreen,UserDetailScreen,ForgotPasswordScreen} from '../screens';
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
 const Stack = createStackNavigator();
@@ -119,6 +119,11 @@ export default class RootContainer extends Component {
             <Stack.Screen
               name={'UserDetailScreen'}
               component={UserDetailScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name={'ForgotPasswordScreen'}
+              component={ForgotPasswordScreen}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

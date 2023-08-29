@@ -12,12 +12,12 @@ import {
 import {handleFailureCallback} from '../../../util/apiHelper';
 import UserDetailComponent from '../component/UserDetailComponent';
 import _, {orderBy} from 'lodash';
-import {showToast} from '../../../util/helper';
+import {getDayDifference, showToast} from '../../../util/helper';
 import {
   STATIC_USER_ID,
   static_conversation_key,
 } from '../../../constants/storage';
-
+import moment from 'moment';
 class UserDetailContainer extends Component {
   constructor(props) {
     super(props);
@@ -25,15 +25,35 @@ class UserDetailContainer extends Component {
       chipList: [],
       showLabelModal: false,
       labels: [],
+      threadKey: '',
+      isRefreshing: false,
     };
     this.onPressLeftContent = this.onPressLeftContent.bind(this);
     this.allLabelModalRef = React.createRef();
   }
 
   componentDidMount() {
-    this.callFetchUserPreference();
-    this.callFetchLabel();
-    this.callFetchQualifications();
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    console.log('itemData', JSON.stringify(itemData));
+    this.setState(
+      {
+        threadKey: itemData?.thread_key,
+        labels: itemData?.labels,
+      },
+      () => {
+        // this.callFetchUserPreference();
+        this.callFetchLabel();
+        this.callFetchQualifications();
+      },
+    );
+    var date1 = moment("2023-07-22T09:40:00.230000+00:00");
+    var date2 = moment();
+    
+    console.log("---------------->",getDayDifference(date1))
   }
 
   onPressLeftContent = () => {
@@ -107,8 +127,8 @@ class UserDetailContainer extends Component {
     });
   };
 
-  callFetchQualifications = () => {
-    this.props.fetchQualifications(static_conversation_key, {
+  callFetchQualifications = threadKey => {
+    this.props.fetchQualifications(this.state.threadKey, {
       SuccessCallback: res => {
         // console.log('SuccessCallback', JSON.stringify(res));
       },
@@ -119,7 +139,7 @@ class UserDetailContainer extends Component {
   };
 
   saveLabel = param => {
-    this.props.saveLabel(static_conversation_key, param, {
+    this.props.saveLabel(this.state.threadKey, param, {
       SuccessCallback: res => {
         // console.log('SuccessCallback', JSON.stringify(res));
         // const newArray = [...this.state.labels];
@@ -135,7 +155,7 @@ class UserDetailContainer extends Component {
   };
 
   deleteLabel = (label_id, index) => {
-    this.props.deleteLabel(static_conversation_key, label_id, {
+    this.props.deleteLabel(this.state.threadKey, label_id, {
       SuccessCallback: res => {
         const newArray = [...this.state.labels];
         newArray.splice(index, 1);
@@ -152,6 +172,14 @@ class UserDetailContainer extends Component {
       FailureCallback: res => {
         handleFailureCallback(res);
       },
+    });
+  };
+
+  refreshQualificationData = () => {
+    this.setState({isRefreshing: true}, () => {
+      this.callFetchLabel();
+      this.callFetchQualifications();
+      this.setState({isRefreshing:false})
     });
   };
 
@@ -179,6 +207,8 @@ class UserDetailContainer extends Component {
           onLabelPress={(item, index) => this.onLabelPress(item, index)}
           labelData={labelData}
           qualifications={qualifications}
+          refreshing={state?.isRefreshing}
+          onRefresh={this.refreshQualificationData}
         />
       </>
     );

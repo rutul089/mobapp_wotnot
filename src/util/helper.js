@@ -1,5 +1,6 @@
 import Toast from 'react-native-root-toast';
 import {Linking} from 'react-native';
+import moment from 'moment';
 
 export const LONG_DURATION = Toast.durations.LONG;
 export const MED_DURATION = 3000;
@@ -37,7 +38,7 @@ export function helperLog(tag, type) {
   }
 }
 
-export const showToast = (message,duration = LONG_DURATION) => {
+export const showToast = (message, duration = LONG_DURATION) => {
   Toast.show(message, {
     duration: duration,
     position: Toast.positions.BOTTOM,
@@ -47,3 +48,21 @@ export const showToast = (message,duration = LONG_DURATION) => {
     delay: 0,
   });
 };
+
+export const getDayDifference = date => {
+  console.log("date",date)
+  var date1 = moment(date);
+  var currentDate = moment();
+  let differenceM = currentDate.diff(date1, 'm');
+  let differenceD = currentDate.diff(date1, 'd');
+  console.log("differenceM",differenceM)
+  if (differenceM == 0) {
+    return 'now';
+  } else if (differenceM >= 1 && differenceM <= 60) {
+    return `${differenceM}m`;
+  } else {
+    return `${differenceD}d`;
+  }
+};
+
+export const getLastActiveTime = date => {};

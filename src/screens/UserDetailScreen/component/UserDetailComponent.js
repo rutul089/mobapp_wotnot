@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, ScrollView, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import {
   Header,
   FlexContainer,
@@ -54,6 +60,8 @@ const UserDetailComponent = ({
   onLabelPress = () => {},
   labelData,
   qualifications,
+  isRefreshing,
+  onRefresh,
 }) => {
   const {isOpen, onOpen} = useDisclose();
   return (
@@ -62,7 +70,11 @@ const UserDetailComponent = ({
         isRightIconHidden={true}
         onPressLeftContent={onPressLeftContent}
       />
-      <KeyboardAvoidingScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={onRefresh} />
+        }>
         <Text type={'h4'}>{strings('chat.user_info.qualification')}</Text>
         <Spacing />
         {qualifications &&
@@ -129,7 +141,7 @@ const UserDetailComponent = ({
             <Chip
               key={index}
               value={item?.name}
-              onPress={() => removeLabel(item,index)}
+              onPress={() => removeLabel(item, index)}
             />
           ))}
         </View>
@@ -142,7 +154,7 @@ const UserDetailComponent = ({
             {strings('button.add_labels')}
           </Text>
         </TouchableOpacity>
-      </KeyboardAvoidingScrollView>
+      </ScrollView>
       <BottomSheet
         ref={allLabelModalRef}
         height={

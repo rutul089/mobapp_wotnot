@@ -5,3 +5,4 @@ export {default as SignInScreen} from './SignInScreen/container/SignInScreenCont
 export {default as SplashScreen} from './SplashScreen/container/SplashScreenContainer';
 export {default as ConversationScreen} from './ConversationScreen/container/ConversationContainer';
 export {default as UserDetailScreen} from './UserDetailScreen/container/UserDetailContainer';
+export {default as ForgotPasswordScreen} from './ForgotPasswordScreen/container/ForgotPasswordContainer';

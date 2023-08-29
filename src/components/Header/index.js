@@ -38,6 +38,7 @@ const Header = ({
   onPressInfo,
   backgroundColor = theme.colors.brandColor.FAFAFA,
   rightIcon,
+  userItem
 }) => {
   return (
     <View style={[styles.container, {backgroundColor: backgroundColor}]}>
@@ -70,8 +71,9 @@ const Header = ({
           ]}>
           {typeof centerElement === 'string' ? (
             <UserItem
-              name={'Sagar Shah'}
-              email={'Bot, Ahmedabad, India'}
+              name={userItem?.name}
+              email={userItem?.subTittle}
+              isOnline={userItem?.isOnline}
               uri={'https://i.pravatar.cc/512'}
             />
           ) : (
