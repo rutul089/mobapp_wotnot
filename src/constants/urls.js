@@ -80,6 +80,18 @@ export const endPoints = {
     endpoint: '/v1/reset-password-link',
     method: Method.POST,
   },
+  twoFactorCode: {
+    endpoint: '/v1/sessions/two-factor',
+    method: Method.GET,
+  },
+  verifyOtp: {
+    endpoint: '/v1/user/totp/verify',
+    method: Method.POST,
+  },
+  recoveryCode: {
+    endpoint: '/v1/user/authenticate/recovery-code',
+    method: Method.POST,
+  },
 };
 
 

@@ -4,7 +4,7 @@ import {showToast, showSWWToast, LONG_DURATION} from './helper';
 export function checkForCode(status) {
   if (status === 401 || status == 402) {
     // AsyncStorage.clear();
-    navigateAndSimpleReset('Login');
+    navigateAndSimpleReset('SignInScreen');
   }
 }
 

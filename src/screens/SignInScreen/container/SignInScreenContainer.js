@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {navigate} from '../../../navigator/NavigationUtils';
+import {
+  navigate,
+  navigateAndSimpleReset,
+} from '../../../navigator/NavigationUtils';
 import {userLogin} from '../../../store/actions';
 import SignInScreenComponent from '../component/SignInScreenComponent';
 import {VALIDATION_REGEX} from '../../../util/helper';
 import {strings} from '../../../locales/i18n';
-import { handleFailureCallback } from '../../../util/apiHelper';
+import {handleFailureCallback} from '../../../util/apiHelper';
+import {API, Headers} from '../../../apiService';
+import AsyncStorage from '@react-native-community/async-storage';
+import {AUTH_TOKEN, IS_LOGIN} from '../../../constants/storage';
 
 class SignInScreenContainer extends Component {
   constructor(props) {
@@ -64,25 +70,35 @@ class SignInScreenContainer extends Component {
     let param = {
       email: state.email?.toLocaleLowerCase(),
       password: state.password,
-    }
+    };
     this.props.userLogin(param, {
       SuccessCallback: res => {
-        // AsyncStorage.setItem(IS_LOGIN, JSON.stringify(true));
-        // AsyncStorage.setItem(AUTH_TOKEN, res?.data?.access);
-        // AsyncStorage.setItem(REFRESH_TOKEN, res?.data?.refresh);
-        // AsyncStorage.setItem(USER_DETAIL, JSON.stringify(res?.data));
-        // API.getInstance().setHeader(
-        //   Headers.AUTHORIZATION,
-        //   `Bearer ${res?.data?.access}`,
-        // );
-        // navigateAndSimpleReset('Home');
+        if (res?.ok && res?.two_factor_auth === undefined) {
+          AsyncStorage.setItem(IS_LOGIN, JSON.stringify(true));
+          navigateAndSimpleReset('MainNavigator');
+          return;
+        }
+        AsyncStorage.setItem(AUTH_TOKEN, res?.access_token);
+        API.getInstance().setHeader(
+          Headers.AUTHORIZATION,
+          `Bearer ${res?.access_token}`,
+        );
+        if (res?.two_factor_auth === 'QR_CODE') {
+          return navigate('TwoFactorAuthScreen');
+        } else if (res?.two_factor_auth === 'TOTP_VERIFY') {
+          return navigate('TwoFactorCheckScreen');
+        } else {
+          AsyncStorage.setItem(IS_LOGIN, JSON.stringify(true));
+          // return navigate('TwoFactorAuthScreen');
+          navigateAndSimpleReset('MainNavigator');
+        }
       },
       FailureCallback: res => {
         handleFailureCallback(res, true, true);
       },
     });
 
-    navigate('MainNavigator');
+    // navigate('MainNavigator');
   };
 
   isValidEmail = () => {
@@ -99,9 +115,10 @@ class SignInScreenContainer extends Component {
     );
   };
 
-  onForgotPwdClick = ( ) => {
-    navigate('ForgotPasswordScreen')
-  }
+  onForgotPwdClick = () => {
+    navigate('ForgotPasswordScreen');
+    // navigate('TwoFactorAuthScreen')
+  };
 
   render() {
     let state = this.state;

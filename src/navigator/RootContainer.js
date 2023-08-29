@@ -6,7 +6,16 @@ import {
 } from '@react-navigation/stack';
 import React, {Component} from 'react';
 import {AppState, Keyboard, View} from 'react-native';
-import {SignInScreen, SplashScreen,ConversationScreen,UserDetailScreen,ForgotPasswordScreen} from '../screens';
+import {
+  SignInScreen,
+  SplashScreen,
+  ConversationScreen,
+  UserDetailScreen,
+  ForgotPasswordScreen,
+  TwoFactorAuthScreen,
+  TwoFactorCheckScreen,
+  RecoveryCodeScreen
+} from '../screens';
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
 const Stack = createStackNavigator();
@@ -124,6 +133,21 @@ export default class RootContainer extends Component {
             <Stack.Screen
               name={'ForgotPasswordScreen'}
               component={ForgotPasswordScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name={'TwoFactorAuthScreen'}
+              component={TwoFactorAuthScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name={'TwoFactorCheckScreen'}
+              component={TwoFactorCheckScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name={'RecoveryCodeScreen'}
+              component={RecoveryCodeScreen}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

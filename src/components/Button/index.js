@@ -1,5 +1,6 @@
 import {Button as IButton} from 'native-base';
 import React from 'react';
+import theme from '../../util/theme';
 
 const Button = ({
   buttonText,
@@ -25,6 +26,11 @@ const Button = ({
     _pressed={_pressed}
     style={style}
     variant={variant}
+    _text={{
+      color: 'white',
+      fontFamily: theme.typography.fonts.circularStdMedium,
+      opacity:1
+    }}
     {...rest}>
     {buttonText}
   </IButton>

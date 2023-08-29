@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import {View, Text, Alert} from 'react-native';
 import {accountList, languageList} from '../../../constants/settings';
 import SettingScreenComponent from '../component/SettingScreenComponent';
+import AsyncStorage from '@react-native-community/async-storage';
+import {IS_LOGIN} from '../../../constants/storage';
+import {navigateAndSimpleReset} from '../../../navigator/NavigationUtils';
 
 export default class SettingScreenContainer extends Component {
   constructor(props) {
@@ -22,7 +25,10 @@ export default class SettingScreenContainer extends Component {
     this.languageModalRef = React.createRef();
   }
 
-  onLogoutClick = () => {};
+  onLogoutClick = async () => {
+    await AsyncStorage.setItem(IS_LOGIN, 'false');
+    navigateAndSimpleReset('SignInScreen');
+  };
 
   onNotificationClick = () => {};
 
