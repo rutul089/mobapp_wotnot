@@ -75,7 +75,13 @@ const ConversationList = ({
                   conversationData: response?.conversations,
                 }));
               },
-              FailureCallback: () => {},
+              FailureCallback: error => {
+                console.log('error: ' + error);
+                setState(prev => ({
+                  ...prev,
+                  isRefreshing: false,
+                }));
+              },
             },
           ),
         );

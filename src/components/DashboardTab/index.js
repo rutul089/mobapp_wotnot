@@ -1,28 +1,49 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useEffect, useMemo, useState} from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  TextInput,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {useDispatch} from 'react-redux';
-import images from '../../assets/images';
 import {CONVERSATION} from '../../constants/global';
 import {strings} from '../../locales/i18n';
 import {fetchConversationSummary} from '../../store/actions';
-import {hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
-import {styles as fontStyle} from '../Text/style';
 import ConversationList from './ConversationList';
 
 const Tab = createMaterialTopTabNavigator();
 
-const DashboardTab = ({isSearchView}) => {
+const DashboardTab = () => {
   const dispatch = useDispatch();
-  const [state, setState] = useState({tabData: [], searchQuery: ''});
+  const [state, setState] = useState({
+    tabData: [
+      {
+        id: 0,
+        statusId: '1',
+        conversationType: 'you',
+        title: strings('tab.you'),
+        count: 0,
+      },
+      {
+        id: 1,
+        statusId: '1',
+        conversationType: 'assigned',
+        title: strings('tab.assigned'),
+        count: 0,
+      },
+      {
+        id: 2,
+        statusId: '1',
+        conversationType: 'unassigned',
+        title: strings('tab.unassigned'),
+        count: 0,
+      },
+      {
+        id: 3,
+        statusId: '2',
+        conversationType: 'closed',
+        title: strings('tab.closed'),
+        count: 0,
+      },
+    ],
+  });
 
   useEffect(() => {
     _getConversationSummary();
@@ -95,31 +116,7 @@ const DashboardTab = ({isSearchView}) => {
     ));
   }, [state]);
 
-  return isSearchView ? (
-    <View style={styles.searchViewContainer}>
-      <View style={styles.searchBarContainer}>
-        <TouchableWithoutFeedback>
-          <Image
-            source={images.ic_search}
-            style={{height: hp(3), width: hp(3)}}
-            tintColor={colors.brandColor.blue}
-          />
-        </TouchableWithoutFeedback>
-        <TextInput
-          style={[styles.textInputStyle, fontStyle.body1]}
-          placeholder="Search here...."
-          value={state.searchQuery}
-          onChangeText={_text =>
-            setState(prev => ({...prev, searchQuery: _text}))
-          }
-        />
-      </View>
-      <ConversationList
-        searchQuery={state.searchQuery}
-        isSearchView={isSearchView}
-      />
-    </View>
-  ) : (
+  return (
     <>
       {state?.tabData?.length > 0 ? (
         <Tab.Navigator
@@ -142,18 +139,6 @@ const DashboardTab = ({isSearchView}) => {
 export default DashboardTab;
 
 const styles = StyleSheet.create({
-  searchViewContainer: {flex: 1},
-  searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: hp(1),
-    padding: hp(1),
-    borderRadius: hp(1),
-    borderWidth: hp(0.1),
-    gap: wp(3),
-    borderColor: colors.typography.silver,
-  },
   activityLoaderContainer: {
     flex: 1,
     justifyContent: 'center',

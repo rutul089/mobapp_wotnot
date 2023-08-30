@@ -5,7 +5,7 @@ import {fetchTeamData, fetchTeammateData} from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import DashboardComponent from '../component/';
 
-class index extends Component {
+class DashboardContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -66,4 +66,4 @@ const mapStateToProps = state => {
     teamMateData: state.accountReducer?.teamMateData?.users,
   };
 };
-export default connect(mapStateToProps, mapActionCreators)(index);
+export default connect(mapStateToProps, mapActionCreators)(DashboardContainer);
