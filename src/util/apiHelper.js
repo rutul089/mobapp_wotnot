@@ -1,15 +1,18 @@
-import {navigateAndSimpleReset} from '../navigator/NavigationUtils';
-import {showToast, showSWWToast, LONG_DURATION} from './helper';
+import {showSWWToast, showToast} from './helper';
 
 export function checkForCode(status) {
   if (status === 401 || status == 402) {
     // AsyncStorage.clear();
-    navigateAndSimpleReset('SignInScreen');
+    // navigateAndSimpleReset('SignInScreen');
   }
 }
 
-export function handleFailureCallback(response, value = true, isNotCheckForCode=false) {
-  if(!isNotCheckForCode){
+export function handleFailureCallback(
+  response,
+  value = true,
+  isNotCheckForCode = false,
+) {
+  if (!isNotCheckForCode) {
     checkForCode(response.status != null && response.status);
   }
   if (response.data) {

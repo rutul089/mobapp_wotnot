@@ -7,14 +7,15 @@ import {
 import React, {Component} from 'react';
 import {AppState, Keyboard, View} from 'react-native';
 import {
+  ConversationScreen,
+  ForgotPasswordScreen,
+  RecoveryCodeScreen,
+  SearchScreen,
   SignInScreen,
   SplashScreen,
-  ConversationScreen,
-  UserDetailScreen,
-  ForgotPasswordScreen,
   TwoFactorAuthScreen,
   TwoFactorCheckScreen,
-  RecoveryCodeScreen
+  UserDetailScreen,
 } from '../screens';
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
@@ -148,6 +149,11 @@ export default class RootContainer extends Component {
             <Stack.Screen
               name={'RecoveryCodeScreen'}
               component={RecoveryCodeScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name={'SearchScreen'}
+              component={SearchScreen}
               options={{headerShown: false}}
             />
           </Stack.Navigator>
