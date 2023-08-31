@@ -1,9 +1,7 @@
 export {default as ChatScreen} from './ChatScreen/container';
 export {default as ConversationScreen} from './ConversationScreen/container/ConversationContainer';
-export {default as ChatScreen} from './ChatScreen/container/index';
 export {default as DashboardScreen} from './DashboardScreen/container';
 export {default as ForgotPasswordScreen} from './ForgotPasswordScreen/container/ForgotPasswordContainer';
-export {default as RecoveryCodeScreen} from './RecoveryCodeScreen/container/RecoveryCodeContainer';
 export {default as SearchScreen} from './SearchScreen/container';
 export {default as SettingScreen} from './SettingScreen/container/SettingScreenContainer';
 export {default as SignInScreen} from './SignInScreen/container/SignInScreenContainer';

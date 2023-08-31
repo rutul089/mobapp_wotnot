@@ -16,7 +16,6 @@ import {
   TwoFactorAuthScreen,
   TwoFactorCheckScreen,
   UserDetailScreen,
-  RecoveryCodeScreen,
   SaveRecoveryScreen
 } from '../screens';
 import MainNavigator from './MainNavigator';
