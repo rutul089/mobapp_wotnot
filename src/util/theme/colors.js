@@ -51,6 +51,17 @@ const typography = {
   silver: '#858585',
 };
 
+const pentairBlue = {
+  blue: '#006E96',
+  darkBlue: '#0B3471',
+  deepDarkBlue: '#0C3471',
+  brightBlue: '#008ABC',
+  lightBlue: '#F0F8FE',
+  darkestBlue: '#1a5064',
+  lightestBlue: '#cbe8f2',
+  skyBlue: '#76BED8',
+};
+
 const colors = {
   // Singleton colors
   white: '#FFFFFF',
@@ -72,7 +83,10 @@ const colors = {
   drawerActive: '#141322',
   drawerInActive: '#1F1D35',
   334155: '#334155',
-  F0F0F0:"#F0F0F0"
+  F0F0F0:"#F0F0F0",
+  pentair:{
+    ...pentairBlue
+  }
 };
 
 export default colors;

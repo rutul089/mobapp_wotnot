@@ -43,6 +43,7 @@ const DashboardTab = () => {
         count: 0,
       },
     ],
+    searchQuery: '',
   });
 
   useEffect(() => {
@@ -86,7 +87,9 @@ const DashboardTab = () => {
           ];
           setState(prev => ({...prev, tabData: defaultTabJson}));
         },
-        FailureCallback: error => {},
+        FailureCallback: error => {
+          console.log('FailureCallback------------', JSON.stringify(error));
+        },
       }),
     );
   };
@@ -129,7 +132,7 @@ const DashboardTab = () => {
         </Tab.Navigator>
       ) : (
         <View style={styles.activityLoaderContainer}>
-          <ActivityIndicator size={'large'} color={colors.brandColor.blue} />
+          {/* <ActivityIndicator size={'large'} color={colors.brandColor.blue} /> */}
         </View>
       )}
     </>

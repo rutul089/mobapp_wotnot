@@ -4,13 +4,15 @@ import authReducer from './authReducer';
 import detail from './detail';
 import accountReducer from './accountReducer';
 import qualifications from './qualifications';
+import conversationReducer from './conversationReducer';
 
 const rootReducer = combineReducers({
   global,
   authReducer,
   detail,
   accountReducer,
-  qualifications
+  qualifications,
+  conversationReducer
 });
 
 export default rootReducer;

@@ -5,11 +5,25 @@ import theme from '../../util/theme';
 import Spacing from '../Spacing';
 import Text from '../Text/index';
 
-const UserItem = ({name, email, uri, subTittle, isOnline}) => (
+const UserItem = ({name, email, uri, subTittle, isOnline, isAvatar}) => (
   <Pressable style={{padding: 5}}>
     <View style={styles.container}>
       <View>
-        <Image source={{uri: uri}} style={styles.image} />
+        {isAvatar ? (
+          <Image source={{uri: uri}} style={styles.image} />
+        ) : (
+          <View
+            style={[
+              styles.image,
+              {
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: theme.colors.brandColor.lightestBlue,
+              },
+            ]}>
+            <Text>{name?.slice(0, 2)?.toUpperCase()}</Text>
+          </View>
+        )}
         <View
           style={[
             styles.badgeContainer,
@@ -26,7 +40,9 @@ const UserItem = ({name, email, uri, subTittle, isOnline}) => (
         <Text type={'body2'} weight={theme.typography.fontWeights.medium}>
           {name}
         </Text>
-        <Text type={'caption12'} numberOfLines={1}>{email}</Text>
+        <Text type={'caption12'} numberOfLines={1}>
+          {email}
+        </Text>
       </View>
     </View>
     {subTittle && (

@@ -50,16 +50,19 @@ export const showToast = (message, duration = LONG_DURATION) => {
 };
 
 export const getDayDifference = date => {
-  console.log("date",date)
   var date1 = moment(date);
   var currentDate = moment();
   let differenceM = currentDate.diff(date1, 'm');
   let differenceD = currentDate.diff(date1, 'd');
-  console.log("differenceM",differenceM)
+  let differenceH = currentDate.diff(date1, 'h');
   if (differenceM == 0) {
     return 'now';
   } else if (differenceM >= 1 && differenceM <= 60) {
     return `${differenceM}m`;
+  } else if (differenceH >= 1 && differenceH <= 24) {
+    return `${differenceH}h`;
+  } else if (differenceD == 0) {
+    return '1d';
   } else {
     return `${differenceD}d`;
   }

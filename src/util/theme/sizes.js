@@ -67,7 +67,7 @@ const spacing = {
   xs2: 4,
   xs: 8,
   sm: 15,
-  md: 20,
+  md: wp('4.6'),//18
   lg: 24,
   xl: 32,
   xl2: 40,

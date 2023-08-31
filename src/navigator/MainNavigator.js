@@ -5,7 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import images from '../assets/images';
 import {styles as textStyle} from '../components/Text/style';
 import {strings} from '../locales/i18n';
-import {DashboardScreen, SettingScreen} from '../screens';
+import {DashboardScreen, SettingScreen,ChatScreen} from '../screens';
 import theme from '../util/theme';
 
 const Tab = createBottomTabNavigator();

@@ -12,6 +12,7 @@ const Button = ({
   style,
   variant,
   isDisabled,
+  _textStyle,
   ...rest
 }) => (
   <IButton
@@ -27,9 +28,10 @@ const Button = ({
     style={style}
     variant={variant}
     _text={{
-      color: 'white',
+      color: theme.colors.white,
+      fontWeight: theme.typography.fontWeights.medium,
       fontFamily: theme.typography.fonts.circularStdMedium,
-      opacity:1
+      ..._textStyle,
     }}
     {...rest}>
     {buttonText}

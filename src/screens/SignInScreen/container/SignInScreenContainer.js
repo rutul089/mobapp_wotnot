@@ -17,8 +17,8 @@ class SignInScreenContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'it.rutul@gmail.com',
-      password: 'Navkar@2021',
+      email: '',
+      password: '',
       isErrEmail: false,
       isErrPwd: false,
       isPwdVisible: false,

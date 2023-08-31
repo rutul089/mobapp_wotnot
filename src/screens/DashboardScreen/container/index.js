@@ -12,8 +12,8 @@ class DashboardContainer extends Component {
   }
 
   componentDidMount() {
-    this.callFetchTeamData();
-    this.callFetchTeammateData();
+    // this.callFetchTeamData();
+    // this.callFetchTeammateData();
   }
 
   callFetchTeamData = () => {

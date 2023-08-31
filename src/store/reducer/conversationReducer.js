@@ -2,7 +2,13 @@ import {types} from '../actions';
 
 const initialState = {
   conversations: [],
-  conversation_summary:{}
+  conversation_summary: {
+    open_status: {
+      you: 0,
+      assigned: 0,
+      unassigned: 0,
+    },
+  },
 };
 
 const global = (state = initialState, action) => {

@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import {connect} from 'react-redux';
-import {goBack} from '../../../navigator/NavigationUtils';
+import {
+  goBack,
+  navigateAndSimpleResetWithParam,
+} from '../../../navigator/NavigationUtils';
 import TwoFactorAuthComponent from '../component/TwoFactorAuthComponent';
 import {twoFactorCode, verifyTFAOTP} from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
@@ -35,8 +38,6 @@ class TwoFactorAuthContainer extends Component {
   };
 
   onVerifyCodePress = () => {
-    this?.moreInfoModalRef?.current?.open()
-    return
     const {verifyCode} = this.state;
     if (verifyCode === '' || verifyCode === null) {
       this.setState({
@@ -56,9 +57,16 @@ class TwoFactorAuthContainer extends Component {
       totp: verifyCode,
     };
     this.props.verifyTFAOTP(param, {
-      SuccessCallback: res => {},
+      SuccessCallback: res => {
+        if (res?.ok) {
+          navigateAndSimpleResetWithParam('SaveRecoveryScreen', 0, {
+            recovery_codes: res?.recovery_codes,
+          });
+        }
+        console.log('----- SuccessCallback ------', JSON.stringify(res));
+      },
       FailureCallback: res => {
-        handleFailureCallback(res,true,true);
+        handleFailureCallback(res, true, true);
       },
     });
   };
@@ -66,6 +74,7 @@ class TwoFactorAuthContainer extends Component {
   fetchTwoFactorLink = () => {
     this.props.twoFactorCode({
       SuccessCallback: res => {
+        console.log('21112313123',JSON.stringify(res))
         this.setState({
           qr_code: res?.qr_code,
         });
@@ -86,7 +95,7 @@ class TwoFactorAuthContainer extends Component {
           onSubmitVerifyCode={this.onVerifyCodePress}
           state={state}
           onSubmit={this.onVerifyCodePress}
-          qr_code={state?.qr_code}
+          qr_code={'otpauth://totp/WotNot:akash%40mailinator.com?secret=WNAFHFYERMEVDWFFRKK6EZCCYFNUHCCR&issuer=WotNot'}
           isLoading={this.props.isLoading}
           moreInfoModalRef={this.moreInfoModalRef}
         />

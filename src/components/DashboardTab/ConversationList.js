@@ -22,8 +22,8 @@ const renderItem = ({item}) => {
       uri={item?.assignee?.image_url}
       isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
       unreadCount={item?.unread_messages_count}
-      lastMessageDay={getDayDifference(item?.last_activity_at)}
-      subTittle={`${item?.assignee?.name}: `}
+      lastMessageDay={getDayDifference(item?.last_message_at)}
+      subTittle={`${item?.message} `}
       onPress={() => {
         navigate('ConversationScreen', {itemData: item});
       }}
@@ -64,7 +64,7 @@ const ConversationList = ({
         dispatch(
           fetchConversationBySearch(
             CONVERSATION.USER_ID,
-            `status_ids=${statusId}&is_order_by_asc=false&limit=25&assignee_ids=0,74692,74874,32756&${
+            `status_ids=${statusId}&is_order_by_asc=false&limit=25&${
               searchQuery ? `search_words=${searchQuery}` : ''
             }`,
             {

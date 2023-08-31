@@ -1,0 +1,549 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tabs component Tabs component with custom colors tab data 1`] = `
+<RCTScrollView
+  horizontal={true}
+  scrollEnabled={true}
+  showsHorizontalScrollIndicator={false}
+>
+  <View>
+    <View
+      accessibilityRole="radiogroup"
+      accessible={true}
+      style={
+        Array [
+          Object {
+            "backgroundColor": "transparent",
+            "borderRadius": 5,
+            "height": 45,
+            "padding": 5,
+          },
+          Array [
+            Object {
+              "width": "100%",
+            },
+            undefined,
+          ],
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "backgroundColor": "#FFFFFF",
+              "borderColor": "#008ABC",
+              "borderRadius": 4,
+              "borderWidth": 1,
+              "elevation": 6,
+              "height": "100%",
+              "left": 0,
+              "position": "absolute",
+              "shadowColor": "#000",
+              "shadowOffset": Object {
+                "height": 3,
+                "width": 1,
+              },
+              "shadowOpacity": 0.16,
+              "shadowRadius": 6,
+              "width": 61,
+            }
+          }
+        />
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "flex": 1,
+              "flexDirection": "row",
+              "flexWrap": "nowrap",
+              "justifyContent": "space-around",
+            }
+          }
+        >
+          <View
+            accessible={true}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "transparent",
+                "display": "flex",
+                "elevation": 10,
+                "height": "100%",
+                "justifyContent": "center",
+                "opacity": 1,
+                "width": 61,
+              }
+            }
+          >
+            <Text
+              numberOfLines={1}
+              style={
+                Array [
+                  Object {
+                    "color": "#333333",
+                    "fontFamily": "Poppins-SemiBold",
+                    "fontSize": 13,
+                    "fontWeight": "600",
+                  },
+                  Object {
+                    "color": "blue",
+                  },
+                ]
+              }
+            >
+              Issues
+            </Text>
+          </View>
+          <View
+            accessible={true}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "transparent",
+                "display": "flex",
+                "elevation": 10,
+                "height": "100%",
+                "justifyContent": "center",
+                "opacity": 1,
+                "width": 78,
+              }
+            }
+          >
+            <Text
+              numberOfLines={1}
+              style={
+                Array [
+                  Object {
+                    "color": "#333333",
+                    "fontFamily": "Poppins-SemiBold",
+                    "fontSize": 13,
+                    "fontWeight": "600",
+                  },
+                  Object {
+                    "color": "red",
+                  },
+                ]
+              }
+            >
+              Pressure
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</RCTScrollView>
+`;
+
+exports[`Tabs component Tabs component with custom colors tab data with disable props 1`] = `
+<View
+  accessibilityRole="radiogroup"
+  accessible={true}
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#F4F4F4",
+        "borderRadius": 5,
+        "height": 45,
+        "padding": 5,
+      },
+      Array [
+        Object {
+          "width": "100%",
+        },
+        undefined,
+      ],
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      collapsable={false}
+      nativeID="animatedComponent"
+      style={
+        Object {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#EBEBEB",
+          "borderRadius": 2,
+          "borderWidth": 0.5,
+          "elevation": 5,
+          "height": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "shadowColor": "#000",
+          "shadowOffset": Object {
+            "height": 2,
+            "width": 1,
+          },
+          "shadowOpacity": 0.16,
+          "shadowRadius": 5,
+          "width": "50%",
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "flexWrap": "nowrap",
+          "justifyContent": "space-around",
+        }
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        nativeID="animatedComponent"
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "display": "flex",
+            "elevation": 10,
+            "flex": 1,
+            "height": "100%",
+            "justifyContent": "center",
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              Object {
+                "color": "#333333",
+                "fontFamily": "Poppins-SemiBold",
+                "fontSize": 13,
+                "fontWeight": "600",
+              },
+              Object {
+                "color": "#0B3471",
+              },
+            ]
+          }
+        >
+          Issues
+        </Text>
+      </View>
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        nativeID="animatedComponent"
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "display": "flex",
+            "elevation": 10,
+            "flex": 1,
+            "height": "100%",
+            "justifyContent": "center",
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              Object {
+                "color": "#333333",
+                "fontFamily": "Poppins-SemiBold",
+                "fontSize": 13,
+                "fontWeight": "600",
+              },
+              Object {
+                "color": "#006E96",
+              },
+            ]
+          }
+        >
+          Pressure
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Tabs component resolves all default props 1`] = `
+<View
+  accessibilityRole="radiogroup"
+  accessible={true}
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#F4F4F4",
+        "borderRadius": 5,
+        "height": 45,
+        "padding": 5,
+      },
+      Array [
+        Object {
+          "width": "100%",
+        },
+        undefined,
+      ],
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#EBEBEB",
+          "borderRadius": 2,
+          "borderWidth": 0.5,
+          "elevation": 5,
+          "height": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "shadowColor": "#000",
+          "shadowOffset": Object {
+            "height": 2,
+            "width": 1,
+          },
+          "shadowOpacity": 0.16,
+          "shadowRadius": 5,
+          "width": "25%",
+        }
+      }
+    />
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flex": 1,
+          "flexDirection": "row",
+          "flexWrap": "nowrap",
+          "justifyContent": "space-around",
+        }
+      }
+    >
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "display": "flex",
+            "elevation": 10,
+            "flex": 1,
+            "height": "100%",
+            "justifyContent": "center",
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              Object {
+                "color": "#333333",
+                "fontFamily": "Poppins-SemiBold",
+                "fontSize": 13,
+                "fontWeight": "600",
+              },
+              Object {
+                "color": "#0B3471",
+              },
+            ]
+          }
+        >
+          Daily
+        </Text>
+      </View>
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "display": "flex",
+            "elevation": 10,
+            "flex": 1,
+            "height": "100%",
+            "justifyContent": "center",
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              Object {
+                "color": "#333333",
+                "fontFamily": "Poppins-SemiBold",
+                "fontSize": 13,
+                "fontWeight": "600",
+              },
+              Object {
+                "color": "#006E96",
+              },
+            ]
+          }
+        >
+          Weekly
+        </Text>
+      </View>
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "display": "flex",
+            "elevation": 10,
+            "flex": 1,
+            "height": "100%",
+            "justifyContent": "center",
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              Object {
+                "color": "#333333",
+                "fontFamily": "Poppins-SemiBold",
+                "fontSize": 13,
+                "fontWeight": "600",
+              },
+              Object {
+                "color": "#006E96",
+              },
+            ]
+          }
+        >
+          Monthly
+        </Text>
+      </View>
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "transparent",
+            "display": "flex",
+            "elevation": 10,
+            "flex": 1,
+            "height": "100%",
+            "justifyContent": "center",
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          numberOfLines={1}
+          style={
+            Array [
+              Object {
+                "color": "#333333",
+                "fontFamily": "Poppins-SemiBold",
+                "fontSize": 13,
+                "fontWeight": "600",
+              },
+              Object {
+                "color": "#006E96",
+              },
+            ]
+          }
+        >
+          Yearly
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;

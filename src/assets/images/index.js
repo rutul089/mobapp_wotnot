@@ -23,4 +23,5 @@ export default {
   ic_showPwd: require('./ic_showPwd.png'),
   ic_hidePwd: require('./ic_hidePwd.png'),
   ic_userprofile: require('./ic_userprofile.png'),
+  ic_done: require('./ic_done.png'),
 };

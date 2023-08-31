@@ -21,6 +21,7 @@ export default class SplashScreenContainer extends Component {
         return;
       }
       navigateAndSimpleReset('SignInScreen');
+      // navigateAndSimpleReset('SignInScreen');
     }, 2200);
   }
 

@@ -18,6 +18,7 @@ const ChatItem = ({
   lastMessageDay,
   onPress,
   isClosedMode,
+  isAvatar,
 }) => {
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
@@ -28,10 +29,23 @@ const ChatItem = ({
         <View style={{gap: hp(0.1)}}>
           <View style={styles.container}>
             <View>
-              <Image
-                source={uri.length > 0 ? {uri: uri} : images.ic_userprofile}
-                style={styles.image}
-              />
+              {isAvatar ? (
+                <Image
+                  source={uri.length > 0 ? {uri: uri} : images.ic_userprofile}
+                  style={styles.image}
+                />
+              ) : (
+                <View
+                  style={[
+                    styles.image,
+                    {
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    },
+                  ]}>
+                  <Text>{name?.slice(0, 2)?.toUpperCase()}</Text>
+                </View>
+              )}
               <View
                 style={[
                   styles.badgeContainer,
@@ -78,7 +92,12 @@ const ChatItem = ({
             </Text>
           </View>
         ) : (
-          <View style={[styles.unreadCountContainer,{backgroundColor:'#00000000'}]} />
+          <View
+            style={[
+              styles.unreadCountContainer,
+              {backgroundColor: '#00000000'},
+            ]}
+          />
         )}
         <View style={styles.statusContainer}>
           <Text type={'caption12'} style={{color: colors.brandColor.silver}}>

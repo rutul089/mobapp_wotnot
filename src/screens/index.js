@@ -1,5 +1,6 @@
 export {default as ChatScreen} from './ChatScreen/container';
 export {default as ConversationScreen} from './ConversationScreen/container/ConversationContainer';
+export {default as ChatScreen} from './ChatScreen/container/index';
 export {default as DashboardScreen} from './DashboardScreen/container';
 export {default as ForgotPasswordScreen} from './ForgotPasswordScreen/container/ForgotPasswordContainer';
 export {default as RecoveryCodeScreen} from './RecoveryCodeScreen/container/RecoveryCodeContainer';
@@ -10,3 +11,5 @@ export {default as SplashScreen} from './SplashScreen/container/SplashScreenCont
 export {default as TwoFactorAuthScreen} from './TwoFactorAuthScreen/container/TwoFactorAuthContainer';
 export {default as TwoFactorCheckScreen} from './TwoFactorCheckContainer/container/TwoFactorCheckContainer';
 export {default as UserDetailScreen} from './UserDetailScreen/container/UserDetailContainer';
+export {default as RecoveryCodeScreen} from './RecoveryCodeScreen/container/RecoveryCodeContainer';
+export {default as SaveRecoveryScreen} from './SaveRecoveryScreen/container/SaveRecoveryContainer';
