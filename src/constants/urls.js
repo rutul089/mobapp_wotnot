@@ -94,4 +94,12 @@ export const endPoints = {
   },
 };
 
+// export const WebSocketURL= "ws.wotnot.io" // PROD
+// export const WebSocketURL = "ws.test.wotnot.io" // TEST
+export const WebSocketURL = "ws.dev.wotnot.io" //DEV
 
+
+
+// Production: https://ws.wotnot.io/?user_type=agent 
+// Staging: https://ws.test.wotnot.io/?user_type=agent 
+// Development: https://ws.dev.wotnot.io/?user_type=agent

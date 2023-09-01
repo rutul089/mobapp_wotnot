@@ -1,5 +1,5 @@
 import httpClient from 'axios';
-import { endPoints } from '../constants/urls';
+import {endPoints} from '../constants/urls';
 import {appName} from './Config';
 
 export let apiConfig = {};
@@ -158,7 +158,7 @@ class API {
             headers: headers,
           })
           .then(res => {
-            this.helperLog('SuccessCallback', JSON.stringify(res));
+            this.helperLog('SuccessCallback', res);
             if (res.status === 200 || res.status === 201) {
               SuccessCallback(res.data);
             } else {
