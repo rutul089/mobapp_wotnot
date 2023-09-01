@@ -1,4 +1,4 @@
-package com.mobapp_wotnot;
+package com.wotnot.wotnot;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

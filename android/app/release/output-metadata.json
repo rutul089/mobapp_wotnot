@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.mobapp_wotnot",
+  "applicationId": "com.wotnot.wotnot",
   "variantName": "release",
   "elements": [
     {

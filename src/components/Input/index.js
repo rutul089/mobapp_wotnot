@@ -137,6 +137,7 @@ const Input = ({
             )
           }
           ref={inputRef}
+          cursorColor={'blue'}
           {...rest}
         />
 

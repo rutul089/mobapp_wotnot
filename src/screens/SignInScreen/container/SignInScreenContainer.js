@@ -130,7 +130,10 @@ class SignInScreenContainer extends Component {
           onPwdChange={this.onPwdChange}
           emailInputRef={this.emailInputRef}
           passWordInputRef={this.passWordInputRef}
-          onSubmitEditingEmail={() => this.passWordInputRef?.current?.focus()}
+          onSubmitEditingEmail={() => {
+            this.passWordInputRef?.current?.focus(),
+              this.scrollViewRef?.current?.scrollToEnd({animated: true});
+          }}
           isPwdVisible={state.isPwdVisible}
           rightIconClick={this.rightIconClick}
           onSubmit={this.onSubmit}

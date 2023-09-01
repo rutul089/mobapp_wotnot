@@ -1,4 +1,4 @@
-package com.mobapp_wotnot;
+package com.wotnot.wotnot;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

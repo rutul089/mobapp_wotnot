@@ -73,9 +73,10 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.mobapp_wotnot"
+    // namespace "com.wotnot.wotnot"
+    namespace "com.wotnot.wotnot"
     defaultConfig {
-        applicationId "com.mobapp_wotnot"
+        applicationId "com.wotnot.wotnot"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
