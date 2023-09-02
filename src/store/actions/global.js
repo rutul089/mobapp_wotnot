@@ -69,3 +69,12 @@ export const setQualifications = data => ({
   type: types.SET_QUALIFICATIONS,
   payload: data,
 });
+
+export const clearAllData = data => ({
+  type: types.USER_LOGOUT,
+});
+
+export const setAccountList = data => ({
+  type: types.SET_ACCOUNTS,
+  payload: data,
+});

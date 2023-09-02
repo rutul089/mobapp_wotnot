@@ -24,4 +24,14 @@ export default {
   ic_hidePwd: require('./ic_hidePwd.png'),
   ic_userprofile: require('./ic_userprofile.png'),
   ic_done: require('./ic_done.png'),
+  ic_google: require('./ic_google.png'),
+  ic_check_mark: require('./ic_check_mark.png'),
+  ic_help_desk: {
+    ic_create_ticket: require('./ic_create_ticket.png'),
+    ic_help_articles: require('./ic_help_articles.png'),
+    ic_new: require('./ic_new.png'),
+    ic_request_feature: require('./ic_request_feature.png'),
+    ic_roadmap: require('./ic_roadmap.png'),
+    ic_watch_tutorial: require('./ic_watch_tutorial.png'),
+  },
 };

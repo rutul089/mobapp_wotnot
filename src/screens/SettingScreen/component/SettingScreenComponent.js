@@ -9,11 +9,13 @@ import {
   Header,
   BottomSheet,
   ActionItem,
+  Loader,
 } from '../../../components';
 import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
 import theme from '../../../util/theme';
 import styles from '../Style';
+import {AlertDialog, Box, Button} from 'native-base';
 
 const RenderRowItem = ({onPress, text, dropdownVale, color, dropDownClick}) => {
   return (
@@ -67,12 +69,19 @@ const SettingScreenComponent = ({
   languageModalRef,
   languageList,
   onLanguageSelected,
+  logoutButtonPress,
+  onClose,
+  cancelRef,
+  isOpen,
+  account_id,
+  isLoading,
+  onHelpDeskClick
 }) => {
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header isLeftIconHidden={true} isRightIconHidden={true} />
       <ScrollView contentContainerStyle={styles.container}>
-        <UserItem name={name} email={email} uri={profilePhoto} />
+        <UserItem name={name} email={email} uri={profilePhoto} isAvatar />
         <Spacing size="md" />
         <View style={{flexDirection: 'row'}}>
           <Text type={'body1'} style={{flex: 1}}>
@@ -120,6 +129,11 @@ const SettingScreenComponent = ({
         />
         <Spacing size="md" />
         <RenderRowItem
+          text={strings('settings.help_desk')}
+          onPress={onHelpDeskClick}
+        />
+        <Spacing size="md" />
+        <RenderRowItem
           text={strings('settings.logout')}
           color={theme.colors.typography.error}
           onPress={onLogoutClick}
@@ -137,8 +151,36 @@ const SettingScreenComponent = ({
           {accountList?.map((item, index) => (
             <ActionItem
               key={index}
-              label={item?.label}
+              label={item?.name}
               onItemPress={() => onAccountListPress(item, index)}
+              leftIcon={
+                <Image
+                  resizeMode="contain"
+                  source={
+                    item?.image_url?.small
+                      ? {uri: item?.image_url?.small}
+                      : images.ic_userprofile
+                  }
+                  style={{
+                    height: theme.sizes.icons.sm * 1.5,
+                    width: theme.sizes.icons.sm * 1.5,
+                    alignSelf: 'center',
+                  }}
+                />
+              }
+              rightIcon={
+                item?.id === account_id ? (
+                  <Image
+                    resizeMode="contain"
+                    source={images.ic_check_mark}
+                    style={{
+                      height: theme.sizes.icons.sm,
+                      width: theme.sizes.icons.sm,
+                      tintColor: theme.colors.brandColor.blue,
+                    }}
+                  />
+                ) : null
+              }
             />
           ))}
         </ScrollView>
@@ -161,6 +203,37 @@ const SettingScreenComponent = ({
           ))}
         </ScrollView>
       </BottomSheet>
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}>
+        <AlertDialog.Content>
+          <AlertDialog.CloseButton />
+          <AlertDialog.Header>WotNot</AlertDialog.Header>
+          <AlertDialog.Body>
+            Are you sure, you want to logout from the WotNot app?
+          </AlertDialog.Body>
+          <AlertDialog.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="unstyled"
+                colorScheme="coolGray"
+                onPress={onClose}
+                ref={cancelRef}>
+                Cancel
+              </Button>
+              <Button
+                variant="link"
+                colorScheme="danger"
+                color={'yellow.100'}
+                onPress={logoutButtonPress}>
+                Logout
+              </Button>
+            </Button.Group>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
+      <Loader loading={isLoading} />
     </FlexContainer>
   );
 };

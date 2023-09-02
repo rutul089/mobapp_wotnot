@@ -16,9 +16,9 @@
     "recover_2fa_code": "Recover 2FA Code",
     "recover_2fa_code_note": "If you have lost your mobile device in which 2FA was enabled, just enter the recovery codes that were provided during setup to add a new device.",
     "enter_recovery_code": "Enter the recovery code",
-    "2fa_code":"2FA Code",
-    "recover_code_note":"Print or save these recovery codes in a safe place to be able to recover your account if you lose your mobile device.",
-    "2fa_enabled_msg":"2FA authentication has been enabled!"
+    "2fa_code": "2FA Code",
+    "recover_code_note": "Print or save these recovery codes in a safe place to be able to recover your account if you lose your mobile device.",
+    "2fa_enabled_msg": "2FA authentication has been enabled!"
   },
   "button": {
     "sign_in": "Sign In",
@@ -27,9 +27,9 @@
     "forgot_password": "Forgot Password?",
     "send_me_instructions": "Send me instructions",
     "verify_code": "Verify code",
-    "enter_recovery_code":"Enter recovery code",
-    "done":"Done",
-    "copy_code":"Copy recovery codes"
+    "enter_recovery_code": "Enter recovery code",
+    "done": "Done",
+    "copy_code": "Copy recovery codes"
   },
   "switch": {"on": "ON", "off": "OFF"},
   "tab": {
@@ -70,13 +70,22 @@
     "account": "Account",
     "language": "Language",
     "notifications": "Notifications",
-    "logout": "Logout"
+    "logout": "Logout",
+    "help_desk": "Help Desk"
   },
   "error": {
     "errEmail": "Valid email is required.",
     "errPwd": "Password must be greater than 5 characters",
     "errEmpty": "This field cannot be empty",
     "errTwoFACode": "Please enter 6-digit code",
-    "errValidRecoveryCode":"Enter valid recovery code"
+    "errValidRecoveryCode": "Enter valid recovery code"
+  },
+  "help_disk": {
+    "read_help": "Read Help Articles",
+    "create_ticket": "Create a Ticket",
+    "request_feature": "Request a Feature",
+    "watch_tutorial": "Watch Tutorial Videos",
+    "product_road_map": "Product Roadmap",
+    "what_new": "What's New"
   }
 }

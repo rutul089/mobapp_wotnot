@@ -12,31 +12,33 @@ export const endPoints = {
     endpoint: '/v1/user-login',
     method: Method.POST,
   },
-  fetchLabel: userID => {
+  fetchLabel: account_id => {
     return {
-      endpoint: `/v1/account/${userID}/labels?account_id=${userID}`,
+      endpoint: `/v1/account/${account_id}/labels?account_id=${account_id}`,
       method: Method.GET,
     };
   },
-  fetchUserPreference: {
-    endpoint: '/v1/user-preference',
-    method: Method.POST,
-  },
-  fetchTeam: (userID, offset) => {
+  fetchUserPreference: query => {
     return {
-      endpoint: `/v1/accounts/${userID}/teams?order_by=name&order=asc&limit=20&offset=${offset}`,
+      endpoint: `/v1/user-preference?${query}}`,
       method: Method.GET,
     };
   },
-  fetchTeammates: userID => {
+  fetchTeam: (account_id, offset) => {
     return {
-      endpoint: `/v1/account/${userID}/users`,
+      endpoint: `/v1/accounts/${account_id}/teams?order_by=name&order=asc&limit=20&offset=${offset}`,
+      method: Method.GET,
+    };
+  },
+  fetchTeammates: account_id => {
+    return {
+      endpoint: `/v1/account/${account_id}/users`,
       method: Method.POST,
     };
   },
-  fetchSavedReply: (userID, from, limit) => {
+  fetchSavedReply: (account_id, from, limit) => {
     return {
-      endpoint: `/v1/account/${userID}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=created_at`,
+      endpoint: `/v1/account/${account_id}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=created_at`,
       method: Method.GET,
     };
   },
@@ -92,14 +94,56 @@ export const endPoints = {
     endpoint: '/v1/user/authenticate/recovery-code',
     method: Method.POST,
   },
+  incomingEvents: agent_id => {
+    return {
+      endpoint: `/v1/agents/${agent_id}/incoming-events`,
+      method: Method.GET,
+    };
+  },
+  profileEvents: agent_id => {
+    return {
+      endpoint: `/v1/agents/${agent_id}/profile-events`,
+      method: Method.POST,
+    };
+  },
+  accountSettings: account_id => {
+    return {
+      endpoint: `/v1/accounts/${account_id}/settings`,
+      method: Method.GET,
+    };
+  },
+  userLogout: {
+    endpoint: '/v1/user-logout',
+    method: Method.GET,
+  },
+  notificationPreference: {
+    endpoint: '/v1/notification-preference',
+    method: Method.GET,
+  },
+  storeNotificationToken: {
+    endpoint: '/v1/notification-token', // {{param :"token": notificationToken}}
+    method: Method.POST,
+  },
+  removeNotificationToken: {
+    endpoint: '/v1/notification-token', // {{param :"token": notificationToken}}
+    method: Method.DELETE,
+  },
+  accounts: {
+    endpoint: '/v2/accounts', // {{param :"token": notificationToken}}
+    method: Method.GET,
+  },
+  changeAccount: {
+    endpoint: '/v1/user-preference',
+    method: Method.POST,
+  },
 };
 
-// export const WebSocketURL= "ws.wotnot.io" // PROD
-// export const WebSocketURL = "ws.test.wotnot.io" // TEST
-export const WebSocketURL = "ws.dev.wotnot.io" //DEV
+// export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD
+// export const WebSocketURL = "ws.test.wotnot.io/?user_type=agent" // TEST
+export const WebSocketURL = 'wss.dev.wotnot.io/?user_type=agent'; //DEV
 
-
-
-// Production: https://ws.wotnot.io/?user_type=agent 
-// Staging: https://ws.test.wotnot.io/?user_type=agent 
+// Production: https://ws.wotnot.io/?user_type=agent
+// Staging: https://ws.test.wotnot.io/?user_type=agent
 // Development: https://ws.dev.wotnot.io/?user_type=agent
+
+// wss://ws.dev.wotnot.io/socket.io/?user_type=agent

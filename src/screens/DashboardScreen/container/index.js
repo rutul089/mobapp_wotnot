@@ -12,14 +12,14 @@ class DashboardContainer extends Component {
   }
 
   componentDidMount() {
-    // this.callFetchTeamData();
-    // this.callFetchTeammateData();
+    this.callFetchTeamData();
+    this.callFetchTeammateData();
   }
 
   callFetchTeamData = () => {
-    this.props.fetchTeamData('47734', 1, {
+    this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
       SuccessCallback: res => {
-        // console.log("callFetchTeamData",JSON.stringify(res))
+        console.log('callFetchTeamData', JSON.stringify(res));
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -33,14 +33,18 @@ class DashboardContainer extends Component {
       order: 'asc',
       pagination: {limit: 20, offset: 1},
     };
-    this.props.fetchTeammateData('47734', param, {
-      SuccessCallback: res => {
-        // console.log("callFetchTeammateData",JSON.stringify(res))
+    this.props.fetchTeammateData(
+      this.props?.userPreference?.account_id,
+      param,
+      {
+        SuccessCallback: res => {
+          console.log('callFetchTeammateData', JSON.stringify(res));
+        },
+        FailureCallback: res => {
+          handleFailureCallback(res);
+        },
       },
-      FailureCallback: res => {
-        handleFailureCallback(res);
-      },
-    });
+    );
   };
 
   render() {
@@ -64,6 +68,7 @@ const mapStateToProps = state => {
     isLoading: state.global.loading,
     teamData: state.accountReducer?.teamData?.teams,
     teamMateData: state.accountReducer?.teamMateData?.users,
+    userPreference: state.detail?.userPreference,
   };
 };
 export default connect(mapStateToProps, mapActionCreators)(DashboardContainer);

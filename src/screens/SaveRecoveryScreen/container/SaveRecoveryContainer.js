@@ -3,11 +3,16 @@ import {View, Text, Alert} from 'react-native';
 import {connect} from 'react-redux';
 import {goBack} from '../../../navigator/NavigationUtils';
 import SaveRecoveryComponent from '../component/SaveRecoveryComponent';
-import {twoFactorCode, verifyTFAOTP} from '../../../store/actions';
+import {
+  twoFactorCode,
+  verifyTFAOTP,
+  fetchUserPreference,
+} from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {strings} from '../../../locales/i18n';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {showToast} from '../../../util/helper';
+import axios from 'axios';
 
 class SaveRecoveryContainer extends Component {
   constructor(props) {
@@ -36,8 +41,8 @@ class SaveRecoveryContainer extends Component {
   componentDidMount() {
     const navigation = this.props.route.params;
     this.setState({
-      recovery_codes:navigation?.recovery_codes
-    })
+      recovery_codes: navigation?.recovery_codes,
+    });
     // this.fetchTwoFactorLink();
   }
 
@@ -57,6 +62,15 @@ class SaveRecoveryContainer extends Component {
     Clipboard.setString(this.state.recovery_codes?.toString());
   };
 
+  onDoneClick = () => {
+    this.props.fetchUserPreference(null, {
+      SuccessCallback: res => {},
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
   render() {
     let state = this.state;
     return (
@@ -66,13 +80,14 @@ class SaveRecoveryContainer extends Component {
           isLoading={this.props.isLoading}
           recovery_codes={this.state.recovery_codes}
           onCopyCodeClick={this.onCopyCodeClick}
+          onDoneClick={this.onDoneClick}
         />
       </>
     );
   }
 }
 
-const mapActionCreators = {twoFactorCode, verifyTFAOTP};
+const mapActionCreators = {twoFactorCode, verifyTFAOTP, fetchUserPreference};
 const mapStateToProps = state => {
   return {
     isLoading: state.global.loading,

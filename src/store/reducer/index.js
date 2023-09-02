@@ -5,6 +5,7 @@ import detail from './detail';
 import accountReducer from './accountReducer';
 import qualifications from './qualifications';
 import conversationReducer from './conversationReducer';
+import settings from './settings';
 
 const rootReducer = combineReducers({
   global,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   detail,
   accountReducer,
   qualifications,
-  conversationReducer
+  conversationReducer,
+  settings
 });
 
 export default rootReducer;

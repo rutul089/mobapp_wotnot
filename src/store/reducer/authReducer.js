@@ -24,6 +24,8 @@ const global = (state = initialState, action) => {
         ...state,
         userProfile: action.payload,
       };
+    case types.USER_LOGOUT:
+      return {...initialState};
     default:
       return state;
   }
