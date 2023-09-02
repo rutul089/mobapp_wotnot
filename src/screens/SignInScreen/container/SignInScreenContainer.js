@@ -4,14 +4,15 @@ import {
   navigate,
   navigateAndSimpleReset,
 } from '../../../navigator/NavigationUtils';
-import {userLogin} from '../../../store/actions';
+import {userLogin, fetchUserPreference} from '../../../store/actions';
 import SignInScreenComponent from '../component/SignInScreenComponent';
 import {VALIDATION_REGEX} from '../../../util/helper';
 import {strings} from '../../../locales/i18n';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {API, Headers} from '../../../apiService';
 import AsyncStorage from '@react-native-community/async-storage';
-import {AUTH_TOKEN, IS_LOGIN} from '../../../constants/storage';
+import {LOCAL_STORAGE} from '../../../constants/storage';
+import DeviceWebSocketManager from '../../../apiService/WebSocketManager';
 
 class SignInScreenContainer extends Component {
   constructor(props) {
@@ -29,6 +30,10 @@ class SignInScreenContainer extends Component {
     this.passWordInputRef = React.createRef();
     this.scrollViewRef = React.createRef();
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    DeviceWebSocketManager.getInstance().connect();
   }
 
   onEmailChange = text => {
@@ -74,11 +79,11 @@ class SignInScreenContainer extends Component {
     this.props.userLogin(param, {
       SuccessCallback: res => {
         if (res?.ok && res?.two_factor_auth === undefined) {
-          AsyncStorage.setItem(IS_LOGIN, JSON.stringify(true));
-          navigateAndSimpleReset('MainNavigator');
+          AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, JSON.stringify(true));
+          this.callFetchUserPreference();
           return;
         }
-        AsyncStorage.setItem(AUTH_TOKEN, res?.access_token);
+        AsyncStorage.setItem(LOCAL_STORAGE.AUTH_TOKEN, res?.access_token);
         API.getInstance().setHeader(
           Headers.AUTHORIZATION,
           `Bearer ${res?.access_token}`,
@@ -88,9 +93,8 @@ class SignInScreenContainer extends Component {
         } else if (res?.two_factor_auth === 'TOTP_VERIFY') {
           return navigate('TwoFactorCheckScreen');
         } else {
-          AsyncStorage.setItem(IS_LOGIN, JSON.stringify(true));
-          // return navigate('TwoFactorAuthScreen');
-          navigateAndSimpleReset('MainNavigator');
+          AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, JSON.stringify(true));
+          this.callFetchUserPreference();
         }
       },
       FailureCallback: res => {
@@ -120,6 +124,23 @@ class SignInScreenContainer extends Component {
     // navigate('TwoFactorAuthScreen')
   };
 
+  _googleSignIn = () => {};
+
+  callFetchUserPreference = () => {
+    this.props.fetchUserPreference(null, {
+      SuccessCallback: res => {
+        AsyncStorage.setItem(
+          LOCAL_STORAGE?.USER_PREFERENCE,
+          JSON.stringify(res),
+        );
+        navigateAndSimpleReset('MainNavigator');
+      },
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
   render() {
     let state = this.state;
     return (
@@ -140,6 +161,7 @@ class SignInScreenContainer extends Component {
           scrollViewRef={this.scrollViewRef}
           isLoading={this.props.isLoading}
           onForgotPwdClick={this.onForgotPwdClick}
+          _googleSignIn={this._googleSignIn}
         />
       </>
     );
@@ -148,6 +170,7 @@ class SignInScreenContainer extends Component {
 
 const mapActionCreators = {
   userLogin,
+  fetchUserPreference,
 };
 const mapStateToProps = state => {
   return {

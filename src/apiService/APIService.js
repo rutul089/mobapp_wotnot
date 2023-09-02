@@ -5,7 +5,7 @@ import {appName} from './Config';
 export let apiConfig = {};
 const axios = httpClient.create();
 axios.defaults.timeout = 10000;
-
+import DeviceInfoRN from '../util/DeviceInfoRN';
 // const axios = require('axios');
 let instance = null;
 
@@ -27,6 +27,16 @@ export const Method = {
 
 export const Headers = {
   AUTHORIZATION: 'Authorization',
+  COOKIE: 'Cookie',
+};
+
+const defaultHeader = {
+  'Content-Type': 'application/json',
+  app_version: '1.0.1',
+  manufacturer: DeviceInfoRN.getManufacturer(),
+  model_name: DeviceInfoRN.getModel(),
+  os_name: DeviceInfoRN.getOsName(),
+  os_version: DeviceInfoRN.getSystemVersion(),
 };
 
 class API {
@@ -123,68 +133,66 @@ class API {
     switch (method) {
       case Method.GET:
         this.helperLog('Param>>', params);
-        this.helperLog('URL>>', this._baseURL + endPoint, {headers: headers});
+        this.helperLog('URL>>', this._baseURL + endPoint, {
+          headers: defaultHeader,
+        });
         this.helperLog('Method>>', 'GET');
         const param = params ? '?' + params : '';
         axios
           .get(this._baseURL + endPoint + param, {
-            headers: headers,
+            headers: {headers, ...defaultHeader},
           })
           .then(res => {
             if (res.status === 200 || res.success) {
               SuccessCallback(res.data);
             } else {
               FailureCallback(res);
-              this.helperLog('FailureCallback', JSON.stringify(res));
+              this.helperLog('FailureCallback', res);
             }
             return res;
           })
           .catch(err => {
-            this.helperLog('FailureCallback', JSON.stringify(err));
-            this.helperLog(
-              'FailureCallback_response',
-              JSON.stringify(err.response),
-            );
+            this.helperLog('FailureCallback', err);
+            this.helperLog('FailureCallback_response', err.response);
             FailureCallback(err.response == undefined ? err : err.response);
           });
 
         break;
       case Method.POST:
         this.helperLog('Param>>', params);
-        this.helperLog('URL>>', this._baseURL + endPoint, {headers});
+        this.helperLog('URL>>', this._baseURL + endPoint, {defaultHeader});
         this.helperLog('Method>>', 'POST');
         axios
           .post(this._baseURL + endPoint, params, {
-            headers: headers,
+            headers: {headers, ...defaultHeader},
           })
           .then(res => {
             this.helperLog('SuccessCallback', res);
             if (res.status === 200 || res.status === 201) {
               SuccessCallback(res.data);
             } else {
-              this.helperLog('FailureCallback', JSON.stringify(res));
+              this.helperLog('FailureCallback', res);
               FailureCallback(res);
             }
             return res;
           })
           .catch(err => {
-            this.helperLog('FailureCallback', JSON.stringify(err));
-            this.helperLog(
-              'FailureCallback_response',
-              JSON.stringify(err.response),
-            );
+            this.helperLog('FailureCallback', err);
+            this.helperLog('FailureCallback_response', err.response);
             FailureCallback(err.response == undefined ? err : err.response);
           });
 
         break;
       case Method.PUT:
         this.helperLog('Param>>', params);
-        this.helperLog('URL>>', this._baseURL + endPoint, {headers});
+        this.helperLog('URL>>', this._baseURL + endPoint, {defaultHeader});
         this.helperLog('Method>>', 'PUT');
         axios
-          .put(this._baseURL + endPoint, params, {headers: headers})
+          .put(this._baseURL + endPoint, params, {
+            headers: {headers, ...defaultHeader},
+          })
           .then(res => {
-            this.helperLog('SuccessCallback', JSON.stringify(res));
+            this.helperLog('SuccessCallback', res);
             if (res.status === 200) {
               SuccessCallback(res.data);
             } else {
@@ -193,11 +201,8 @@ class API {
             return res;
           })
           .catch(err => {
-            this.helperLog('FailureCallback', JSON.stringify(err));
-            this.helperLog(
-              'FailureCallback_response',
-              JSON.stringify(err.response),
-            );
+            this.helperLog('FailureCallback', err);
+            this.helperLog('FailureCallback_response', err.response);
             FailureCallback(err.response == undefined ? err : err.response);
           });
 
@@ -206,12 +211,14 @@ class API {
         break;
       case Method.DELETE:
         this.helperLog('Param>>', params);
-        this.helperLog('URL>>', this._baseURL + endPoint, {headers});
+        this.helperLog('URL>>', this._baseURL + endPoint, {defaultHeader});
         this.helperLog('Method>>', 'DELETE');
         axios
-          .delete(this._baseURL + endPoint, params, {headers: headers})
+          .delete(this._baseURL + endPoint, params, {
+            headers: {headers, ...defaultHeader},
+          })
           .then(res => {
-            this.helperLog('SuccessCallback', JSON.stringify(res));
+            this.helperLog('SuccessCallback', res);
             if (res.status === 200) {
               SuccessCallback(res.data);
             } else {
@@ -221,22 +228,21 @@ class API {
           })
           .catch(err => {
             console.log('errr_', err);
-            this.helperLog('FailureCallback', JSON.stringify(err));
-            this.helperLog(
-              'FailureCallback_response',
-              JSON.stringify(err.response),
-            );
+            this.helperLog('FailureCallback', err);
+            this.helperLog('FailureCallback_response', err.response);
             FailureCallback(err.response == undefined ? err : err.response);
           });
         break;
       case Method.PATCH:
         this.helperLog('Param>>', params);
-        this.helperLog('URL>>', this._baseURL + endPoint, {headers});
+        this.helperLog('URL>>', this._baseURL + endPoint, {defaultHeader});
         this.helperLog('Method>>', 'PATCH');
         axios
-          .patch(this._baseURL + endPoint, params, {headers: headers})
+          .patch(this._baseURL + endPoint, params, {
+            headers: {headers, ...defaultHeader},
+          })
           .then(res => {
-            this.helperLog('SuccessCallback', JSON.stringify(res));
+            this.helperLog('SuccessCallback', res);
             if (res.status === 200) {
               SuccessCallback(res.data);
             } else {
@@ -245,35 +251,31 @@ class API {
             return res;
           })
           .catch(err => {
-            this.helperLog('FailureCallback', JSON.stringify(err));
-            this.helperLog(
-              'FailureCallback_response',
-              JSON.stringify(err.response),
-            );
+            this.helperLog('FailureCallback', err);
+            this.helperLog('FailureCallback_response', err.response);
             FailureCallback(err.response == undefined ? err : err.response);
           });
         break;
       case Method.GETBODY:
         this.helperLog('Param>>', params);
-        this.helperLog('URL>>', this._baseURL + endPoint, {headers});
+        this.helperLog('URL>>', this._baseURL + endPoint, {defaultHeader});
         this.helperLog('Method>>', 'GETBODY');
         axios
-          .get(this._baseURL + endPoint, params, {headers: headers})
+          .get(this._baseURL + endPoint, params, {
+            headers: {headers, ...defaultHeader},
+          })
           .then(res => {
             if (res.status === 200 || res.success) {
               SuccessCallback(res.data);
             } else {
               FailureCallback(res);
-              this.helperLog('FailureCallback', JSON.stringify(res));
+              this.helperLog('FailureCallback', res);
             }
             return res;
           })
           .catch(err => {
-            this.helperLog('FailureCallback', JSON.stringify(err));
-            this.helperLog(
-              'FailureCallback_response',
-              JSON.stringify(err.response),
-            );
+            this.helperLog('FailureCallback', err);
+            this.helperLog('FailureCallback_response', err.response);
             FailureCallback(err.response == undefined ? err : err.response);
           });
 

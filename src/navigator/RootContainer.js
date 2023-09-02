@@ -16,7 +16,8 @@ import {
   TwoFactorAuthScreen,
   TwoFactorCheckScreen,
   UserDetailScreen,
-  SaveRecoveryScreen
+  SaveRecoveryScreen,
+  HelpDeskScreen,
 } from '../screens';
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
@@ -157,9 +158,14 @@ export default class RootContainer extends Component {
               component={SearchScreen}
               options={{headerShown: false}}
             />
-              <Stack.Screen
+            <Stack.Screen
               name={'SaveRecoveryScreen'}
               component={SaveRecoveryScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name={'HelpDeskScreen'}
+              component={HelpDeskScreen}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

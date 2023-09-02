@@ -1,10 +1,12 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useEffect, useMemo, useState} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import { err } from 'react-native-svg/lib/typescript/xml';
+import {useDispatch, useSelector} from 'react-redux';
 import {CONVERSATION} from '../../constants/global';
 import {strings} from '../../locales/i18n';
 import {fetchConversationSummary} from '../../store/actions';
+import { handleFailureCallback } from '../../util/apiHelper';
 import colors from '../../util/theme/colors';
 import ConversationList from './ConversationList';
 
@@ -45,7 +47,7 @@ const DashboardTab = () => {
     ],
     searchQuery: '',
   });
-
+  const userPreference = useSelector(state => state.detail?.userPreference);
   useEffect(() => {
     _getConversationSummary();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,7 +55,7 @@ const DashboardTab = () => {
 
   const _getConversationSummary = () => {
     dispatch(
-      fetchConversationSummary(CONVERSATION.USER_ID, {
+      fetchConversationSummary(userPreference?.logged_in_user_id, {
         SuccessCallback: response => {
           const defaultTabJson = [
             {
@@ -88,7 +90,8 @@ const DashboardTab = () => {
           setState(prev => ({...prev, tabData: defaultTabJson}));
         },
         FailureCallback: error => {
-          console.log('FailureCallback------------', JSON.stringify(error));
+          handleFailureCallback(error,true,true)
+          // console.log('FailureCallback------------', JSON.stringify(error));
         },
       }),
     );

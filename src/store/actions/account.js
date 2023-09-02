@@ -1,19 +1,26 @@
 import {API} from '../../apiService';
 import {endPoints} from '../../constants/urls';
-import {loadingSet, loadingUnset, setTeamData, setTeammateData,saveReply} from './global';
+import {
+  loadingSet,
+  loadingUnset,
+  setTeamData,
+  setTeammateData,
+  saveReply,
+  setUserPreference,
+} from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
 export const fetchTeamData = (
-  userID,
+  account_id,
   offset,
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
     dispatch(loadingSet());
     API.getInstance().Fetch(
-      endPoints.fetchTeam(userID, offset),
+      endPoints.fetchTeam(account_id, offset),
       defaultHeaders,
       '',
       {
@@ -32,14 +39,14 @@ export const fetchTeamData = (
 };
 
 export const fetchTeammateData = (
-  userID,
+  account_id,
   param,
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
     dispatch(loadingSet());
     API.getInstance().Fetch(
-      endPoints.fetchTeammates(userID),
+      endPoints.fetchTeammates(account_id),
       defaultHeaders,
       param,
       {
@@ -84,5 +91,22 @@ export const fetchSavedReply = (
         },
       },
     );
+  };
+};
+
+export const changeAccount = (param, {SuccessCallback, FailureCallback}) => {
+  return dispatch => {
+    dispatch(loadingSet());
+    API.getInstance().Fetch(endPoints.changeAccount, defaultHeaders, param, {
+      SuccessCallback: response => {
+        dispatch(loadingUnset());
+        dispatch(setUserPreference(response));
+        SuccessCallback(response);
+      },
+      FailureCallback: response => {
+        dispatch(loadingUnset());
+        FailureCallback(response);
+      },
+    });
   };
 };

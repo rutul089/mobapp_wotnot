@@ -17,6 +17,8 @@ const global = (state = initialState, action) => {
       return {...state, conversations: action.payload};
     case types.SET_CONVERSATIONS_COUNT:
       return {...state, conversation_summary: action.payload};
+    case types.USER_LOGOUT:
+      return {...initialState};
     default:
       return state;
   }

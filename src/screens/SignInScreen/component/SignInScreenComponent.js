@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import images from '../../../assets/images';
 import {SVG} from '../../../assets/svg';
@@ -19,6 +19,12 @@ import {
 import {strings} from '../../../locales/i18n';
 import theme from '../../../util/theme';
 import styles from '../Style';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  NativeModuleError,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 const SignInScreenComponent = (
   {
@@ -34,6 +40,7 @@ const SignInScreenComponent = (
     scrollViewRef,
     isLoading,
     onForgotPwdClick,
+    _googleSignIn,
   },
   ref,
 ) => {
@@ -51,17 +58,38 @@ const SignInScreenComponent = (
           // }
           style={{flex: 1}}>
           <View style={styles.container}>
-            <SVG.LoginLogoIcon />
-            <Text type={'h3'} style={styles.welcome_message_1}>
-              {strings('login.welcome_message_1')}
-            </Text>
-            <Text type={'body1'} style={styles.welcome_message_2}>
-              {strings('login.welcome_message_2')}
-            </Text>
-            <Button
+            <View style={{alignItems: 'center'}}>
+              <SVG.LoginLogoIcon />
+              <Text type={'h3'} style={styles.welcome_message_1}>
+                {strings('login.welcome_message_1')}
+              </Text>
+              <Text type={'body1'} style={styles.welcome_message_2}>
+                {strings('login.welcome_message_2')}
+              </Text>
+            </View>
+            {/* <Button
               style={styles.sign_in_with_google}
               buttonText={'Sign-In with google'}
-            />
+            /> */}
+            {/* <GoogleSigninButton
+              size={GoogleSigninButton.Size.Standard}
+              color={GoogleSigninButton.Color.Dark}
+              onPress={this._signIn}
+            /> */}
+            <Spacing size="xl" />
+            <TouchableOpacity
+              onPress={_googleSignIn}
+              activeOpacity={0.7}
+              style={styles.googleButtonStyle}>
+              <Image
+                source={images.ic_google}
+                style={styles.googleIcon}
+                resizeMode={'contain'}
+              />
+              <Text textAlign={'center'} style={{flex: 1}}>
+                Sign in with Google
+              </Text>
+            </TouchableOpacity>
             <View style={styles.divider} />
             <View style={styles.input_container_main}>
               <View style={styles.input_container}>
@@ -77,6 +105,7 @@ const SignInScreenComponent = (
                   inputRef={emailInputRef}
                   returnKeyType="next"
                   onSubmitEditing={onSubmitEditingEmail && onSubmitEditingEmail}
+                  caretHidden={false}
                 />
                 <Spacing />
                 <Input

@@ -30,15 +30,15 @@ export const fetchLabel = (userID, {SuccessCallback, FailureCallback}) => {
 };
 
 export const fetchUserPreference = (
-  param,
+  query,
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
     dispatch(loadingSet());
     API.getInstance().Fetch(
-      endPoints.fetchUserPreference,
+      endPoints.fetchUserPreference(query),
       defaultHeaders,
-      param,
+      '',
       {
         SuccessCallback: response => {
           dispatch(loadingUnset());
@@ -87,7 +87,7 @@ export const deleteLabel = (
   return dispatch => {
     dispatch(loadingSet());
     API.getInstance().Fetch(
-      endPoints.deleteLabel(conversation_key,label_id),
+      endPoints.deleteLabel(conversation_key, label_id),
       defaultHeaders,
       '',
       {

@@ -11,3 +11,4 @@ export {default as TwoFactorCheckScreen} from './TwoFactorCheckContainer/contain
 export {default as UserDetailScreen} from './UserDetailScreen/container/UserDetailContainer';
 export {default as RecoveryCodeScreen} from './RecoveryCodeScreen/container/RecoveryCodeContainer';
 export {default as SaveRecoveryScreen} from './SaveRecoveryScreen/container/SaveRecoveryContainer';
+export {default as HelpDeskScreen} from './HelpDeskScreen/container/HelpDeskContainer';

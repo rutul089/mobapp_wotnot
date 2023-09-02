@@ -1,16 +1,13 @@
 import {types} from '../actions';
 
 const initialState = {
-  labelData: [],
-  userPreference: {},
+  accounts: [],
 };
 
 const global = (state = initialState, action) => {
   switch (action.type) {
-    case types.USER_LABEL:
-      return {...state, labelData: action.payload};
-    case types.USER_PREFERENCE:
-      return {...state, userPreference: action.payload};
+    case types.SET_ACCOUNTS:
+      return {...state, accounts: action.payload};
     case types.USER_LOGOUT:
       return {...initialState};
     default:

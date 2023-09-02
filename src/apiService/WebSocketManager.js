@@ -24,6 +24,7 @@ export default class WebSocketManager {
   }
 
   connect(connectData) {
+    console.log('connectData',connectData)
     if (websocketManager && (!socketObj || !isConnected)) {
       websocketManager.createConnection(connectData);
     }
@@ -51,6 +52,7 @@ export default class WebSocketManager {
    * do not call this method from outside
    */
   async createConnection(connectData) {
+    console.log("createConnection",connectData)
     let base_url = '';
     let queryString = '';
     if (!socketObj || !isConnected) {
