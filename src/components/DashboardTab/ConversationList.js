@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import {RefreshControl} from 'react-native-gesture-handler';
-import {useDispatch,useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {CONVERSATION} from '../../constants/global';
 import {navigate} from '../../navigator/NavigationUtils';
 import {
   fetchConversation,
   fetchConversationBySearch,
 } from '../../store/actions';
-import { handleFailureCallback } from '../../util/apiHelper';
+import {handleFailureCallback} from '../../util/apiHelper';
 import {getDayDifference, hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
 import ChatItem from '../ChatItem';
@@ -44,7 +44,7 @@ const EmptyListView = () => {
 
 const ConversationList = ({
   tabData,
-  totalCount = () => {},
+  updateCount = () => {},
   isSearchView = false,
   searchQuery = '',
 }) => {
@@ -54,7 +54,7 @@ const ConversationList = ({
     conversationData: [],
   });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => _getConversationsAPI(), [tabData, searchQuery]);
+  useEffect(() => _getConversationsAPI(), []);
   const userPreference = useSelector(state => state.detail?.userPreference);
   const _getConversationsAPI = () => {
     setState(prev => ({
@@ -65,13 +65,12 @@ const ConversationList = ({
       if (isSearchView) {
         dispatch(
           fetchConversationBySearch(
-            userPreference?.logged_in_user_id,
+            userPreference?.account_id,
             `status_ids=${statusId}&is_order_by_asc=false&limit=25&${
               searchQuery ? `search_words=${searchQuery}` : ''
             }`,
             {
               SuccessCallback: response => {
-                console.log("response",JSON.stringify(response))
                 setState(prev => ({
                   ...prev,
                   isRefreshing: false,
@@ -79,7 +78,6 @@ const ConversationList = ({
                 }));
               },
               FailureCallback: error => {
-                console.log("FailureCallback",JSON.stringify(error))
                 setState(prev => ({
                   ...prev,
                   isRefreshing: false,
@@ -91,7 +89,7 @@ const ConversationList = ({
       } else {
         dispatch(
           fetchConversation(
-            userPreference?.logged_in_user_id,
+            userPreference?.account_id,
             statusId,
             CONVERSATION.LIMIT,
             {
@@ -100,7 +98,7 @@ const ConversationList = ({
                 switch (tabData.conversationType) {
                   case 'you':
                     sortedData = sortedData.filter(
-                      _it => _it.assignee?.id === 74692,
+                      _it => _it.assignee?.id === userPreference?.account_id,
                     );
                     break;
                   case 'assigned':
@@ -114,12 +112,13 @@ const ConversationList = ({
                     );
                     break;
                   default:
-                    totalCount(
-                      tabData.conversationType,
-                      response?.conversations,
-                    );
                     break;
                 }
+                updateCount(
+                  tabData.conversationType === 'closed'
+                    ? sortedData?.length
+                    : undefined,
+                );
                 setState(prev => ({
                   ...prev,
                   isRefreshing: false,
@@ -127,8 +126,8 @@ const ConversationList = ({
                 }));
               },
               FailureCallback: error => {
-                console.log('FailureCallback',JSON.stringify(error))
-                handleFailureCallback(error)
+                console.log('FailureCallback', JSON.stringify(error));
+                handleFailureCallback(error);
                 setState(prev => ({
                   ...prev,
                   isRefreshing: false,

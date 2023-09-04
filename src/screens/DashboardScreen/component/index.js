@@ -1,11 +1,10 @@
 import React from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import images from '../../../assets/images';
-import {Header,FlexContainer} from '../../../components';
+import {FlexContainer, Header} from '../../../components';
 import DashboardTab from '../../../components/DashboardTab';
 import {navigate} from '../../../navigator/NavigationUtils';
 import theme from '../../../util/theme';
-
 
 const DashboardComponent = () => {
   return (

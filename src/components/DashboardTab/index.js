@@ -1,12 +1,10 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useEffect, useMemo, useState} from 'react';
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import { err } from 'react-native-svg/lib/typescript/xml';
+import {StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {CONVERSATION} from '../../constants/global';
 import {strings} from '../../locales/i18n';
 import {fetchConversationSummary} from '../../store/actions';
-import { handleFailureCallback } from '../../util/apiHelper';
+import {handleFailureCallback} from '../../util/apiHelper';
 import colors from '../../util/theme/colors';
 import ConversationList from './ConversationList';
 
@@ -53,9 +51,9 @@ const DashboardTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const _getConversationSummary = () => {
+  const _getConversationSummary = (closedConversationCount = 0) => {
     dispatch(
-      fetchConversationSummary(userPreference?.logged_in_user_id, {
+      fetchConversationSummary(userPreference?.account_id, {
         SuccessCallback: response => {
           const defaultTabJson = [
             {
@@ -84,14 +82,13 @@ const DashboardTab = () => {
               statusId: '2',
               conversationType: 'closed',
               title: strings('tab.closed'),
-              count: response?.open_status?.closed ?? 0,
+              count: closedConversationCount ?? 0,
             },
           ];
           setState(prev => ({...prev, tabData: defaultTabJson}));
         },
         FailureCallback: error => {
-          handleFailureCallback(error,true,true)
-          // console.log('FailureCallback------------', JSON.stringify(error));
+          handleFailureCallback(error, true, true);
         },
       }),
     );
@@ -105,21 +102,14 @@ const DashboardTab = () => {
         children={() => (
           <ConversationList
             tabData={_it}
-            totalCount={(type, count) => {
-              setState(prev => ({
-                ...prev,
-                tabData: prev.tabData.map(item => {
-                  if (item.type === type) {
-                    item.count = count;
-                  }
-                  return item;
-                }),
-              }));
-            }}
+            updateCount={closedConversationCount =>
+              _getConversationSummary(closedConversationCount)
+            }
           />
         )}
       />
     ));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return (
