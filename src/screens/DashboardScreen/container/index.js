@@ -49,8 +49,6 @@ class DashboardContainer extends Component {
 
   render() {
     const {teamData, teamMateData} = this.props;
-    // console.log("teamData",JSON.stringify(teamData))
-    // console.log("teamMateData",JSON.stringify(teamMateData))
     return (
       <SafeAreaView style={{flex: 1}}>
         <DashboardComponent data={{}} />

@@ -57,6 +57,12 @@ const Input = ({
   onSubmitEditing,
   inputRef,
   tintColor,
+  containerStyle,
+  isLeftIconElementVisible,
+  leftIconClick,
+  computedLeftIcon,
+  leftIconStyle,
+  rightIconStyle,
   ...rest
 }) => {
   const isValidJSX = React.isValidElement(children);
@@ -83,7 +89,7 @@ const Input = ({
 
   return (
     <>
-      <Box bg={'red'}>
+      <Box style={containerStyle}>
         {label?.length > 0 && (
           <IText
             style={[
@@ -131,6 +137,30 @@ const Input = ({
                       width: theme.sizes.icons.xl2,
                     },
                     {tintColor: tintColor},
+                    rightIconStyle,
+                  ]}
+                />
+              </TouchableOpacity>
+            )
+          }
+          InputLeftElement={
+            isLeftIconElementVisible && (
+              <TouchableOpacity
+                onPress={leftIconClick}
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: theme.sizes.spacing.xs,
+                }}>
+                <Image
+                  source={computedLeftIcon}
+                  style={[
+                    {
+                      height: theme.sizes.icons.md,
+                      width: theme.sizes.icons.md,
+                    },
+                    {tintColor: tintColor},
+                    leftIconStyle,
                   ]}
                 />
               </TouchableOpacity>

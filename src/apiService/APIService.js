@@ -89,7 +89,7 @@ class API {
 
   Logger(message) {
     if (this._DevMode !== DevelopmentMode.PRODUCTION) {
-      console.log(appName, message);
+      // console.log(appName, message);
     }
   }
 

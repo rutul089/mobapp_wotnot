@@ -45,6 +45,9 @@ const DashboardTab = () => {
     ],
   });
   const userPreference = useSelector(state => state.detail?.userPreference);
+  const conversation_summary = useSelector(
+    state => state.conversationReducer?.conversation_summary?.open_status,
+  );
   useEffect(() => {
     _getConversationSummary();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,21 +63,21 @@ const DashboardTab = () => {
               statusId: '1',
               conversationType: 'you',
               title: strings('tab.you'),
-              count: response?.open_status?.you ?? 0,
+              count: conversation_summary?.you ?? 0,
             },
             {
               id: 1,
               statusId: '1',
               conversationType: 'assigned',
               title: strings('tab.assigned'),
-              count: response?.open_status?.assigned ?? 0,
+              count: conversation_summary?.assigned ?? 0,
             },
             {
               id: 2,
               statusId: '1',
               conversationType: 'unassigned',
               title: strings('tab.unassigned'),
-              count: response?.open_status?.unassigned ?? 0,
+              count: conversation_summary?.unassigned ?? 0,
             },
             {
               id: 3,

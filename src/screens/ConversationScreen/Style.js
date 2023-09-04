@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     actionItemIcon: {height: 20, width: 20},
   },
   assigneeHeader: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.brandColor.FAFAFA,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   assigneeIcon: {
-    height: theme.sizes.image.xl,
-    width: theme.sizes.image.xl,
+    height: theme.sizes.image.md,
+    width: theme.sizes.image.md,
     tintColor: 'black',
   },
 });

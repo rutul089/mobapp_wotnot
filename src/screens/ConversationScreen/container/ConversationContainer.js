@@ -4,7 +4,16 @@ import {connect} from 'react-redux';
 import {CONVERSATION} from '../../../constants/global';
 import {strings} from '../../../locales/i18n';
 import {goBack, navigate} from '../../../navigator/NavigationUtils';
+import {handleFailureCallback} from '../../../util/apiHelper';
 import ConversationComponent from '../component/ConversationComponent';
+import {
+  fetchTeamData,
+  fetchTeammateData,
+  setTeammateData,
+  setIncomingEvent,
+} from '../../../store/actions';
+import {showToast} from '../../../util/helper';
+import moment from 'moment';
 
 class ConversationContainer extends Component {
   constructor(props) {
@@ -69,6 +78,7 @@ class ConversationContainer extends Component {
       ],
       showChangeAssignee: false,
       isTeamSelected: false,
+      isLoading: false,
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -78,14 +88,26 @@ class ConversationContainer extends Component {
     this.scrollViewRef = React.createRef();
     this.listRef = React.createRef();
     this.attachmentBottomSheetRef = React.createRef();
+    this.onTeamItemPress = this.onTeamItemPress.bind(this);
   }
 
   componentDidMount = () => {
     this.setState({conversationJoined: true});
+    this.callFetchTeamData();
+    this.callFetchTeammateData();
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   };
   onPressMore = () => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+
+    if (itemData?.status_id == CONVERSATION.CLOSED_MESSAGE_TYPE) {
+      // return;
+    }
     this.moreInfoModalRef?.current?.open();
   };
   onPressInfo = () => {
@@ -103,7 +125,23 @@ class ConversationContainer extends Component {
     }, 200);
   };
   onCloseConversation = () => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
     this.closeMoreInfoModal();
+
+    let param = {
+      conversation_key: itemData?.thread_key,
+      type: 'status',
+      payload: {
+        is_closed: true,
+      },
+      timestamp: moment().unix(),
+    };
+    this.setLoading(true);
+    this.callSetIncomingEvent(param, true, 'You closed this conversation');
   };
   closeMoreInfoModal = () => {
     this.moreInfoModalRef?.current?.close();
@@ -163,6 +201,82 @@ class ConversationContainer extends Component {
     this.setState({isTeamSelected: false});
   };
 
+  callFetchTeamData = () => {
+    this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
+      SuccessCallback: res => {},
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
+  callFetchTeammateData = () => {
+    let param = {
+      order_by: 'user',
+      order: 'asc',
+      pagination: {limit: 20, offset: 1},
+    };
+    this.props.fetchTeammateData(
+      this.props?.userPreference?.account_id,
+      param,
+      {
+        SuccessCallback: res => {},
+        FailureCallback: res => {
+          handleFailureCallback(res);
+        },
+      },
+    );
+  };
+
+  onTeamItemPress = item => {
+    this.setState({showChangeAssignee: false});
+    this.setLoading(true);
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    let param = {
+      conversation_key: itemData?.thread_key,
+      type: 'assignee',
+      payload: {
+        assignee: {
+          to: {
+            id: item?.id,
+            type: this.state.isTeamSelected ? 'team' : 'team_member',
+          },
+        },
+      },
+    };
+    this.callSetIncomingEvent(param);
+  };
+
+  callSetIncomingEvent = (param, isShowToast = false, message = '') => {
+    this.props.setIncomingEvent(
+      this.props?.userPreference?.logged_in_user_id,
+      param,
+      {
+        SuccessCallback: res => {
+          this.setLoading(false);
+          if (res?.ok) {
+            goBack();
+            if (isShowToast) {
+              showToast(message);
+            }
+          }
+        },
+        FailureCallback: res => {
+          this.setLoading(false);
+          handleFailureCallback(res, true, true);
+        },
+      },
+    );
+  };
+
+  setLoading = value => {
+    this.setState({isLoading: value});
+  };
+
   render() {
     const {
       teamMateData,
@@ -170,8 +284,8 @@ class ConversationContainer extends Component {
       route: {
         params: {itemData},
       },
+      userPreference,
     } = this.props;
-    console.log('itemData', JSON.stringify(itemData));
     return (
       <>
         <ConversationComponent
@@ -208,20 +322,35 @@ class ConversationContainer extends Component {
           onTeamClick={this.onTeamClick}
           onTeamMateClick={this.onTeamMateClick}
           isTeamSelected={this.state.isTeamSelected}
-          teamMateData={teamMateData}
+          teamMateData={[
+            {
+              id: null,
+              display_name: 'none',
+            },
+            ...teamMateData,
+          ]}
           teamData={teamData}
           itemData={itemData}
+          userID={userPreference?.logged_in_user_id}
+          onTeamItemPress={this.onTeamItemPress}
+          isLoading={this.state.isLoading}
         />
       </>
     );
   }
 }
 
-const mapActionCreators = {};
+const mapActionCreators = {
+  fetchTeamData,
+  fetchTeammateData,
+  setTeammateData,
+  setIncomingEvent,
+};
 const mapStateToProps = state => {
   return {
     teamData: state.accountReducer?.teamData?.teams,
     teamMateData: state.accountReducer?.teamMateData?.users,
+    userPreference: state.detail?.userPreference,
   };
 };
 export default connect(

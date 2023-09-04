@@ -136,6 +136,12 @@ export const endPoints = {
     endpoint: '/v1/user-preference',
     method: Method.POST,
   },
+  setIncomingEvents: agent_id => {
+    return {
+      endpoint: `/v1/agents/${agent_id}/incoming-events`,
+      method: Method.POST,
+    };
+  },
 };
 
 // export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD

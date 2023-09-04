@@ -7,6 +7,7 @@ import {navigate} from '../../navigator/NavigationUtils';
 import {
   fetchConversation,
   fetchConversationBySearch,
+  fetchConversationSummary,
 } from '../../store/actions';
 import {handleFailureCallback} from '../../util/apiHelper';
 import {getDayDifference, hp, wp} from '../../util/helper';
@@ -78,6 +79,7 @@ const ConversationList = ({
                 }));
               },
               FailureCallback: error => {
+                handleFailureCallback(error, true, true);
                 setState(prev => ({
                   ...prev,
                   isRefreshing: false,
@@ -130,8 +132,7 @@ const ConversationList = ({
                 }
               },
               FailureCallback: error => {
-                console.log('FailureCallback', JSON.stringify(error));
-                handleFailureCallback(error);
+                handleFailureCallback(error, true, true);
                 setState(prev => ({
                   ...prev,
                   isRefreshing: false,
@@ -149,12 +150,23 @@ const ConversationList = ({
       fetchAllConversations(tabData?.statusId);
     }
   };
+
+  const _getConversationSummary = () => {
+    dispatch(
+      fetchConversationSummary(userPreference?.account_id, {
+        SuccessCallback: response => {},
+        FailureCallback: error => {
+          // console.log('FailureCallback------------', JSON.stringify(error));
+        },
+      }),
+    );
+  };
   return (
     <FlatList
       data={state?.conversationData}
       renderItem={renderItem}
       style={{paddingHorizontal: wp(4), paddingVertical: hp(2)}}
-      contentContainerStyle={{flex: 1}}
+      contentContainerStyle={{flexGrow: 1}}
       keyExtractor={_it => `${_it?.thread_key}`}
       refreshControl={
         <RefreshControl

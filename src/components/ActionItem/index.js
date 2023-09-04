@@ -63,7 +63,7 @@ const ActionItem = ({
   //   onPress={onItemPress}
   //   rightIcon={rightIcon}
   //   leftIcon={leftIcon}>
-  //   {label}
+  //   {"label"}
   // </Actionsheet.Item>
 );
 

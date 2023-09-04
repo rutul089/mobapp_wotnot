@@ -75,7 +75,7 @@ const SettingScreenComponent = ({
   isOpen,
   account_id,
   isLoading,
-  onHelpDeskClick
+  onHelpDeskClick,
 }) => {
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
@@ -165,6 +165,7 @@ const SettingScreenComponent = ({
                     height: theme.sizes.icons.sm * 1.5,
                     width: theme.sizes.icons.sm * 1.5,
                     alignSelf: 'center',
+                    borderRadius: theme.sizes.icons.sm,
                   }}
                 />
               }

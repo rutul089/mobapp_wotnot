@@ -173,9 +173,7 @@ class SettingScreenContainer extends Component {
           isActive={state.isActive}
           name={userPreference?.logged_in_user_name}
           email={userPreference?.email}
-          profilePhoto={
-            'https://cdn.wotnot.io/static/img/navigation-panel/userProfile.svg'
-          }
+          profilePhoto={userPreference?.image_url?.small}
           onPressAccountDropdown={this.onPressAccountDropdown}
           accountModalRef={this.accountModalRef}
           accountList={accounts}

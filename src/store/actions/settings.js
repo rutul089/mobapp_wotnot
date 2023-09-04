@@ -8,14 +8,34 @@ const defaultHeaders = {
 export const fetchAccounts = ({SuccessCallback, FailureCallback}) => {
   return dispatch => {
     dispatch(loadingSet());
+    API.getInstance().Fetch(endPoints.accounts, defaultHeaders, '', {
+      SuccessCallback: response => {
+        dispatch(loadingUnset());
+        dispatch(setAccountList(response));
+        SuccessCallback(response);
+      },
+      FailureCallback: response => {
+        dispatch(loadingUnset());
+        FailureCallback(response);
+      },
+    });
+  };
+};
+
+export const setIncomingEvent = (
+  agent_id,
+  param,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    dispatch(loadingSet());
     API.getInstance().Fetch(
-      endPoints.accounts,
+      endPoints.setIncomingEvents(agent_id),
       defaultHeaders,
-      '',
+      param,
       {
         SuccessCallback: response => {
           dispatch(loadingUnset());
-          dispatch(setAccountList(response));
           SuccessCallback(response);
         },
         FailureCallback: response => {

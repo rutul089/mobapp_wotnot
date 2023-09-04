@@ -7,6 +7,7 @@ import {
   View,
   Modal,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import images from '../../../assets/images';
 import {
@@ -15,6 +16,7 @@ import {
   FlexContainer,
   Header,
   Text,
+  Loader
 } from '../../../components';
 import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
@@ -23,8 +25,7 @@ import colors from '../../../util/theme/colors';
 import styles from '../Style';
 import ButtonTeammate from './ButtonTeammate';
 import AssigneeItem from './AssigneeItem';
-import { CONVERSATION } from '../../../constants/global';
-
+import {CONVERSATION} from '../../../constants/global';
 
 const ConversationComponent = ({
   joinConversation,
@@ -58,6 +59,9 @@ const ConversationComponent = ({
   teamMateData,
   teamData,
   itemData,
+  userID,
+  onTeamItemPress,
+  isLoading
 }) => {
   const _renderListHeaderView = () => {
     return (
@@ -108,7 +112,15 @@ const ConversationComponent = ({
     );
   };
   const _renderAssigneeItemView = ({item}) => {
-    return <AssigneeItem item={item} isTeamSelected={isTeamSelected} />;
+    return (
+      <AssigneeItem
+        item={item}
+        isTeamSelected={isTeamSelected}
+        isMe={item?.id === userID}
+        profileImage={item?.image_url?.small}
+        onItemPress={ () => onTeamItemPress && onTeamItemPress(item)}
+      />
+    );
   };
   const _renderChangeAssigneeView = () => {
     return (
@@ -117,8 +129,9 @@ const ConversationComponent = ({
         visible={showChangeAssignee}
         style={{backgroundColor: 'black'}}
         statusBarTranslucent={false}>
-        <SafeAreaView style={{flex: 1}}>
-          <View style={{overflow: 'hidden', paddingBottom: 5}}>
+        <SafeAreaView
+          style={{flex: 1, backgroundColor: theme.colors.brandColor.FAFAFA}}>
+          <View style={{overflow: 'hidden', paddingBottom: 1}}>
             <View style={styles.assigneeHeader}>
               <TouchableOpacity
                 activeOpacity={0.5}
@@ -129,13 +142,13 @@ const ConversationComponent = ({
                   style={styles.assigneeIcon}
                 />
               </TouchableOpacity>
-              <Text type={'subtitle1'} textAlign={'center'} style={{flex: 1}}>
+              <Text type={'body1'} textAlign={'center'} style={{flex: 1}}>
                 {strings('chat.change_assignee')}
               </Text>
               <View style={styles.assigneeIcon} />
             </View>
           </View>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row',borderTopWidth:1,borderColor:theme.colors.borderColor}}>
             <ButtonTeammate
               tittle={'Teammates'}
               onPress={onTeamMateClick}
@@ -149,11 +162,10 @@ const ConversationComponent = ({
           </View>
           <FlatList
             ref={listRef}
+            contentContainerStyle={{backgroundColor: 'white', flexGrow: 1}}
             data={isTeamSelected ? teamData : teamMateData}
             renderItem={_renderAssigneeItemView}
-            style={{
-              paddingBottom: theme.sizes.spacing.xl,
-            }}
+            style={{}}
             showsVerticalScrollIndicator={false}
           />
         </SafeAreaView>
@@ -244,7 +256,7 @@ const ConversationComponent = ({
         height={theme.normalize(160)}
         closeOnDragDown
         customStyles={styles.bottomSheetContainer.mainContainer}>
-        <>
+        <ScrollView scrollEnabled={false}>
           <ActionItem
             label={strings('chat.change_assignee')}
             onItemPress={onChangeAssignee}
@@ -253,7 +265,7 @@ const ConversationComponent = ({
             label={strings('chat.close_conversation')}
             onItemPress={onCloseConversation}
           />
-        </>
+        </ScrollView>
       </BottomSheet>
       <BottomSheet
         ref={attachmentBottomSheetRef}
@@ -297,6 +309,7 @@ const ConversationComponent = ({
         </>
       </BottomSheet>
       {_renderChangeAssigneeView()}
+      <Loader loading={isLoading}/>
     </FlexContainer>
   );
 };

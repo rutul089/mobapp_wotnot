@@ -7,25 +7,30 @@ import React, {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import images from '../../../assets/images';
-import {Header} from '../../../components';
+import {Header, FlexContainer, Input, Spacing} from '../../../components';
 import ConversationList from '../../../components/DashboardTab/ConversationList';
 import {goBack} from '../../../navigator/NavigationUtils';
 import {hp} from '../../../util/helper';
-import colors from '../../../util/theme/colors';
+import theme from '../../../util/theme';
 import styles from '../Style';
 
-const SearchComponent = ({searchQuery, updateSearchQuery}) => {
+const SearchComponent = ({
+  searchQuery,
+  updateSearchQuery,
+  onPressLeftContent,
+}) => {
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={styles.searchViewContainer}>
-        <Header
-          isRightIconHidden
-          leftIcon={
-            <TouchableOpacity onPress={() => goBack()}>
-              <Image source={images.ic_back} style={{height: 20, width: 20}} />
-            </TouchableOpacity>
-          }
-        />
+    <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
+      <Header isRightIconHidden onPressLeftContent={() => goBack()} />
+      <Spacing />
+      <Input
+        containerStyle={{paddingHorizontal: theme.sizes.spacing.ph}}
+        computedLeftIcon={images.ic_search}
+        isLeftIconElementVisible
+        tintColor={theme.colors.brandColor.blue}
+      />
+      {/* <View style={styles.searchViewContainer}>
+        <Header isRightIconHidden onPressLeftContent={() => goBack()} />
         <View style={styles.searchViewInnerContainer}>
           <View style={styles.searchBarContainer}>
             <TouchableWithoutFeedback>
@@ -46,8 +51,8 @@ const SearchComponent = ({searchQuery, updateSearchQuery}) => {
           </View>
           <ConversationList searchQuery={searchQuery} isSearchView={true} />
         </View>
-      </View>
-    </SafeAreaView>
+      </View> */}
+    </FlexContainer>
   );
 };
 export default SearchComponent;

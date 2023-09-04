@@ -101,9 +101,9 @@ class UserDetailContainer extends Component {
   };
 
   callFetchLabel = () => {
-    this.props.fetchLabel(STATIC_USER_ID, {
+    this.props.fetchLabel(this.props.userPreference?.account_id, {
       SuccessCallback: res => {
-        // console.log('SuccessCallback', JSON.stringify(res));
+        console.log('SuccessCallback', JSON.stringify(res));
       },
       FailureCallback: res => {
         handleFailureCallback(res);
