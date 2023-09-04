@@ -43,7 +43,6 @@ const DashboardTab = () => {
         count: 0,
       },
     ],
-    searchQuery: '',
   });
   const userPreference = useSelector(state => state.detail?.userPreference);
   useEffect(() => {
@@ -110,7 +109,7 @@ const DashboardTab = () => {
       />
     ));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [state.tabData]);
 
   return (
     <>
@@ -120,6 +119,7 @@ const DashboardTab = () => {
             tabBarScrollEnabled: true,
             tabBarStyle: {backgroundColor: colors.card.background},
           }}
+          style={{backgroundColor: 'red'}}
           sceneContainerStyle={{backgroundColor: colors.white}}>
           {TabScreen}
         </Tab.Navigator>

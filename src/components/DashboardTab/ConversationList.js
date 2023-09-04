@@ -94,36 +94,40 @@ const ConversationList = ({
             CONVERSATION.LIMIT,
             {
               SuccessCallback: response => {
-                let sortedData = response?.conversations ?? [];
-                switch (tabData.conversationType) {
-                  case 'you':
-                    sortedData = sortedData.filter(
-                      _it => _it.assignee?.id === userPreference?.account_id,
-                    );
-                    break;
-                  case 'assigned':
-                    sortedData = sortedData.filter(
-                      _it => Object.entries(_it.assignee).length > 0,
-                    );
-                    break;
-                  case 'unassigned':
-                    sortedData = sortedData.filter(
-                      _it => Object.entries(_it.assignee).length === 0,
-                    );
-                    break;
-                  default:
-                    break;
-                }
+                let sortedData = response?.conversations;
                 updateCount(
                   tabData.conversationType === 'closed'
-                    ? sortedData?.length
+                    ? sortedData?.length ?? 0
                     : undefined,
                 );
-                setState(prev => ({
-                  ...prev,
-                  isRefreshing: false,
-                  conversationData: sortedData,
-                }));
+                if (sortedData?.length > 0) {
+                  switch (tabData.conversationType) {
+                    case 'you':
+                      sortedData = sortedData.filter(
+                        _it =>
+                          _it?.assignee?.id ===
+                          userPreference?.logged_in_user_id,
+                      );
+                      break;
+                    case 'assigned':
+                      sortedData = sortedData.filter(
+                        _it => Object.entries(_it?.assignee ?? '').length > 0,
+                      );
+                      break;
+                    case 'unassigned':
+                      sortedData = sortedData.filter(
+                        _it => Object.entries(_it?.assignee ?? '').length === 0,
+                      );
+                      break;
+                    default:
+                      break;
+                  }
+                  setState(prev => ({
+                    ...prev,
+                    isRefreshing: false,
+                    conversationData: sortedData,
+                  }));
+                }
               },
               FailureCallback: error => {
                 console.log('FailureCallback', JSON.stringify(error));
@@ -150,6 +154,8 @@ const ConversationList = ({
       data={state?.conversationData}
       renderItem={renderItem}
       style={{paddingHorizontal: wp(4), paddingVertical: hp(2)}}
+      contentContainerStyle={{flex: 1}}
+      keyExtractor={_it => `${_it?.thread_key}`}
       refreshControl={
         <RefreshControl
           refreshing={state.isRefreshing}
