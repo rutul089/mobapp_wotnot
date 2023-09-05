@@ -5,6 +5,7 @@ import {
   loadingUnset,
   setConversations,
   setConversationsCount,
+  setFilterConversation,
 } from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -50,10 +51,12 @@ export const fetchConversationBySearch = (
       {
         SuccessCallback: response => {
           dispatch(loadingUnset());
+          dispatch(setFilterConversation(response));
           SuccessCallback(response);
         },
         FailureCallback: response => {
           dispatch(loadingUnset());
+          dispatch(setFilterConversation(response));
           FailureCallback(response);
         },
       },

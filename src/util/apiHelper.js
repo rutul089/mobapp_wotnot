@@ -1,12 +1,12 @@
 import {LOCAL_STORAGE, removeItemFromStorage} from '../constants/storage';
 import {showSWWToast, showToast} from './helper';
+import { navigateAndSimpleReset } from '../navigator/NavigationUtils';
 
 export function checkForCode(status) {
   if (status === 401 || status == 402) {
     Object.keys(LOCAL_STORAGE).map(key =>
       removeItemFromStorage(LOCAL_STORAGE[key]),
     );
-
     navigateAndSimpleReset('SignInScreen');
   }
 }

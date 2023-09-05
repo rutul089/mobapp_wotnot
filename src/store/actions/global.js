@@ -78,3 +78,8 @@ export const setAccountList = data => ({
   type: types.SET_ACCOUNTS,
   payload: data,
 });
+
+export const setFilterConversation = data => ({
+  type: types.FILTER_DATA,
+  payload: data,
+});

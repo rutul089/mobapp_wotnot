@@ -63,6 +63,7 @@ const Input = ({
   computedLeftIcon,
   leftIconStyle,
   rightIconStyle,
+  leftIconDisabled,
   ...rest
 }) => {
   const isValidJSX = React.isValidElement(children);
@@ -125,9 +126,8 @@ const Input = ({
               <TouchableOpacity
                 onPress={rightIconClick}
                 style={{
-                  width: 40,
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  // width: 40,
+                  marginRight: theme.sizes.spacing.xs,
                 }}>
                 <Image
                   source={computedRightIcon}
@@ -147,6 +147,7 @@ const Input = ({
             isLeftIconElementVisible && (
               <TouchableOpacity
                 onPress={leftIconClick}
+                disabled={leftIconDisabled}
                 style={{
                   justifyContent: 'center',
                   alignItems: 'center',
