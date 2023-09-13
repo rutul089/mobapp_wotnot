@@ -520,7 +520,7 @@ PODS:
     - React
   - RNLocalize (3.0.2):
     - React-Core
-  - RNReanimated (3.4.2):
+  - RNReanimated (3.5.1):
     - DoubleConversion
     - FBLazyVector
     - glog
@@ -835,7 +835,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: ccaa4a81582cf713eea562c5dd9dc1961a715fd0
   RNI18n: e2f7e76389fcc6e84f2c8733ea89b92502351fd8
   RNLocalize: dbea38dcb344bf80ff18a1757b1becf11f70cae4
-  RNReanimated: 726395a2fa2f04cea340274ba57a4e659bc0d9c1
+  RNReanimated: 99aa8c96151abbc2d7e737a56ec62aca709f0c92
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNSVG: ed492aaf3af9ca01bc945f7a149d76d62e73ec82
   RNVectorIcons: 8b5bb0fa61d54cd2020af4f24a51841ce365c7e9
@@ -845,4 +845,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 58f4b7d915bf1b473ca7c5acd052bc158eddcce9
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.11.2

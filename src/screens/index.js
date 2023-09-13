@@ -1,4 +1,5 @@
-export {default as ChatScreen} from './ChatScreen/container';
+// export {default as ChatScreen} from './ChatScreen/container';
+export {default as ChatScreen} from './ChatScreen/container/TestChatScreen';
 export {default as ConversationScreen} from './ConversationScreen/container/ConversationContainer';
 export {default as DashboardScreen} from './DashboardScreen/container';
 export {default as ForgotPasswordScreen} from './ForgotPasswordScreen/container/ForgotPasswordContainer';

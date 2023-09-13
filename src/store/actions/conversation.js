@@ -6,6 +6,8 @@ import {
   setConversations,
   setConversationsCount,
   setFilterConversation,
+  loadingSetConversations,
+  loadingUnsetConversations,
 } from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',

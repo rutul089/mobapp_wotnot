@@ -34,4 +34,5 @@ export default {
     ic_roadmap: require('./ic_roadmap.png'),
     ic_watch_tutorial: require('./ic_watch_tutorial.png'),
   },
+  ic_star: require('./ic_star.png'),
 };

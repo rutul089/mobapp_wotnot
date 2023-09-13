@@ -83,3 +83,12 @@ export const setFilterConversation = data => ({
   type: types.FILTER_DATA,
   payload: data,
 });
+
+export const setClosedConversationCount = data => ({
+  type: types.CLOSED_CONVERSATION_COUNT,
+  payload: data,
+});
+
+export const loadingSetConversations = () => ({type: types.API_LOADING_START});
+
+export const loadingUnsetConversations = () => ({type: types.API_LOADING_STOP});

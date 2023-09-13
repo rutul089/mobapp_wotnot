@@ -48,7 +48,7 @@ const MainNavigator = ({badgeValue}) => {
         })}>
         <Tab.Screen
           name={strings('tab.chat')}
-          component={DashboardScreen}
+          component={ChatScreen}
           options={
             {
               // tabBarIconStyle: {display: 'none'},

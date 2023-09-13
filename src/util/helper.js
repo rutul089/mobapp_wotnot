@@ -32,6 +32,7 @@ export const VALIDATION_REGEX = {
   IMAGE_SRC: /<img.*?src=['"](.*?)["']/,
   HTTP_URL:
     /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g,
+  RECOVERY_CODE: /^[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}$/,
 };
 
 export const showSWWToast = (duration = LONG_DURATION) => {
@@ -82,3 +83,20 @@ export const getDayDifference = date => {
 };
 
 export const getLastActiveTime = date => {};
+
+export const getAssigneeId = (arrayList, key = 'id', isZero = false) => {
+  let assignee_ids = isZero ? [0] : [];
+  arrayList?.forEach(element => {
+    assignee_ids.push(element?.[key]);
+  });
+  return assignee_ids?.toString();
+};
+
+export const CONVERSATION_CONSTANT = {
+  IFRAME_CONTENT: 'EMBEDDABLE',
+  IMAGE_FILE: 'IMAGE',
+  CAROUSEL_CONTENT: 'CAROUSEL',
+  VIDEO_FILE: 'VIDEO',
+  AUDIO_FILE: 'AUDIO',
+  CODE_SNIPPET: 'CODE SNIPPET',
+};

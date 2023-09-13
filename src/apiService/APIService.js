@@ -89,7 +89,7 @@ class API {
 
   Logger(message) {
     if (this._DevMode !== DevelopmentMode.PRODUCTION) {
-      // console.log(appName, message);
+      console.log(appName, message);
     }
   }
 
@@ -167,7 +167,7 @@ class API {
             headers: {headers, ...defaultHeader},
           })
           .then(res => {
-            this.helperLog('SuccessCallback', res);
+            // this.helperLog('SuccessCallback', res);
             if (res.status === 200 || res.status === 201) {
               SuccessCallback(res.data);
             } else {
@@ -192,7 +192,7 @@ class API {
             headers: {headers, ...defaultHeader},
           })
           .then(res => {
-            this.helperLog('SuccessCallback', res);
+            // this.helperLog('SuccessCallback', res);
             if (res.status === 200) {
               SuccessCallback(res.data);
             } else {
@@ -218,7 +218,7 @@ class API {
             headers: {headers, ...defaultHeader},
           })
           .then(res => {
-            this.helperLog('SuccessCallback', res);
+            // this.helperLog('SuccessCallback', res);
             if (res.status === 200) {
               SuccessCallback(res.data);
             } else {
@@ -242,7 +242,7 @@ class API {
             headers: {headers, ...defaultHeader},
           })
           .then(res => {
-            this.helperLog('SuccessCallback', res);
+            // this.helperLog('SuccessCallback', res);
             if (res.status === 200) {
               SuccessCallback(res.data);
             } else {

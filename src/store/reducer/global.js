@@ -10,6 +10,7 @@ const initialState = {
   notificationCount: 0,
   isShowNetworkModal: false,
   userProfile: {},
+  isConvLoading: false,
 };
 
 const global = (state = initialState, action) => {
@@ -54,6 +55,10 @@ const global = (state = initialState, action) => {
       };
     case types.USER_LOGOUT:
       return {...initialState};
+    case types.API_LOADING_START_CON:
+      return {...state, isConvLoading: true};
+    case types.API_LOADING_STOP_CON:
+      return {...state, isConvLoading: false};
     default:
       return state;
   }

@@ -5,4 +5,8 @@ export const CONVERSATION = {
   USER_STATUS: {ONLINE: 'online'},
   CLOSED_MESSAGE_TYPE: 2,
   OPEN_MESSAGE_TYPE: 1,
+  YOU: 0,
+  ASSIGNED: 1,
+  UNASSIGNED: 2,
+  CLOSE: 3,
 };

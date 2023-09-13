@@ -20,7 +20,8 @@ const wotnotColor = {
   silver: '#858585',
   lightGreen: '#13BE66',
   yellow: '#F1B000',
-  borderColor:'#EEEFF3'
+  borderColor:'#EEEFF3',
+  lavenderBlue:'#BEDBFC'
 };
 
 const gray = {

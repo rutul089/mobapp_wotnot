@@ -29,6 +29,8 @@ const TwoFactorCheckComponent = ({
   btnLabel,
   showRecoveryLabel,
   isLoading,
+  maxLength=6,
+  placeholder
 }) => (
   <FlexContainer>
     <Header
@@ -52,7 +54,7 @@ const TwoFactorCheckComponent = ({
       </View>
       <Input
         label={inputLabel}
-        placeholder={''}
+        placeholder={placeholder}
         isError={!state?.isErrOTP}
         errorMsg={state?.errOTP}
         value={state?.verifyCode}
@@ -60,7 +62,7 @@ const TwoFactorCheckComponent = ({
         onChangeText={onVerifyCodeChange && onVerifyCodeChange}
         returnKeyType="done"
         onSubmitEditing={onSubmitVerifyCode && onSubmitVerifyCode}
-        maxLength={6}
+        maxLength={maxLength}
       />
       <Spacing size="xl" />
       <Button

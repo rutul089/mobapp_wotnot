@@ -146,7 +146,7 @@ export const endPoints = {
 
 // export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD
 // export const WebSocketURL = "ws.test.wotnot.io/?user_type=agent" // TEST
-export const WebSocketURL = 'wss.dev.wotnot.io/?user_type=agent'; //DEV
+export const WebSocketURL = 'wss://ws.dev.wotnot.io/socket.io/?user_type=agent&EIO=4&transport=websocket'; //DEV
 
 // Production: https://ws.wotnot.io/?user_type=agent
 // Staging: https://ws.test.wotnot.io/?user_type=agent

@@ -105,7 +105,6 @@ const SignInScreenComponent = (
                   inputRef={emailInputRef}
                   returnKeyType="next"
                   onSubmitEditing={onSubmitEditingEmail && onSubmitEditingEmail}
-                  cursorColor={'blue'}
                 />
                 <Spacing />
                 <Input

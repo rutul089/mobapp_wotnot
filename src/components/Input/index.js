@@ -1,4 +1,4 @@
-import {Box, Input as IInput} from 'native-base';
+import {Box, Input as IInput, FormControl} from 'native-base';
 import React from 'react';
 
 import {Image, StyleSheet, TouchableOpacity} from 'react-native';
@@ -41,7 +41,7 @@ const Input = ({
   labelStyles,
   lineHeight,
   errorTextColor = theme.colors.typography.error,
-  focusOutlineColor = theme.colors.brandColor.silver,
+  focusOutlineColor = theme.colors.brandColor.blue,
   borderColor = theme.colors.brandColor.silver,
   backgroundColor = theme.colors.white,
   placeholderTextColor = theme.colors.typography.placeHolder,
@@ -64,6 +64,8 @@ const Input = ({
   leftIconStyle,
   rightIconStyle,
   leftIconDisabled,
+  onBlur,
+  onFocus,
   ...rest
 }) => {
   const isValidJSX = React.isValidElement(children);
@@ -113,9 +115,6 @@ const Input = ({
           onChangeText={onChangeText}
           _disabled={{
             opacity: 1,
-          }}
-          _focus={{
-            backgroundColor: 'white',
           }}
           isDisabled={isDisable}
           secureTextEntry={secureTextEntry}
@@ -169,6 +168,11 @@ const Input = ({
           }
           ref={inputRef}
           cursorColor={'blue'}
+          _focus={{
+            backgroundColor: 'white',
+          }}
+          onFocus={onFocus}
+          onBlur={onBlur}
           {...rest}
         />
 

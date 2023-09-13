@@ -108,7 +108,13 @@ class SettingScreenContainer extends Component {
         // );
         navigateAndSimpleReset('SignInScreen');
       },
-      FailureCallback: res => {},
+      FailureCallback: res => {
+        Object.keys(LOCAL_STORAGE).map(key =>
+          removeItemFromStorage(LOCAL_STORAGE[key]),
+        );
+        navigateAndSimpleReset('SignInScreen');
+        console.log('1111111111111', JSON.stringify(res));
+      },
     });
   };
 
