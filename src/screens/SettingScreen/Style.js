@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
   },
   bottomSheetStyle: {
     elevation: 100,
-    borderTopLeftRadius: theme.normalize(2),
-    borderTopRightRadius: theme.normalize(2),
+    // borderTopLeftRadius: theme.sizes.radius.modalRadius,
+    // borderTopRightRadius: theme.sizes.radius.modalRadius,
   },
 });
 

@@ -224,8 +224,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 0,
     overflow: 'hidden',
-    borderTopLeftRadius: theme.normalize(20),
-    borderTopRightRadius: theme.normalize(20),
+    borderTopLeftRadius: theme.sizes.radius.modalRadius,
+    borderTopRightRadius: theme.sizes.radius.modalRadius,
   },
   draggableContainer: {
     width: '100%',

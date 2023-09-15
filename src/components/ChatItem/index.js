@@ -1,5 +1,11 @@
 import React from 'react';
-import {Image, PixelRatio, Pressable, StyleSheet, View} from 'react-native';
+import {
+  Image,
+  PixelRatio,
+  TouchableHighlight,
+  StyleSheet,
+  View,
+} from 'react-native';
 import images from '../../assets/images';
 import {hp, wp} from '../../util/helper';
 import theme from '../../util/theme';
@@ -9,7 +15,8 @@ import Spacing from '../Spacing';
 import Text from '../Text/index';
 import {timing} from 'react-native-redash';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {duration} from 'moment';
+import Ticker from './Ticker';
+import {getTimeStamp} from '../../util/ConversationListHelper';
 
 const ChatItem = ({
   name,
@@ -28,6 +35,12 @@ const ChatItem = ({
   hideUnreadCount,
   hideAnimation,
   hideReviewView,
+  hideStatusIcon,
+  paddingHorizontal = 0,
+  backgroundColor = 'white',
+  borderBottomWidth = 0,
+  borderBottomColor = theme.colors.brandColor.silver,
+  itemData,
 }) => {
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
@@ -52,16 +65,18 @@ const ChatItem = ({
             <Text>{name?.slice(0, 2)?.toUpperCase()}</Text>
           </View>
         )}
-        <View
-          style={[
-            styles.badgeContainer,
-            {
-              backgroundColor: isOnline
-                ? theme.colors.brandColor.green
-                : theme.colors.brandColor.silver,
-            },
-          ]}
-        />
+        {!hideStatusIcon ? (
+          <View
+            style={[
+              styles.badgeContainer,
+              {
+                backgroundColor: isOnline
+                  ? theme.colors.brandColor.green
+                  : theme.colors.brandColor.silver,
+              },
+            ]}
+          />
+        ) : null}
       </View>
     );
   };
@@ -90,20 +105,27 @@ const ChatItem = ({
               type={'caption12'}
               weight={theme.typography.fontWeights.bold}
               style={{color: colors.brandColor.blue}}>
-              {unreadCount?.length > 3 ? '999+' : unreadCount}
+              {unreadCount > 99 ? '999+' : unreadCount}
             </Text>
           </View>
         ) : null}
-
-        <Spacing direction="y" size="sm" />
+        <Spacing direction="y" size="xs" />
         <View
           style={{
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'flex-end',
+            flex: 0.15,
           }}>
-          <Text type={'caption12'} style={{color: colors.brandColor.silver}}>
+          {itemData?.last_message_at ? (
+            <Ticker
+              msgCount={itemData?.unread_messages_count}
+              readMsgCount={itemData?.read_messages_count}
+              currentTime={getTimeStamp(itemData.last_message_at).timestamp}
+            />
+          ) : null}
+          {/* <Text type={'caption12'} style={{color: colors.brandColor.silver}}>
             {lastMessageDay}
-          </Text>
+          </Text> */}
           {!hideAnimation ? (
             <AnimatedCircularProgress
               size={theme.normalize(13)}
@@ -129,51 +151,64 @@ const ChatItem = ({
   };
 
   return (
-    <Pressable
-      style={{flex: 1, paddingVertical: 5, borderWidth: 0, marginBottom: 5}}
+    <TouchableHighlight
+      activeOpacity={0.9}
+      underlayColor="#DDDDDD"
+      style={{
+        flex: 1,
+        paddingVertical: theme.normalize(10),
+        borderWidth: 0,
+        paddingHorizontal: paddingHorizontal,
+        backgroundColor: backgroundColor,
+        borderBottomWidth: borderBottomWidth,
+        borderBottomColor: borderBottomColor,
+      }}
       onPress={onPress}>
-      <View style={{flex: 1, flexDirection: 'row', borderWidth: 0}}>
-        {renderAvatarView()}
-        <Spacing direction="y" size="xs" />
-        {renderBodyView()}
-      </View>
-      {!hideReviewView ? (
-        <View
-          style={{
-            marginTop: theme.normalize(3),
-            flexDirection: 'row',
-            paddingVertical: 1,
-          }}>
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <Text type={'caption12'} size={10} numberOfLines={1}>
-              {subTittle}
-            </Text>
-          </View>
-          {!hideRating ? (
-            <View
-              style={{
-                marginLeft: 10,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={images.ic_star}
-                style={{
-                  height: theme.sizes.icons.xs2,
-                  width: theme.sizes.icons.xs2,
-                  marginRight: 2,
-                }}
-                resizeMode="contain"
-              />
-              <Text type={'body2'} size={theme.sizes.icons.xs2}>
-                {rating}
+      <View>
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          {renderAvatarView()}
+          <Spacing direction="y" size="xs" />
+          {renderBodyView()}
+        </View>
+
+        {!hideReviewView ? (
+          <View
+            style={{
+              marginTop: theme.normalize(3),
+              flexDirection: 'row',
+              paddingVertical: 1,
+            }}>
+            <View style={{flex: 1, justifyContent: 'center'}}>
+              <Text type={'caption12'} size={10} numberOfLines={1}>
+                {subTittle}
               </Text>
             </View>
-          ) : null}
-        </View>
-      ) : null}
-    </Pressable>
+            {!hideRating ? (
+              <View
+                style={{
+                  marginLeft: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={images.ic_star}
+                  style={{
+                    height: theme.sizes.icons.xs2,
+                    width: theme.sizes.icons.xs2,
+                    marginRight: 2,
+                  }}
+                  resizeMode="contain"
+                />
+                <Text type={'body2'} size={theme.sizes.icons.xs2}>
+                  {rating}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        ) : null}
+      </View>
+    </TouchableHighlight>
     // <Pressable style={styles.pressableContainer} onPress={onPress}>
     //   <View style={{flex: 0.8}}>
     //     <View style={{gap: hp(0.1)}}>

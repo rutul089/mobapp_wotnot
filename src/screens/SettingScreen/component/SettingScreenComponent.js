@@ -16,6 +16,7 @@ import {strings} from '../../../locales/i18n';
 import theme from '../../../util/theme';
 import styles from '../Style';
 import {AlertDialog, Box, Button} from 'native-base';
+import {SvgUri} from 'react-native-svg';
 
 const RenderRowItem = ({onPress, text, dropdownVale, color, dropDownClick}) => {
   return (

@@ -60,6 +60,7 @@ const radius = {
   none: 0,
   rounded: 10,
   full: 9999,
+  modalRadius:wp('2.7'), // 10
 };
 
 const spacing = {
@@ -67,7 +68,7 @@ const spacing = {
   xs2: 4,
   xs: 8,
   sm: 15,
-  md: wp('4.6'),//18
+  md: wp('4.6'), //18
   lg: 24,
   xl: 32,
   xl2: 40,
@@ -89,6 +90,7 @@ const sizes = {
   radius,
   borderRadius: 10,
   borderWidth: 2,
+  modalRadius: wp('2.7'),
   ...{
     xs3: 50,
     xl4: 60,

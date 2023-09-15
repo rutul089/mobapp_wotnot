@@ -14,6 +14,7 @@ import {
   fetchAccounts,
   fetchUserPreference,
   changeAccount,
+  clearAllData
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 
@@ -39,10 +40,8 @@ class SettingScreenContainer extends Component {
   componentDidMount() {
     this.props.navigation.addListener('focus', () => {
       this.cllFetchAccounts();
-      this.callFetchUserPreference();
+      // this.callFetchUserPreference();
     });
-    // this.cllFetchAccounts();
-    // this.callFetchUserPreference();
   }
 
   onLogoutClick = async () => {
@@ -60,6 +59,7 @@ class SettingScreenContainer extends Component {
   };
 
   onAccountListPress = (item, index) => {
+    this.accountModalRef?.current?.close();
     this.setLoader(true);
     this.callChangeAccount(item?.key);
     // this.setState(
@@ -127,13 +127,14 @@ class SettingScreenContainer extends Component {
     });
   };
 
-  callFetchUserPreference = () => {
+  callFetchUserPreference = (isReset = false) => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: res => {
         AsyncStorage.setItem(
           LOCAL_STORAGE?.USER_PREFERENCE,
           JSON.stringify(res),
         );
+        isReset ? this.changeProfile() : null;
       },
       FailureCallback: res => {
         handleFailureCallback(res, true, true);
@@ -142,12 +143,13 @@ class SettingScreenContainer extends Component {
   };
 
   callChangeAccount = account_key => {
+    this.setLoader(true);
     let param = {
       account_key: account_key,
     };
     this.props.changeAccount(param, {
       SuccessCallback: res => {
-        this.setLoader(false);
+        this.callFetchUserPreference(true);
       },
       FailureCallback: res => {
         this.setLoader(false);
@@ -165,9 +167,19 @@ class SettingScreenContainer extends Component {
     navigate('HelpDeskScreen');
   };
 
+  changeProfile = () => {
+    setTimeout(() => {
+      this.props.clearAllData()
+      this.callFetchUserPreference(false)
+      this.setLoader(false)
+      navigateAndSimpleReset('SplashScreen');
+    },1200);
+  };
+
   render() {
     let state = this.state;
     const {userPreference, accounts} = this.props;
+    console.log("121313131",userPreference?.image_url?.small)
     return (
       <>
         <SettingScreenComponent
@@ -210,6 +222,7 @@ const mapActionCreators = {
   fetchAccounts,
   fetchUserPreference,
   changeAccount,
+  clearAllData
 };
 const mapStateToProps = state => {
   return {

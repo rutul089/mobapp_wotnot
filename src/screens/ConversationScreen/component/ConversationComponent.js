@@ -16,7 +16,8 @@ import {
   FlexContainer,
   Header,
   Text,
-  Loader
+  Loader,
+  Input,
 } from '../../../components';
 import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
@@ -61,7 +62,10 @@ const ConversationComponent = ({
   itemData,
   userID,
   onTeamItemPress,
-  isLoading
+  isLoading,
+  isMoreIconHidden,
+  searchValue,
+  onChangeText
 }) => {
   const _renderListHeaderView = () => {
     return (
@@ -118,7 +122,12 @@ const ConversationComponent = ({
         isTeamSelected={isTeamSelected}
         isMe={item?.id === userID}
         profileImage={item?.image_url?.small}
-        onItemPress={ () => onTeamItemPress && onTeamItemPress(item)}
+        onItemPress={() => onTeamItemPress && onTeamItemPress(item)}
+        isDoneMarkShown={
+          itemData?.assignee
+            ? itemData?.assignee?.id === item?.id
+            : itemData?.assignee === item?.id
+        }
       />
     );
   };
@@ -148,7 +157,24 @@ const ConversationComponent = ({
               <View style={styles.assigneeIcon} />
             </View>
           </View>
-          <View style={{flexDirection: 'row',borderTopWidth:1,borderColor:theme.colors.borderColor}}>
+          <Input
+            containerStyle={{padding: 5, backgroundColor: 'white'}}
+            computedLeftIcon={images.ic_search}
+            isLeftIconElementVisible
+            tintColor={theme.colors.brandColor.blue}
+            placeholder={'Search from teams and teammates'}
+            onChangeText={onChangeText}
+            value={searchValue}
+            leftIconDisabled
+            returnKeyType="done"
+            // onSubmitEditing={onSubmitEditing && onSubmitEditing}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              borderTopWidth: 1,
+              borderColor: theme.colors.borderColor,
+            }}>
             <ButtonTeammate
               tittle={'Teammates'}
               onPress={onTeamMateClick}
@@ -160,7 +186,10 @@ const ConversationComponent = ({
               isSelected={isTeamSelected}
             />
           </View>
+
           <FlatList
+            stickyHeaderHiddenOnScroll={true}
+            ListHeaderComponentStyle={{paddingVertical: theme.normalize(8)}}
             ref={listRef}
             contentContainerStyle={{backgroundColor: 'white', flexGrow: 1}}
             data={isTeamSelected ? teamData : teamMateData}
@@ -188,6 +217,9 @@ const ConversationComponent = ({
           isOnline:
             itemData?.visitor_status === CONVERSATION.USER_STATUS.ONLINE,
         }}
+        isMoreIconHidden={
+          itemData?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE
+        }
       />
       {conversationJoined ? (
         <View style={styles.container}>
@@ -309,7 +341,7 @@ const ConversationComponent = ({
         </>
       </BottomSheet>
       {_renderChangeAssigneeView()}
-      <Loader loading={isLoading}/>
+      <Loader loading={isLoading} />
     </FlexContainer>
   );
 };

@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     padding: theme.sizes.spacing.ph,
   },
   labelStyle: {
-    flex: 0.4,
+    flex: 0.45,
     flexDirection: 'row',
     alignItems: 'center',
   },

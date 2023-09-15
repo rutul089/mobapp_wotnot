@@ -9,7 +9,7 @@ const ButtonTeammate = ({tittle, isSelected, onPress}) => (
     activeOpacity={0.7}
     style={{
       backgroundColor: theme.colors.brandColor.FAFAFA,
-      height: theme.sizes.spacing.xl11,
+      height:theme.normalize(40),
       justifyContent: 'center',
       alignItems: 'center',
       flex: 1,

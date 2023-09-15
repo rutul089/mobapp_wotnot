@@ -35,4 +35,5 @@ export default {
     ic_watch_tutorial: require('./ic_watch_tutorial.png'),
   },
   ic_star: require('./ic_star.png'),
+  ic_qualification_temp: require('./ic_qualification_temp.png'),
 };

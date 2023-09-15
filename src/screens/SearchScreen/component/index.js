@@ -3,6 +3,7 @@ import React, {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  ActivityIndicator,
   View,
   FlatList,
 } from 'react-native';
@@ -24,24 +25,47 @@ import {goBack, navigate} from '../../../navigator/NavigationUtils';
 import {getDayDifference, hp} from '../../../util/helper';
 import theme from '../../../util/theme';
 import styles from '../Style';
+import {getMessage} from '../../../util/ConversationListHelper';
 
-const renderItem = ({item}) => {
+const renderItem = ({item, index}) => {
   return (
     <ChatItem
       key={item?.assignee?.id}
-      name={item?.title ?? 'Unknown'}
-      email={`${item?.assignee?.name} | ${item?.city_name},${item?.country_name}`}
+      name={item?.title + ' ' + index}
+      email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
+        item?.city_name
+      },${item?.country_name}`}
       uri={item?.assignee?.image_url}
       isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
       unreadCount={item?.unread_messages_count}
       lastMessageDay={getDayDifference(item?.last_message_at)}
-      subTittle={`${item?.message} `}
-      onPress={() => {
-        navigate('ConversationScreen', {itemData: item});
-      }}
+      subTittle={`${getMessage(item)}`}
+      onPress={() => navigate('ConversationScreen', {itemData: item})}
       item={item}
-      isClosedMode={true}
+      rating={item?.rating}
+      hideRating={item?.status_id === CONVERSATION.OPEN_MESSAGE_TYPE}
+      hideUnreadCount={true}
+      hideAnimation={true}
+      hideStatusIcon={item?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE}
+      paddingHorizontal={theme.sizes.spacing.ph}
+      borderBottomWidth={0.5}
+      itemData={item}
     />
+    // <ChatItem
+    //   key={item?.assignee?.id}
+    //   name={item?.title ?? 'Unknown'}
+    //   email={`${item?.assignee?.name} | ${item?.city_name},${item?.country_name}`}
+    //   uri={item?.assignee?.image_url}
+    //   isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
+    //   unreadCount={item?.unread_messages_count}
+    //   lastMessageDay={getDayDifference(item?.last_message_at)}
+    //   subTittle={`${item?.message} `}
+    //   onPress={() => {
+    //     navigate('ConversationScreen', {itemData: item});
+    //   }}
+    //   item={item}
+    //   isClosedMode={true}
+    // />
   );
 };
 
@@ -52,6 +76,9 @@ const SearchComponent = ({
   onSubmitEditing,
   conversationData,
   isLoading,
+  isMoreLoading,
+  loadMoreData = () => {},
+  onEndReach,
 }) => {
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
@@ -79,19 +106,13 @@ const SearchComponent = ({
       <Spacing />
       <FlatList
         data={conversationData}
+        extraData={conversationData}
         renderItem={renderItem}
         contentContainerStyle={{
           flexGrow: 1,
-          paddingHorizontal: theme.sizes.spacing.ph,
+          // paddingHorizontal: theme.sizes.spacing.ph,
         }}
-        keyExtractor={_it => `${_it?.thread_key}`}
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={state.isRefreshing}
-        //     onRefresh={_getConversationsAPI}
-        //     tintColor={colors.brandColor.blue}
-        //   />
-        // }
+        keyExtractor={(_it,index) => ` ${index} `}
         ListEmptyComponent={
           !isLoading && (
             <View
@@ -104,32 +125,27 @@ const SearchComponent = ({
             </View>
           )
         }
+        onEndReached={({distanceFromEnd}) => onEndReach(distanceFromEnd)}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter(isMoreLoading)}
       />
-      {/* <View style={styles.searchViewContainer}>
-        <Header isRightIconHidden onPressLeftContent={() => goBack()} />
-        <View style={styles.searchViewInnerContainer}>
-          <View style={styles.searchBarContainer}>
-            <TouchableWithoutFeedback>
-              <Image
-                source={images.ic_search}
-                style={{height: hp(3), width: hp(3)}}
-                tintColor={colors.brandColor.blue}
-              />
-            </TouchableWithoutFeedback>
-            <TextInput
-              style={[styles.textInputStyle]}
-              placeholder="Search here...."
-              value={searchQuery}
-              onChangeText={_text =>
-                updateSearchQuery(prev => ({...prev, searchQuery: _text}))
-              }
-            />
-          </View>
-          <ConversationList searchQuery={searchQuery} isSearchView={true} />
-        </View>
-      </View> */}
       <Loader loading={isLoading} />
     </FlexContainer>
+  );
+};
+const renderFooter = moreLoading => {
+  return moreLoading ? (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 40,
+      }}>
+      <ActivityIndicator color={theme.colors.brandColor.blue} />
+    </View>
+  ) : (
+    <></>
   );
 };
 export default SearchComponent;

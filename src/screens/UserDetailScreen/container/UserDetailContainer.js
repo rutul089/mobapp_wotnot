@@ -1,23 +1,18 @@
+import _ from 'lodash';
+import moment from 'moment';
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
 import {connect} from 'react-redux';
 import {goBack} from '../../../navigator/NavigationUtils';
 import {
-  fetchLabel,
-  fetchUserPreference,
-  fetchQualifications,
-  saveLabel,
   deleteLabel,
+  fetchLabel,
+  fetchQualifications,
+  fetchUserPreference,
+  saveLabel,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import UserDetailComponent from '../component/UserDetailComponent';
-import _, {orderBy} from 'lodash';
 import {getDayDifference, showToast} from '../../../util/helper';
-import {
-  STATIC_USER_ID,
-  static_conversation_key,
-} from '../../../constants/storage';
-import moment from 'moment';
+import UserDetailComponent from '../component/UserDetailComponent';
 class UserDetailContainer extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +22,7 @@ class UserDetailContainer extends Component {
       labels: [],
       threadKey: '',
       isRefreshing: false,
+      isLoading: true,
     };
     this.onPressLeftContent = this.onPressLeftContent.bind(this);
     this.allLabelModalRef = React.createRef();
@@ -50,10 +46,6 @@ class UserDetailContainer extends Component {
         this.callFetchQualifications();
       },
     );
-    var date1 = moment("2023-07-22T09:40:00.230000+00:00");
-    var date2 = moment();
-    
-    console.log("---------------->",getDayDifference(date1))
   }
 
   onPressLeftContent = () => {
@@ -130,9 +122,11 @@ class UserDetailContainer extends Component {
   callFetchQualifications = threadKey => {
     this.props.fetchQualifications(this.state.threadKey, {
       SuccessCallback: res => {
+        this.setLoading(false);
         // console.log('SuccessCallback', JSON.stringify(res));
       },
       FailureCallback: res => {
+        this.setLoading(false);
         handleFailureCallback(res);
       },
     });
@@ -162,12 +156,6 @@ class UserDetailContainer extends Component {
         this.setState({
           labels: newArray,
         });
-        // console.log('SuccessCallback', JSON.stringify(res));
-        // const newArray = [...this.state.labels];
-        // newArray.push(item);
-        // this.setState({
-        //   labels: newArray
-        // })
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -179,8 +167,12 @@ class UserDetailContainer extends Component {
     this.setState({isRefreshing: true}, () => {
       this.callFetchLabel();
       this.callFetchQualifications();
-      this.setState({isRefreshing:false})
+      this.setState({isRefreshing: false});
     });
+  };
+
+  setLoading = value => {
+    this.setState({isLoading: value});
   };
 
   render() {
@@ -209,6 +201,7 @@ class UserDetailContainer extends Component {
           qualifications={qualifications}
           refreshing={state?.isRefreshing}
           onRefresh={this.refreshQualificationData}
+          isLoading={this.state.isLoading}
         />
       </>
     );

@@ -16,10 +16,13 @@ class SearchContainer extends Component {
       search_words: '',
       conversationData: [],
       isLoading: false,
+      search_after: '',
+      conversation_count: 0,
     };
     this.onChangeText = this.onChangeText.bind(this);
     this.rightIconClick = this.rightIconClick.bind(this);
     this.onSubmitEditing = this.onSubmitEditing.bind(this);
+    this.loadMoreData = this.loadMoreData.bind(this);
   }
 
   componentDidMount() {
@@ -37,15 +40,26 @@ class SearchContainer extends Component {
       {
         search_words: '',
       },
-      () => this.onSubmitEditing(),
+      () => {
+        this.setLoading(true), this.onSubmitEditing(false);
+      },
     );
   };
 
   onSubmitEditing = () => {
-    this.setLoading(true);
+    this.calConversationAPI(false);
+  };
+
+  calConversationAPI = (isLoadMore = false) => {
+    let offset = isLoadMore
+      ? this.state.search_after
+        ? `&search_after=${this.state.search_after}`
+        : ''
+      : '';
+    this.setLoading(isLoadMore ? false : true);
     let url = `status_ids=1,2&is_order_by_asc=false&limit=25&offset=1&assignee_ids=${this.fetchAssignId()}&${
       this.state.search_words ? `search_words=${this.state.search_words}` : ''
-    }`;
+    }${offset}`;
 
     this.props.fetchConversationBySearch(
       this.props?.userPreference?.account_id,
@@ -53,8 +67,15 @@ class SearchContainer extends Component {
       {
         SuccessCallback: res => {
           if (res?.ok) {
+            console.log('12312123',JSON.stringify(res))
             this.setState({
-              conversationData: res?.conversations,
+              // conversationData: res?.conversations,
+              conversation_count: res?.total_conversations,
+              conversationData:
+                 offset
+                  ? [...this.state.conversationData, ...res?.conversations]
+                  : res?.conversations,
+              search_after: res?.search_after,
             });
             this.setLoading(false);
           }
@@ -76,7 +97,7 @@ class SearchContainer extends Component {
       param,
       {
         SuccessCallback: res => {
-          this.onSubmitEditing();
+          this.calConversationAPI(false);
         },
         FailureCallback: res => {
           this.setLoading(false);
@@ -97,7 +118,23 @@ class SearchContainer extends Component {
   setLoading = value => {
     this.setState({
       isLoading: value,
+      moreLoading: false,
     });
+  };
+
+  loadMoreData = distanceFromEnd => {
+    if (
+      !distanceFromEnd >= 1 ||
+      this.state.conversation_count === this.state.conversationData?.length
+    ) {
+      return;
+    }
+    this.setState(
+      {
+        moreLoading: true,
+      },
+      () => this.calConversationAPI(true),
+    );
   };
 
   render() {
@@ -112,6 +149,13 @@ class SearchContainer extends Component {
           onSubmitEditing={this.onSubmitEditing}
           conversationData={state.conversationData}
           isLoading={state?.isLoading}
+          // isLoading={
+          //   this.state.isRefreshing || this.state.moreLoading
+          //     ? false
+          //     : this.props.isLoading || this.state.isLoading
+          // }
+          isMoreLoading={this.state.moreLoading}
+          onEndReach={this.loadMoreData}
         />
       </>
     );

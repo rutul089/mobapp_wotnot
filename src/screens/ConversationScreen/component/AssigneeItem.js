@@ -5,7 +5,14 @@ import {Text, ActionItem} from '../../../components';
 import theme from '../../../util/theme';
 import {VALIDATION_REGEX} from '../../../util/helper';
 
-const AssigneeItem = ({item, isTeamSelected, isMe, profileImage,onItemPress}) => (
+const AssigneeItem = ({
+  item,
+  isTeamSelected,
+  isMe,
+  profileImage,
+  onItemPress,
+  isDoneMarkShown
+}) => (
   <>
     <ActionItem
       label={isTeamSelected ? item?.name : isMe ? 'Me' : item?.display_name}
@@ -28,6 +35,19 @@ const AssigneeItem = ({item, isTeamSelected, isMe, profileImage,onItemPress}) =>
       }
       borderBottomWidth={1}
       onItemPress={onItemPress}
+      rightIcon={
+        isDoneMarkShown ? (
+          <Image
+            resizeMode="contain"
+            source={images.ic_check_mark}
+            style={{
+              height: theme.sizes.icons.sm,
+              width: theme.sizes.icons.sm,
+              tintColor: theme.colors.brandColor.blue,
+            }}
+          />
+        ) : null
+      }
     />
   </>
 );

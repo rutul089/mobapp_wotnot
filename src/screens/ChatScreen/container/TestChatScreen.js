@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 import ChatScreenComponent from '../component/index';
 import {CONVERSATION} from '../../../constants/global';
 import {connect} from 'react-redux';
@@ -10,15 +10,18 @@ import {
   fetchTeammateData,
   fetchTeamData,
   fetchConversationBySearch,
+  setConversations,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {getAssigneeId} from '../../../util/helper';
+import {navigate} from '../../../navigator/NavigationUtils';
+import theme from '../../../util/theme';
 
 class TestChatScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTab: CONVERSATION.YOU,
+      currentTab: CONVERSATION.ASSIGNED,
       conversations: [],
       isLoading: false,
       search_after: '',
@@ -27,6 +30,9 @@ class TestChatScreen extends Component {
     };
     this.onSelectTab = this.onSelectTab.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
+    this.onConversationClick = this.onConversationClick.bind(this);
+    this.onSearchClick = this.onSearchClick.bind(this);
+    this.loadMoreData = this.loadMoreData.bind(this);
   }
 
   componentDidMount() {
@@ -34,7 +40,7 @@ class TestChatScreen extends Component {
     this.callSummary();
     this.callFetchTeamData();
     this.callFetchTeammateData();
-    this.callFetchConversation(CONVERSATION.YOU, false, true);
+    this.callFetchConversation(this.state.currentTab, false, true);
   }
 
   callSummary = () => {
@@ -119,10 +125,15 @@ class TestChatScreen extends Component {
       url,
       {
         SuccessCallback: res => {
-          this.setState({
-            conversations: offset
-              ? [...this.state.conversations, ...res?.conversations]
+          this.props.setConversations(
+            offset
+              ? [...this.props.conversations, ...res?.conversations]
               : res?.conversations,
+          );
+          this.setState({
+            // conversations: offset
+            //   ? [...this.state.conversations, ...res?.conversations]
+            //   : res?.conversations,
             search_after: res?.search_after,
           });
           this.setLoader(false);
@@ -132,7 +143,7 @@ class TestChatScreen extends Component {
         },
         FailureCallback: res => {
           this.setLoader(false);
-          handleFailureCallback(res, true, true);
+          handleFailureCallback(res, true, false);
         },
       },
       isLoading,
@@ -140,6 +151,7 @@ class TestChatScreen extends Component {
   };
 
   onSelectTab = tab => {
+    this.props.setConversations([]);
     this.setState(
       {
         currentTab: tab,
@@ -150,6 +162,7 @@ class TestChatScreen extends Component {
         setTimeout(() => {
           this.setLoader(true);
           this.callFetchConversation(tab, false, true);
+          this.callSummary();
         }, 500);
       },
     );
@@ -171,20 +184,39 @@ class TestChatScreen extends Component {
     );
   };
 
+  onConversationClick = item => {
+    navigate('ConversationScreen', {itemData: item});
+  };
+
+  loadMoreData = distanceFromEnd => {
+    if (!distanceFromEnd >= 1) {
+      return;
+    }
+    this.setState(
+      {
+        moreLoading: true,
+      },
+      () => this.callFetchConversation(this.state.currentTab, true, false),
+    );
+  };
+
   render() {
     return (
       <>
         <ChatScreenComponent
           onSelectTab={this.onSelectTab}
           currentTab={this.state.currentTab}
-          conversations={this.state.conversations}
+          conversations={this.props.conversations}
           isLoading={
-            this.state.isRefreshing
+            this.state.isRefreshing || this.state.moreLoading
               ? false
               : this.props.isLoading || this.state.isLoading
           }
           isRefreshing={this.state.isRefreshing}
           onRefresh={this.onRefresh}
+          onConversationClick={this.onConversationClick}
+          onSearchClick={this.onSearchClick}
+          onEndReach={this.loadMoreData}
         />
       </>
     );
@@ -198,11 +230,13 @@ const mapActionCreators = {
   fetchTeamData,
   fetchTeammateData,
   fetchConversationBySearch,
+  setConversations,
 };
 const mapStateToProps = state => {
   return {
     isLoading: state.global.loading,
     conversation_summary: state.conversationReducer.conversation_summary,
+    conversations: state.conversationReducer.conversations,
     userPreference: state.detail?.userPreference,
     teamMateData: state.accountReducer?.teamMateData?.users,
   };

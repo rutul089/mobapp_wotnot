@@ -14,6 +14,7 @@ import {
   Chip,
   BottomSheet,
   ActionItem,
+  Loader,
 } from '../../../components/';
 import theme from '../../../util/theme';
 import styles from '../Style';
@@ -22,7 +23,10 @@ import {strings} from '../../../locales/i18n';
 import images from '../../../assets/images';
 import {Actionsheet, useDisclose} from 'native-base';
 
-const renderQualificationRow = (icon, label, value) => {
+const renderQualificationRow = (icon, label, value, is_hidden) => {
+  if (is_hidden) {
+    return null;
+  }
   return (
     <>
       <View style={{flexDirection: 'row'}}>
@@ -62,8 +66,10 @@ const UserDetailComponent = ({
   qualifications,
   isRefreshing,
   onRefresh,
+  isLoading,
 }) => {
   const {isOpen, onOpen} = useDisclose();
+  console.log('qualifications', JSON.stringify(qualifications));
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header
@@ -85,45 +91,64 @@ const UserDetailComponent = ({
                   images.ic_name,
                   item?.label,
                   item?.value,
+                  item?.is_hidden,
                 );
               case '¿·$user.info.email·?':
                 return renderQualificationRow(
                   images.ic_email,
                   item?.label,
                   item?.value,
+                  item?.is_hidden,
                 );
               case '¿·$user.info.phone·?':
                 return renderQualificationRow(
                   images.ic_phone,
                   item?.label,
                   item?.value,
+                  item?.is_hidden,
                 );
               case 'source_url':
                 return renderQualificationRow(
                   images.ic_url,
                   item?.label,
                   item?.value,
+                  item?.is_hidden,
+                );
+              case 'state_name':
+                return renderQualificationRow(
+                  images.ic_country,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
                 );
               case 'city_name':
                 return renderQualificationRow(
                   images.ic_city,
                   item?.label,
                   item?.value,
+                  item?.is_hidden,
                 );
               case 'zip_code':
                 return renderQualificationRow(
                   images.ic_zip_code,
                   item?.label,
                   item?.value,
+                  item?.is_hidden,
                 );
               case 'country_code':
                 return renderQualificationRow(
                   images.ic_country,
                   item?.label,
                   item?.value,
+                  item?.is_hidden,
                 );
               default:
-                break;
+                return renderQualificationRow(
+                  images.ic_qualification_temp,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
             }
           })}
         <Spacing size="md" />
@@ -165,8 +190,6 @@ const UserDetailComponent = ({
           mask: {backgroundColor: 'transparent'},
           container: {
             elevation: 100,
-            borderTopLeftRadius: theme.normalize(2),
-            borderTopRightRadius: theme.normalize(2),
           },
         }}>
         <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
@@ -187,6 +210,7 @@ const UserDetailComponent = ({
           )}
         </ScrollView>
       </BottomSheet>
+      {isLoading ? <Loader loading={isLoading} /> : null}
     </FlexContainer>
   );
 };

@@ -79,6 +79,9 @@ class ConversationContainer extends Component {
       showChangeAssignee: false,
       isTeamSelected: false,
       isLoading: false,
+      search_text: '',
+      filterTeamData: [],
+      filterTeamMateData: [],
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -141,7 +144,7 @@ class ConversationContainer extends Component {
       timestamp: moment().unix(),
     };
     this.setLoading(true);
-    this.callSetIncomingEvent(param, true, 'You closed this conversation');
+    this.callSetIncomingEvent(param, true, 'You closed this conversation',true);
   };
   closeMoreInfoModal = () => {
     this.moreInfoModalRef?.current?.close();
@@ -251,7 +254,12 @@ class ConversationContainer extends Component {
     this.callSetIncomingEvent(param);
   };
 
-  callSetIncomingEvent = (param, isShowToast = false, message = '') => {
+  callSetIncomingEvent = (
+    param,
+    isShowToast = false,
+    message = '',
+    isGoBack = false,
+  ) => {
     this.props.setIncomingEvent(
       this.props?.userPreference?.logged_in_user_id,
       param,
@@ -259,7 +267,7 @@ class ConversationContainer extends Component {
         SuccessCallback: res => {
           this.setLoading(false);
           if (res?.ok) {
-            goBack();
+            isGoBack ? goBack() : null;
             if (isShowToast) {
               showToast(message);
             }
@@ -277,6 +285,77 @@ class ConversationContainer extends Component {
     this.setState({isLoading: value});
   };
 
+  onSearchText = searchText => {
+    const {teamMateData, teamData} = this.props;
+    // --------teamData/name | teamMateData/display_name
+
+    this.setState({
+      search_text: searchText,
+    });
+
+    if (!searchText || searchText === '') {
+      this.setState({
+        filterTeamMateData: [],
+        filterTeamData: [],
+      });
+      return;
+    }
+
+    let _teamMateData = [
+      {
+        id: null,
+        display_name: 'none',
+      },
+      ...teamMateData,
+    ];
+
+    let filterTeamData = teamData.filter(function (item) {
+      return item?.name?.toLowerCase()?.includes(searchText?.toLowerCase());
+    });
+
+    let filterTeamMateData = _teamMateData.filter(function (item) {
+      return item?.display_name
+        ?.toLowerCase()
+        .includes(searchText?.toLowerCase());
+    });
+
+    this.setState({
+      filterTeamMateData: filterTeamMateData,
+      filterTeamData: filterTeamData,
+    });
+
+    console.log('filterTemMateData', JSON.stringify(filterTeamMateData));
+  };
+
+  joinConversationPress = () => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+
+    let param = {
+      conversation_key: itemData?.thread_key,
+      type: 'assignee',
+      payload: {
+        assignee: {
+          to: {
+            id: this.props?.userPreference?.logged_in_user_id,
+            type: 'team_member',
+          },
+        },
+      },
+    };
+
+    this.setLoading(true);
+    this.callSetIncomingEvent(
+      param,
+      true,
+      'You assigned this conversation to yourself.',
+    );
+    this.setState(prev => ({...prev, conversationJoined: true}));
+  };
+
   render() {
     const {
       teamMateData,
@@ -286,6 +365,7 @@ class ConversationContainer extends Component {
       },
       userPreference,
     } = this.props;
+    let {filterTeamMateData, filterTeamData, search_text} = this.state;
     return (
       <>
         <ConversationComponent
@@ -297,9 +377,7 @@ class ConversationContainer extends Component {
           onPressLeftContent={this.onPressLeftContent}
           joinConversation={strings('chat.join_conversation_message')}
           joinConversationBtn={strings('button.join_conversation')}
-          joinConversationPress={() => {
-            this.setState(prev => ({...prev, conversationJoined: true}));
-          }}
+          joinConversationPress={this.joinConversationPress}
           conversationJoined={
             itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE
           }
@@ -322,18 +400,24 @@ class ConversationContainer extends Component {
           onTeamClick={this.onTeamClick}
           onTeamMateClick={this.onTeamMateClick}
           isTeamSelected={this.state.isTeamSelected}
-          teamMateData={[
-            {
-              id: null,
-              display_name: 'none',
-            },
-            ...teamMateData,
-          ]}
-          teamData={teamData}
+          teamMateData={
+            search_text !== ''
+              ? filterTeamMateData
+              : [
+                  {
+                    id: null,
+                    display_name: 'none',
+                  },
+                  ...teamMateData,
+                ]
+          }
+          teamData={search_text !== '' ? filterTeamData : teamData}
           itemData={itemData}
           userID={userPreference?.logged_in_user_id}
           onTeamItemPress={this.onTeamItemPress}
           isLoading={this.state.isLoading}
+          searchValue={this.state.search_text}
+          onChangeText={this.onSearchText}
         />
       </>
     );
