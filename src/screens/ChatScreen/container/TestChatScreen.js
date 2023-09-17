@@ -20,8 +20,8 @@ import theme from '../../../util/theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LOCAL_STORAGE} from '../../../constants/storage';
 import {getAgentPayload} from '../../../common/common';
-import { initSocket } from '../../../websocket';
-import { emitAgentJoin } from '../../../websocket';
+import {emitVisitorTyping, initSocket,registerVisitorTypingHandler} from '../../../websocket';
+import {emitAgentJoin} from '../../../websocket';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -33,6 +33,7 @@ class TestChatScreen extends Component {
       search_after: '',
       isDisable: true,
       isRefreshing: false,
+      typingData:null
     };
     this.onSelectTab = this.onSelectTab.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
@@ -49,11 +50,17 @@ class TestChatScreen extends Component {
     this.cllFetchAccounts();
     this.callFetchConversation(this.state.currentTab, false, true);
     let agentpayload = await getAgentPayload();
-    initSocket()
-    emitAgentJoin()
-    console.log('agentpayload=====>', JSON.stringify(agentpayload));
+    initSocket();
+    emitAgentJoin();
+    // registerVisitorTypingHandler(this.visitorTypingStatus);
   }
 
+  // visitorTypingStatus = status => {
+  //   console.log('visitorTypingStatus',status)
+  //   this.setState({
+  //     typingData:status
+  //   })
+  // };
   callSummary = () => {
     this.props.fetchConversationSummary(
       this.props?.userPreference?.account_id,
@@ -214,7 +221,6 @@ class TestChatScreen extends Component {
   cllFetchAccounts = () => {
     this.props.fetchAccounts({
       SuccessCallback: res => {
-        console.log('123123123123123123',JSON.stringify(res))
         AsyncStorage.setItem(
           LOCAL_STORAGE?.AGENT_ACCOUNT_LIST,
           JSON.stringify(res?.account_info),
@@ -243,6 +249,7 @@ class TestChatScreen extends Component {
           onConversationClick={this.onConversationClick}
           onSearchClick={this.onSearchClick}
           onEndReach={this.loadMoreData}
+          typingData={this.state.typingData}
         />
       </>
     );

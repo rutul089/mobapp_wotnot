@@ -18,7 +18,7 @@ import {
   setProfileEvents,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import {changeUserStatus, registerUserStatus} from '../../../websocket';
+import {changeUserStatus, reconnect, registerUserStatus} from '../../../websocket';
 import { getAgentPayload } from '../../../common/common';
 
 class SettingScreenContainer extends Component {
@@ -42,11 +42,12 @@ class SettingScreenContainer extends Component {
 
   async componentDidMount() {
     let {userPreference} = this.props;
-    let agentpayload = await getAgentPayload();
-    console.log("-------<",JSON.stringify(agentpayload))
-    this.setState({
-      isActive: userPreference?.status_id === 1,
-    });
+    // let agentpayload = await getAgentPayload();
+    // console.log("-------<",JSON.stringify(agentpayload))
+    // reconnect()
+    // this.setState({
+    //   isActive: userPreference?.status_id === 1,
+    // });
     this.props.navigation.addListener('focus', () => {
       this.cllFetchAccounts();
       this.callFetchUserPreference();
@@ -55,6 +56,7 @@ class SettingScreenContainer extends Component {
   }
 
   getUserStatus = status => {
+    console.log('------->',status)
     this.setState(
       {
         isActive: status?.user_status === 'online' ? true : false,

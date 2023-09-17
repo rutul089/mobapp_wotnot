@@ -34,7 +34,6 @@ class UserDetailContainer extends Component {
         params: {itemData},
       },
     } = this.props;
-    console.log('itemData', JSON.stringify(itemData));
     this.setState(
       {
         threadKey: itemData?.thread_key,

@@ -17,6 +17,10 @@ import {timing} from 'react-native-redash';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import Ticker from './Ticker';
 import {getTimeStamp} from '../../util/ConversationListHelper';
+import {
+  registerVisitorTypingHandler,
+  registerMessageHandler,
+} from '../../websocket';
 
 const ChatItem = ({
   name,
@@ -41,9 +45,30 @@ const ChatItem = ({
   borderBottomWidth = 0,
   borderBottomColor = theme.colors.brandColor.silver,
   itemData,
+  isLoading,
+  typingData,
 }) => {
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
+  const [isTyping, setIsTyping] = React.useState(false);
+
+  let typingTimeout = null;
+
+  React.useEffect(() => {
+    if (typingData?.conversation_key === itemData?.thread_key) {
+      typingData ? setIsTyping(true) : null;
+    }
+  }, [typingData]);
+
+  React.useEffect(() => {
+    typingTimeout = setTimeout(() => {
+      setIsTyping(false);
+    }, 800);
+    return () => {
+      clearTimeout(typingTimeout);
+      typingTimeout = null;
+    };
+  }, [typingData]);
 
   const renderAvatarView = () => {
     return (
@@ -180,7 +205,7 @@ const ChatItem = ({
             }}>
             <View style={{flex: 1, justifyContent: 'center'}}>
               <Text type={'caption12'} size={10} numberOfLines={1}>
-                {subTittle}
+                {isTyping ? 'typing...' : subTittle}
               </Text>
             </View>
             {!hideRating ? (

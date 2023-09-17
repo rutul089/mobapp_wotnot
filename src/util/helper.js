@@ -1,6 +1,5 @@
-import Toast from 'react-native-root-toast';
-import {Linking} from 'react-native';
 import moment from 'moment';
+import Toast from 'react-native-root-toast';
 
 export const LONG_DURATION = Toast.durations.LONG;
 export const MED_DURATION = 3000;
@@ -47,7 +46,7 @@ export const showSWWToast = (duration = LONG_DURATION) => {
 };
 
 export function helperLog(tag, type) {
-  if (__DEV__) {
+  if (_DEV_) {
     console.log(tag, JSON.stringify(type));
   }
 }
@@ -109,22 +108,22 @@ export const CONVERSATION_TYPE = {
 
 export const SOCKET_CONFIG = {
   SOCKET_EVENTS: {
-    CONNECT: 'connect',
-    DISCONNECT: 'disconnect',
-    RECONNECT: 'reconnect',
-    AGENT_JOIN: 'agent_join',
-    AGENT_LEAVE: 'agent_leave',
-    AGENT_TYPING: 'agent_typing', //2
-    ASSIGNEE_CHANGED: 'assignee', // done
-    MESSAGE: 'message',
-    CONVERSATION_CREATE: 'conversation_create',
-    VISITOR_TYPING: 'visitor_typing', //3
-    STATUS_CHANGED: 'status', //done
-    USER_STATUS: 'user_status', // implemented
-    MESSAGE_READ: 'message_read', // 1 done
-    NOTE: 'note', // done
-    CUSTOMER_PROFILE: 'variables', // implemented
-    SWITCH_CONVERSATION_MODE: 'switch-conversation-mode',
+    CONNECT: 'connect', // Event Desc: Initial Connection
+    DISCONNECT: 'disconnect', // Event Desc: Manual/Auto Disconnection
+    RECONNECT: 'reconnect', // Event Desc: Manual/Auto Re-connection
+    AGENT_JOIN: 'agent_join', // Event Desc: Other user joined the chat room
+    AGENT_LEAVE: 'agent_leave', // Event Desc: Other user left the chat room
+    AGENT_TYPING: 'agent_typing', // Event Desc: Other user is typing
+    ASSIGNEE_CHANGED: 'assignee', // Event Desc: Assignment changed
+    MESSAGE: 'message', // Event Desc: Send/Receive Message
+    CONVERSATION_CREATE: 'conversation_create', // Event Desc: New Conversation Initiation
+    VISITOR_TYPING: 'visitor_typing', // Event Desc: Is user typing something
+    STATUS_CHANGED: 'status', // Event Desc: Initial Status either user joined the conversation
+    USER_STATUS: 'user_status', // implemented// Event Desc: Status of user i.e Online/Away/Offline
+    MESSAGE_READ: 'message_read', // Event Desc: Message Read status i.e Read/Unread
+    NOTE: 'note', // Event Desc: Special Purpose Message
+    CUSTOMER_PROFILE: 'variables', // Event Desc: -----------------------N/A
+    SWITCH_CONVERSATION_MODE: 'switch-conversation-mode', // Event Desc: -----------------------N/A
   },
   TRIGGER_EVENTS: {
     AUTO_OPEN: 'auto_open',

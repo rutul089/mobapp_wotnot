@@ -20,7 +20,7 @@ export const endPoints = {
   },
   fetchUserPreference: query => {
     return {
-      endpoint: `/v1/user-preference?${query}`,
+      endpoint: `/v1/user-preference?${query}}`,
       method: Method.GET,
     };
   },

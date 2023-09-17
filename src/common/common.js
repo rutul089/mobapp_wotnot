@@ -12,7 +12,6 @@ export async function getAgentPayload() {
 }
 
 export async function prepareAgentPayload(userPref, agent_account_list) {
-  console.log('agent_account_list',agent_account_list)
   let agentId = userPref.logged_in_user_id;
   let botIds = [];
   let accountIds = [];

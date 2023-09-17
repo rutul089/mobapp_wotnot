@@ -259,8 +259,15 @@ export const getMessage = item => {
   } else if (data && data?.type === 'slider.response') {
     message = data?.text;
   } else if (data && data?.type === 'slider') {
-    let messageItem =  JSON.parse(data?.text) ;
+    let messageItem = JSON.parse(data?.text);
     message = messageItem?.message;
+  } else if (
+    data &&
+    data?.type === 'cardview' &&
+    data?.text &&
+    data?.text?.length > 0
+  ) {
+    message = "CAROUSEL" ;
   } else {
     message = item.message;
   }

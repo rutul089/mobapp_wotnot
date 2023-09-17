@@ -35,6 +35,7 @@ import {
   convertTextMessage,
 } from '../../../util/ConversationListHelper';
 import {Box} from 'native-base';
+import {registerVisitorTypingHandler} from '../../../websocket';
 
 const renderTabView = (label, onPress, isSelected, isDisable) => {
   return (
@@ -73,8 +74,10 @@ const ChatScreenComponent = ({
   moreLoading,
   loadMoreData = () => {},
   onEndReach,
+  isTyping,
 }) => {
   const [index, setIndex] = React.useState(0);
+  const [typingData, setTypingData] = React.useState();
   const conversation_summary = useSelector(
     state => state.conversationReducer?.conversation_summary?.open_status,
   );
@@ -83,136 +86,141 @@ const ChatScreenComponent = ({
   );
   const tabLabels = ['You', 'Assigned', 'Unassigned', 'Closed'];
 
-  return React.useMemo(
-    () => (
-      <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
-        <Header
-          isLeftIconHidden={true}
-          rightIcon={
-            <View style={{flexDirection: 'row'}}>
-              <Spacing size="md" direction="x" />
-              <TouchableOpacity onPress={onSearchClick} style={{}}>
-                <Image
-                  source={images.ic_search}
-                  style={{
-                    height: theme.sizes.icons.lg,
-                    width: theme.sizes.icons.lg,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          }
-        />
-        <View
-          style={{
-            height: theme.normalize(36),
-            backgroundColor: theme.colors.brandColor.FAFAFA,
-          }}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {renderTabView(
-              `(${conversation_summary?.you}) ${tabLabels[0]}`,
-              () => onSelectTab(CONVERSATION.YOU),
-              currentTab === CONVERSATION.YOU,
-              isLoading,
-            )}
-            {renderTabView(
-              `(${conversation_summary?.assigned}) ${tabLabels[1]}`,
-              () => onSelectTab(CONVERSATION.ASSIGNED),
-              currentTab === CONVERSATION.ASSIGNED,
-              isLoading,
-            )}
-            {renderTabView(
-              `(${conversation_summary?.unassigned}) ${tabLabels[2]}`,
-              () => onSelectTab(CONVERSATION.UNASSIGNED),
-              currentTab === CONVERSATION.UNASSIGNED,
-              isLoading,
-            )}
-            {renderTabView(
-              `${tabLabels[3]}`,
-              () => onSelectTab(CONVERSATION.CLOSE),
-              currentTab === CONVERSATION.CLOSE,
-              isLoading,
-            )}
-          </ScrollView>
-        </View>
-        <SafeAreaView flex={1}>
-          {isLoading ? (
-            <ActivityIndicator
-              size="large"
-              color={theme.colors.brandColor.blue}
-              style={{alignSelf: 'center', flex: 1}}
-            />
-          ) : (
-            <FlatList
-              data={conversations}
-              renderItem={({item, index}) => (
-                <ChatItem
-                  key={item?.assignee?.id}
-                  name={item?.title + ' ' + index}
-                  email={`${
-                    item?.assignee?.name ? item?.assignee?.name + ' | ' : ''
-                  }${item?.city_name},${item?.country_name}`}
-                  uri={item?.assignee?.image_url}
-                  isOnline={
-                    item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE
-                  }
-                  unreadCount={item?.unread_messages_count}
-                  lastMessageDay={getDayDifference(item?.last_message_at)}
-                  // subTittle={`${item?.message} `}
-                  subTittle={`${getMessage(item)}`}
-                  onPress={() => onConversationClick(item)}
-                  item={item}
-                  isClosedMode={item?.status_id === 2}
-                  rating={item?.rating}
-                  hideRating={currentTab !== CONVERSATION.CLOSE}
-                  hideUnreadCount={
-                    currentTab === CONVERSATION.CLOSE ||
-                    item?.unread_messages_count == 0
-                  }
-                  hideAnimation={currentTab === CONVERSATION.CLOSE}
-                  hideStatusIcon={currentTab === CONVERSATION.CLOSE}
-                  paddingHorizontal={theme.sizes.spacing.ph}
-                  backgroundColor={'white'}
-                  duration={80000}
-                  itemData={item}
-                  borderBottomWidth={1}
-                />
-              )}
-              keyExtractor={(_it, index) => `${_it?.thread_key} ${index}`}
-              contentContainerStyle={{
-                flexGrow: 1,
-                // paddingVertical: 5,
-                // padding: theme.sizes.spacing.ph,
-              }}
-              ListEmptyComponent={
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text color={theme.colors.brandColor.silver}>
-                    No conversation found
-                  </Text>
-                </View>
-              }
-              refreshControl={
-                <RefreshControl
-                  refreshing={isRefreshing}
-                  onRefresh={onRefresh}
-                  colors={[theme.colors.brandColor.blue]}
-                />
-              }
-              onEndReached={({distanceFromEnd}) => onEndReach(distanceFromEnd)}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={renderFooter(moreLoading)}
-            />
+  React.useEffect(() => {
+    registerVisitorTypingHandler(e => {
+      setTypingData(e);
+    });
+  });
+
+  return (
+    <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
+      <Header
+        isLeftIconHidden={true}
+        rightIcon={
+          <View style={{flexDirection: 'row'}}>
+            <Spacing size="md" direction="x" />
+            <TouchableOpacity onPress={onSearchClick} style={{}}>
+              <Image
+                source={images.ic_search}
+                style={{
+                  height: theme.sizes.icons.lg,
+                  width: theme.sizes.icons.lg,
+                  resizeMode: 'contain',
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        }
+      />
+      <View
+        style={{
+          height: theme.normalize(36),
+          backgroundColor: theme.colors.brandColor.FAFAFA,
+        }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {renderTabView(
+            `(${conversation_summary?.you}) ${tabLabels[0]}`,
+            () => onSelectTab(CONVERSATION.YOU),
+            currentTab === CONVERSATION.YOU,
+            isLoading,
           )}
-        </SafeAreaView>
-      </FlexContainer>
-    ),
-    [currentTab, conversations, isRefreshing],
+          {renderTabView(
+            `(${conversation_summary?.assigned}) ${tabLabels[1]}`,
+            () => onSelectTab(CONVERSATION.ASSIGNED),
+            currentTab === CONVERSATION.ASSIGNED,
+            isLoading,
+          )}
+          {renderTabView(
+            `(${conversation_summary?.unassigned}) ${tabLabels[2]}`,
+            () => onSelectTab(CONVERSATION.UNASSIGNED),
+            currentTab === CONVERSATION.UNASSIGNED,
+            isLoading,
+          )}
+          {renderTabView(
+            `${tabLabels[3]}`,
+            () => onSelectTab(CONVERSATION.CLOSE),
+            currentTab === CONVERSATION.CLOSE,
+            isLoading,
+          )}
+        </ScrollView>
+      </View>
+      <SafeAreaView flex={1}>
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.brandColor.blue}
+            style={{alignSelf: 'center', flex: 1}}
+          />
+        ) : (
+          <FlatList
+            data={conversations}
+            renderItem={({item, index}) => (
+              <ChatItem
+                key={item?.assignee?.id}
+                name={item?.title}
+                email={`${
+                  item?.assignee?.name ? item?.assignee?.name + ' | ' : ''
+                }${item?.city_name},${item?.country_name}`}
+                uri={item?.assignee?.image_url}
+                isOnline={
+                  item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE
+                }
+                unreadCount={item?.unread_messages_count}
+                lastMessageDay={getDayDifference(item?.last_message_at)}
+                // subTittle={`${item?.message} `}
+                subTittle={`${getMessage(item)}`}
+                onPress={() => onConversationClick(item)}
+                item={item}
+                isClosedMode={item?.status_id === 2}
+                rating={item?.rating}
+                hideRating={currentTab !== CONVERSATION.CLOSE}
+                hideUnreadCount={
+                  currentTab === CONVERSATION.CLOSE ||
+                  item?.unread_messages_count == 0
+                }
+                hideAnimation={currentTab === CONVERSATION.CLOSE}
+                hideStatusIcon={currentTab === CONVERSATION.CLOSE}
+                paddingHorizontal={theme.sizes.spacing.ph}
+                backgroundColor={'white'}
+                duration={80000}
+                itemData={item}
+                borderBottomWidth={1}
+                isLoading={isLoading}
+                typingData={typingData}
+              />
+            )}
+            keyExtractor={(_it, index) => `${_it?.thread_key} ${index}`}
+            contentContainerStyle={{
+              flexGrow: 1,
+              // paddingVertical: 5,
+              // padding: theme.sizes.spacing.ph,
+            }}
+            ListEmptyComponent={
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text color={theme.colors.brandColor.silver}>
+                  No conversation found
+                </Text>
+              </View>
+            }
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={onRefresh}
+                colors={[theme.colors.brandColor.blue]}
+              />
+            }
+            onEndReached={({distanceFromEnd}) => onEndReach(distanceFromEnd)}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter(moreLoading)}
+          />
+        )}
+      </SafeAreaView>
+    </FlexContainer>
   );
 };
 
