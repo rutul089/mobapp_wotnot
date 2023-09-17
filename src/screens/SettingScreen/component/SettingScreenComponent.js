@@ -10,6 +10,7 @@ import {
   BottomSheet,
   ActionItem,
   Loader,
+  OfflineNotice,
 } from '../../../components';
 import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
@@ -82,7 +83,7 @@ const SettingScreenComponent = ({
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header isLeftIconHidden={true} isRightIconHidden={true} />
       <ScrollView contentContainerStyle={styles.container}>
-        <UserItem name={name} email={email} uri={profilePhoto} isAvatar />
+        <UserItem name={name} email={email} uri={profilePhoto} isAvatar isOnline={isActive} />
         <Spacing size="md" />
         <View style={{flexDirection: 'row'}}>
           <Text type={'body1'} style={{flex: 1}}>

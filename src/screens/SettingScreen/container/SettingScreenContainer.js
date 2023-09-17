@@ -14,9 +14,12 @@ import {
   fetchAccounts,
   fetchUserPreference,
   changeAccount,
-  clearAllData
+  clearAllData,
+  setProfileEvents,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
+import {changeUserStatus, registerUserStatus} from '../../../websocket';
+import { getAgentPayload } from '../../../common/common';
 
 class SettingScreenContainer extends Component {
   constructor(props) {
@@ -37,12 +40,34 @@ class SettingScreenContainer extends Component {
     this.logoutRef = React.createRef();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    let {userPreference} = this.props;
+    let agentpayload = await getAgentPayload();
+    console.log("-------<",JSON.stringify(agentpayload))
+    this.setState({
+      isActive: userPreference?.status_id === 1,
+    });
     this.props.navigation.addListener('focus', () => {
       this.cllFetchAccounts();
-      // this.callFetchUserPreference();
+      this.callFetchUserPreference();
+      registerUserStatus(this.getUserStatus);
     });
   }
+
+  getUserStatus = status => {
+    this.setState(
+      {
+        isActive: status?.user_status === 'online' ? true : false,
+      },
+      () => {
+        // this.callFetchUserPreference(false);
+      },
+    );
+    console.log(
+      'status>>>>>>',
+      status?.user_status === 'online' ? true : false,
+    );
+  };
 
   onLogoutClick = async () => {
     this.setState({isOpen: true});
@@ -51,7 +76,9 @@ class SettingScreenContainer extends Component {
   onNotificationClick = () => {};
 
   onSwitchToggle = () => {
-    this.setState({isActive: !this.state.isActive});
+    this.setState({isActive: !this.state.isActive}, () => {
+      this.callSetProfileEvents(this.state.isActive);
+    });
   };
 
   onPressAccountDropdown = () => {
@@ -130,6 +157,9 @@ class SettingScreenContainer extends Component {
   callFetchUserPreference = (isReset = false) => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: res => {
+        // this.setState({
+        //   isActive: res?.status_id === 1,
+        // });
         AsyncStorage.setItem(
           LOCAL_STORAGE?.USER_PREFERENCE,
           JSON.stringify(res),
@@ -169,17 +199,37 @@ class SettingScreenContainer extends Component {
 
   changeProfile = () => {
     setTimeout(() => {
-      this.props.clearAllData()
-      this.callFetchUserPreference(false)
-      this.setLoader(false)
+      this.props.clearAllData();
+      this.callFetchUserPreference(false);
+      this.setLoader(false);
       navigateAndSimpleReset('SplashScreen');
-    },1200);
+    }, 1200);
+  };
+
+  callSetProfileEvents = value => {
+    let payload = {
+      user_type: 'agent',
+      user_status: value ? 'online' : 'away',
+    };
+    let param = {
+      type: 'user_status',
+      payload: payload,
+    };
+    this.props.setProfileEvents(
+      this.props?.userPreference?.logged_in_user_id,
+      param,
+      {
+        SuccessCallback: res => {},
+        FailureCallback: res => {},
+      },
+    );
+    payload['user_id'] = this.props?.userPreference?.logged_in_user_id;
+    changeUserStatus(payload);
   };
 
   render() {
     let state = this.state;
     const {userPreference, accounts} = this.props;
-    console.log("121313131",userPreference?.image_url?.small)
     return (
       <>
         <SettingScreenComponent
@@ -222,7 +272,8 @@ const mapActionCreators = {
   fetchAccounts,
   fetchUserPreference,
   changeAccount,
-  clearAllData
+  clearAllData,
+  setProfileEvents,
 };
 const mapStateToProps = state => {
   return {
@@ -230,6 +281,7 @@ const mapStateToProps = state => {
     isLoading: state.global.loading,
     userPreference: state.detail?.userPreference,
     accounts: state.settings?.accounts?.account_info,
+    
   };
 };
 export default connect(

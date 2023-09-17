@@ -76,6 +76,10 @@ class API {
     axios.defaults.headers.common[key] = value;
   }
 
+  getDevMode() {
+    return this._DevMode;
+  }
+
   retry({SuccessCallback, FailureCallback}) {
     this.getResult(this._method, this._endPoint, this._Headers, this._params, {
       SuccessCallback: re => {

@@ -46,3 +46,28 @@ export const setIncomingEvent = (
     );
   };
 };
+
+export const setProfileEvents = (
+  agent_id,
+  param,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    dispatch(loadingSet());
+    API.getInstance().Fetch(
+      endPoints.profileEvents(agent_id),
+      defaultHeaders,
+      param,
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
+  };
+};

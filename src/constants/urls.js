@@ -20,7 +20,7 @@ export const endPoints = {
   },
   fetchUserPreference: query => {
     return {
-      endpoint: `/v1/user-preference?${query}}`,
+      endpoint: `/v1/user-preference?${query}`,
       method: Method.GET,
     };
   },
@@ -146,10 +146,18 @@ export const endPoints = {
 
 // export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD
 // export const WebSocketURL = "ws.test.wotnot.io/?user_type=agent" // TEST
-export const WebSocketURL = 'wss://ws.dev.wotnot.io/socket.io/?user_type=agent&EIO=4&transport=websocket'; //DEV
+export const WebSocketURL =
+  'wss://ws.dev.wotnot.io/socket.io/?user_type=agent&EIO=4&transport=websocket'; //DEV
 
 // Production: https://ws.wotnot.io/?user_type=agent
 // Staging: https://ws.test.wotnot.io/?user_type=agent
 // Development: https://ws.dev.wotnot.io/?user_type=agent
 
 // wss://ws.dev.wotnot.io/socket.io/?user_type=agent
+
+export const SOCKET_BASEURL = {
+  PRODUCTION: 'https://ws.wotnot.io/?user_type=agent' /*release build*/,
+  TESTING: 'https://ws.test.wotnot.io/?user_type=agent' /*inteneal testing*/,
+  DEVELOPMENT: 'https://ws.wotnot.io/?user_type=agent' /*for client test*/,
+  ALPHA: 'https://ws.test.wotnot.io/?user_type=agent',
+};

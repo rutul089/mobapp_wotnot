@@ -13,6 +13,7 @@ import {API, Headers} from '../../../apiService';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LOCAL_STORAGE} from '../../../constants/storage';
 import DeviceWebSocketManager from '../../../apiService/WebSocketManager';
+import {setItemToStorage} from '../../../util/DeviceStorageOperations';
 
 class SignInScreenContainer extends Component {
   constructor(props) {
@@ -32,9 +33,7 @@ class SignInScreenContainer extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentDidMount() {
-    DeviceWebSocketManager.getInstance().connect();
-  }
+  componentDidMount() {}
 
   onEmailChange = text => {
     this.setState({email: text, emailErrMsg: ''});
@@ -79,11 +78,11 @@ class SignInScreenContainer extends Component {
     this.props.userLogin(param, {
       SuccessCallback: res => {
         if (res?.ok && res?.two_factor_auth === undefined) {
-          AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, JSON.stringify(true));
+          setItemToStorage(LOCAL_STORAGE?.IS_LOGIN, 'true');
           this.callFetchUserPreference();
           return;
         }
-        AsyncStorage.setItem(LOCAL_STORAGE.AUTH_TOKEN, res?.access_token);
+        setItemToStorage(LOCAL_STORAGE?.AUTH_TOKEN, res?.access_token);
         API.getInstance().setHeader(
           Headers.AUTHORIZATION,
           `Bearer ${res?.access_token}`,
@@ -93,7 +92,7 @@ class SignInScreenContainer extends Component {
         } else if (res?.two_factor_auth === 'TOTP_VERIFY') {
           return navigate('TwoFactorCheckScreen');
         } else {
-          AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, JSON.stringify(true));
+          setItemToStorage(LOCAL_STORAGE?.IS_LOGIN, 'true');
           this.callFetchUserPreference();
         }
       },
@@ -129,10 +128,11 @@ class SignInScreenContainer extends Component {
   callFetchUserPreference = () => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: res => {
-        AsyncStorage.setItem(
-          LOCAL_STORAGE?.USER_PREFERENCE,
-          JSON.stringify(res),
-        );
+        setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE, res);
+        // AsyncStorage.setItem(
+        //   LOCAL_STORAGE?.USER_PREFERENCE,
+        //   JSON.stringify(res),
+        // );
         navigateAndSimpleReset('MainNavigator');
       },
       FailureCallback: res => {

@@ -21,6 +21,7 @@ import {
 } from '../screens';
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
+import OfflineNotice from '../components/OfflineNotice/index';
 const Stack = createStackNavigator();
 
 export default class RootContainer extends Component {
@@ -170,6 +171,7 @@ export default class RootContainer extends Component {
             />
           </Stack.Navigator>
         </NavigationContainer>
+        <OfflineNotice onNetInfo={() =>{}} />
       </View>
     );
   }

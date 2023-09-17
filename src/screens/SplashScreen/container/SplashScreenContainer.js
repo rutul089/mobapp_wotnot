@@ -6,9 +6,13 @@ import {
 import SplashScreenComponent from '../component/SplashScreenComponent';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LOCAL_STORAGE} from '../../../constants/storage';
-import {setUserPreference} from '../../../store/actions';
+import {setUserPreference, fetchUserPreference} from '../../../store/actions';
 import {connect} from 'react-redux';
 import API, {Headers} from '../../../apiService';
+import {
+  getItemFromStorage,
+  setItemToStorage,
+} from '../../../util/DeviceStorageOperations';
 
 class SplashScreenContainer extends Component {
   constructor(props) {
@@ -22,23 +26,38 @@ class SplashScreenContainer extends Component {
       LOCAL_STORAGE.USER_PREFERENCE,
     );
     this.props.setUserPreference(JSON.parse(userPreference));
-    let sessionID = JSON.parse(userPreference)?.session_id;
-    setTimeout(() => {
-      if (isLogin !== null && JSON.parse(isLogin)) {
-        // API.getInstance().setHeader(Headers.COOKIE, sessionID);
-        navigateAndSimpleReset('MainNavigator');
-        return;
-      }
-      navigateAndSimpleReset('SignInScreen');
-    }, 2200);
+    if (isLogin !== null && JSON.parse(isLogin)) {
+      this.callFetchUserPreference();
+      // navigateAndSimpleReset('MainNavigator');
+    } else {
+      setTimeout(() => {
+        // if (isLogin !== null && JSON.parse(isLogin)) {
+        //   navigateAndSimpleReset('MainNavigator');
+        //   return;
+        // }
+        navigateAndSimpleReset('SignInScreen');
+      }, 2500);
+    }
   }
+
+  callFetchUserPreference = async () => {
+    this.props.fetchUserPreference(null, {
+      SuccessCallback: res => {
+        setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE,res);
+        navigateAndSimpleReset('MainNavigator');
+      },
+      FailureCallback: res => {
+        navigateAndSimpleReset('MainNavigator');
+      },
+    });
+  };
 
   render() {
     return <SplashScreenComponent />;
   }
 }
 
-const mapActionCreators = {setUserPreference};
+const mapActionCreators = {setUserPreference, fetchUserPreference};
 const mapStateToProps = state => {
   return {
     isInternetConnected: state.global.isInternetConnected,

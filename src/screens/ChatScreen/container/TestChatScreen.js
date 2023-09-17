@@ -11,11 +11,17 @@ import {
   fetchTeamData,
   fetchConversationBySearch,
   setConversations,
+  fetchAccounts,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {getAssigneeId} from '../../../util/helper';
 import {navigate} from '../../../navigator/NavigationUtils';
 import theme from '../../../util/theme';
+import AsyncStorage from '@react-native-community/async-storage';
+import {LOCAL_STORAGE} from '../../../constants/storage';
+import {getAgentPayload} from '../../../common/common';
+import { initSocket } from '../../../websocket';
+import { emitAgentJoin } from '../../../websocket';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -35,12 +41,17 @@ class TestChatScreen extends Component {
     this.loadMoreData = this.loadMoreData.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setLoader(true);
     this.callSummary();
     this.callFetchTeamData();
     this.callFetchTeammateData();
+    this.cllFetchAccounts();
     this.callFetchConversation(this.state.currentTab, false, true);
+    let agentpayload = await getAgentPayload();
+    initSocket()
+    emitAgentJoin()
+    console.log('agentpayload=====>', JSON.stringify(agentpayload));
   }
 
   callSummary = () => {
@@ -200,6 +211,21 @@ class TestChatScreen extends Component {
     );
   };
 
+  cllFetchAccounts = () => {
+    this.props.fetchAccounts({
+      SuccessCallback: res => {
+        console.log('123123123123123123',JSON.stringify(res))
+        AsyncStorage.setItem(
+          LOCAL_STORAGE?.AGENT_ACCOUNT_LIST,
+          JSON.stringify(res?.account_info),
+        );
+      },
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
   render() {
     return (
       <>
@@ -231,6 +257,7 @@ const mapActionCreators = {
   fetchTeammateData,
   fetchConversationBySearch,
   setConversations,
+  fetchAccounts,
 };
 const mapStateToProps = state => {
   return {

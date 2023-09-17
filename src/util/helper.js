@@ -102,7 +102,33 @@ export const CONVERSATION_CONSTANT = {
 };
 
 export const CONVERSATION_TYPE = {
-  AUTO_REPLY: "AUTO_REPLY",
-  BOT: "BOT",
-  LIVE_CHAT: "LIVE_CHAT"
-}
+  AUTO_REPLY: 'AUTO_REPLY',
+  BOT: 'BOT',
+  LIVE_CHAT: 'LIVE_CHAT',
+};
+
+export const SOCKET_CONFIG = {
+  SOCKET_EVENTS: {
+    CONNECT: 'connect',
+    DISCONNECT: 'disconnect',
+    RECONNECT: 'reconnect',
+    AGENT_JOIN: 'agent_join',
+    AGENT_LEAVE: 'agent_leave',
+    AGENT_TYPING: 'agent_typing', //2
+    ASSIGNEE_CHANGED: 'assignee', // done
+    MESSAGE: 'message',
+    CONVERSATION_CREATE: 'conversation_create',
+    VISITOR_TYPING: 'visitor_typing', //3
+    STATUS_CHANGED: 'status', //done
+    USER_STATUS: 'user_status', // implemented
+    MESSAGE_READ: 'message_read', // 1 done
+    NOTE: 'note', // done
+    CUSTOMER_PROFILE: 'variables', // implemented
+    SWITCH_CONVERSATION_MODE: 'switch-conversation-mode',
+  },
+  TRIGGER_EVENTS: {
+    AUTO_OPEN: 'auto_open',
+    AUTO_OPEN_NEW: 'auto-open',
+    POPUP_MESSAGE: 'popup_message',
+  },
+};

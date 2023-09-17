@@ -211,7 +211,6 @@ export const getAssigneeList = userList =>
   userList.users.map(user => (user.user_id ? user.user_id : user.id));
 
 export const getMessage = item => {
-  console.log('getMessage--->', item.message);
   let message = null;
   let data = isValidJSON(item.message) ? JSON.parse(item.message) : null;
   if (
