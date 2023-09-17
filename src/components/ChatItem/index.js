@@ -2,25 +2,20 @@ import React from 'react';
 import {
   Image,
   PixelRatio,
-  TouchableHighlight,
   StyleSheet,
+  TouchableHighlight,
   View,
 } from 'react-native';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {SvgCssUri} from 'react-native-svg';
 import images from '../../assets/images';
+import {getTimeStamp} from '../../util/ConversationListHelper';
 import {hp, wp} from '../../util/helper';
 import theme from '../../util/theme';
 import colors from '../../util/theme/colors';
-import {ActivityIndicator} from '../ActivityIndicator';
 import Spacing from '../Spacing';
 import Text from '../Text/index';
-import {timing} from 'react-native-redash';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import Ticker from './Ticker';
-import {getTimeStamp} from '../../util/ConversationListHelper';
-import {
-  registerVisitorTypingHandler,
-  registerMessageHandler,
-} from '../../websocket';
 
 const ChatItem = ({
   name,
@@ -74,10 +69,17 @@ const ChatItem = ({
     return (
       <View style={{}}>
         {isAvatar ? (
-          <Image
-            source={uri.length > 0 ? {uri: uri} : images.ic_userprofile}
-            style={styles.image}
-          />
+          uri?.toLowerCase()?.includes('svg') ? (
+            <SvgCssUri
+              style={[styles.image, {backgroundColor: 'transparent'}]}
+              uri={uri}
+            />
+          ) : (
+            <Image
+              source={uri.length > 0 ? {uri: uri} : images.ic_userprofile}
+              style={styles.image}
+            />
+          )
         ) : (
           <View
             style={[

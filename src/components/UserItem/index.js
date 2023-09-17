@@ -1,25 +1,32 @@
 import React from 'react';
 import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {SvgCssUri} from 'react-native-svg';
+import images from '../../assets/images';
 import {VALIDATION_REGEX, hp, wp} from '../../util/helper';
 import theme from '../../util/theme';
 import Spacing from '../Spacing';
 import Text from '../Text/index';
-import images from '../../assets/images';
 
 const UserItem = ({name, email, uri, subTittle, isOnline, isAvatar}) => (
   <Pressable style={{padding: 5}}>
     <View style={styles.container}>
       <View>
         {isAvatar ? (
-          <Image
-            source={
-              VALIDATION_REGEX?.isSvg.test(uri) ||
-              !VALIDATION_REGEX?.isImageType.test(uri)
-                ? images.ic_userprofile
-                : {uri: uri}
-            }
-            style={styles.image}
-          />
+          uri?.toLowerCase()?.includes('svg') ? (
+            <SvgCssUri
+              style={[styles.image, {backgroundColor: 'transparent'}]}
+              uri={uri}
+            />
+          ) : (
+            <Image
+              source={
+                !VALIDATION_REGEX?.isImageType.test(uri)
+                  ? images.ic_userprofile
+                  : {uri: uri}
+              }
+              style={styles.image}
+            />
+          )
         ) : (
           <View
             style={[
