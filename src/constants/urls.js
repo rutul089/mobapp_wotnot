@@ -38,7 +38,7 @@ export const endPoints = {
   },
   fetchSavedReply: (account_id, from, limit) => {
     return {
-      endpoint: `/v1/account/${account_id}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=created_at`,
+      endpoint: `/v1/account/${account_id}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=frequency`,
       method: Method.GET,
     };
   },
@@ -140,6 +140,12 @@ export const endPoints = {
     return {
       endpoint: `/v1/agents/${agent_id}/incoming-events`,
       method: Method.POST,
+    };
+  },
+  fetchConversationHistory: (thread_key, query) => {
+    return {
+      endpoint: `/v1/conversations/${thread_key}/history?${query}`,
+      method: Method.GET,
     };
   },
 };

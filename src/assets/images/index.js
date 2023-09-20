@@ -37,4 +37,6 @@ export default {
   ic_star: require('./ic_star.png'),
   ic_qualification_temp: require('./ic_qualification_temp.png'),
   ic_warning: require('./ic_warning.png'),
+  ic_bot: require('./ic_bot.png'),
+  fallback_image: require('./fallback_image.png'),
 };

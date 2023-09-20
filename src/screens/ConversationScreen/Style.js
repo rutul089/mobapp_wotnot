@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   ph: {
     padding: theme.sizes.spacing.ph,
   },
-  bottomMainContainer: {flex: 1, justifyContent: 'flex-end'},
+  bottomMainContainer: {justifyContent: 'flex-end'},
   bottomContainer: {
     margin: theme.sizes.spacing.ph,
     borderWidth: 1,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
       paddingVertical: theme.sizes.spacing.xs,
       gap: theme.sizes.spacing.xs,
     }),
-    attachmentButton: {height: 20, width: 20, tintColor: '#A7A7A7'},
+    attachmentButton: {height: theme.normalize(20), width: theme.normalize(20), tintColor: '#A7A7A7'},
     inputBox: inputHeight => ({
       flex: 1,
       height: inputHeight,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: theme.normalize(10),
       },
     },
-    actionItemIcon: {height: 20, width: 20},
+    actionItemIcon: {height: 20, width: 20, tintColor: theme.colors.bluish_grey},
   },
   assigneeHeader: {
     backgroundColor: theme.colors.brandColor.FAFAFA,

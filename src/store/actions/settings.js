@@ -28,7 +28,7 @@ export const setIncomingEvent = (
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
-    dispatch(loadingSet());
+    // dispatch(loadingSet());
     API.getInstance().Fetch(
       endPoints.setIncomingEvents(agent_id),
       defaultHeaders,

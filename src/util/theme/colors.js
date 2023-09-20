@@ -20,8 +20,8 @@ const wotnotColor = {
   silver: '#858585',
   lightGreen: '#13BE66',
   yellow: '#F1B000',
-  borderColor:'#EEEFF3',
-  lavenderBlue:'#BEDBFC'
+  borderColor: '#EEEFF3',
+  lavenderBlue: '#BEDBFC',
 };
 
 const gray = {
@@ -84,10 +84,30 @@ const colors = {
   drawerActive: '#141322',
   drawerInActive: '#1F1D35',
   334155: '#334155',
-  F0F0F0:"#F0F0F0",
-  pentair:{
-    ...pentairBlue
-  }
+  F0F0F0: '#F0F0F0',
+  pentair: {
+    ...pentairBlue,
+  },
+  white: '#ffffff',
+  red: '#ff0000',
+  clear_blue: '#166ffe',
+  cool_blue: '#2a7cff',
+  light_clear_blue: '#bedbfc',
+  blue: '#23527c',
+  charcoal_grey: '#2d2f39',
+  pale_grey: '#e8e9ef',
+  cool_grey: '#afb2b3',
+  bluish_grey: '#828d93',
+  black: '#000000',
+  green: '#13BE66',
+  background_grey: '#F4F5F6',
+  right_arrow: '#A5ACB7',
+  setting_text_subtitle: '#697387',
+  notification_button_color: '#0366FF',
+  switch_color: '#0366FE',
+  dragable_icon_color: '#E4E4E8',
+  checkbox_color: '#0766FE',
+  yellow: '#faa404',
 };
 
 export default colors;

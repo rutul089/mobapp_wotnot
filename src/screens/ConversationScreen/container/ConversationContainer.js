@@ -11,9 +11,25 @@ import {
   fetchTeammateData,
   setTeammateData,
   setIncomingEvent,
+  fetchConversationHistory,
+  setConversationsHistory,
+  fetchSavedReply,
 } from '../../../store/actions';
-import {showToast} from '../../../util/helper';
+import {
+  CONVERSATION_STATUS_NAME,
+  showToast,
+  CONVERSATION_STATUS,
+} from '../../../util/helper';
 import moment from 'moment';
+import {
+  emitAgentTyping,
+  registerMessageHandler,
+  registerVisitorTypingHandler,
+  registerAssigneeChangedHandler,
+  registerStatusChangedHandler,
+} from '../../../websocket';
+import {getMessageFromEventPayload} from '../../../common/common';
+import {isValidJSON, stringToObj} from '../../../util/JSONOperations';
 
 class ConversationContainer extends Component {
   constructor(props) {
@@ -23,65 +39,21 @@ class ConversationContainer extends Component {
       keyboardHeight: 0,
       inputHeight: 40,
       messageToSend: '',
-      messageList: [
-        {
-          sent: true,
-          message: 'Hello! Would you like to take a closer look at our offer?',
-          timeStamp: '12:30',
-        },
-        {
-          sent: false,
-          message: 'Yes, please!',
-          uri: 'https://i.pravatar.cc/512',
-          timeStamp: '12:30',
-        },
-        {
-          sent: true,
-          message:
-            'Great! In that case, could you provide your phone number or email address so that we can get in touch with you?',
-          timeStamp: '12:30',
-        },
-        {
-          sent: true,
-          message: 'Hello! Would you like to take a closer look at our offer?',
-          timeStamp: '12:30',
-        },
-        {
-          sent: false,
-          message: 'Yes, please!',
-          uri: 'https://i.pravatar.cc/512',
-          timeStamp: '12:30',
-        },
-        {
-          sent: true,
-          message:
-            'Great! In that case, could you provide your phone number or email address so that we can get in touch with you?',
-          timeStamp: '12:30',
-        },
-        {
-          sent: true,
-          message: 'Hello! Would you like to take a closer look at our offer?',
-          timeStamp: '12:30',
-        },
-        {
-          sent: false,
-          message: 'Yes, please!',
-          uri: 'https://i.pravatar.cc/512',
-          timeStamp: '12:30',
-        },
-        {
-          sent: true,
-          message:
-            'Great! In that case, could you provide your phone number or email address so that we can get in touch with you?',
-          timeStamp: '12:30',
-        },
-      ],
+      messageList: [],
       showChangeAssignee: false,
       isTeamSelected: false,
       isLoading: false,
       search_text: '',
       filterTeamData: [],
       filterTeamMateData: [],
+      showSavedReply: false,
+      filterSaveReplyData: [],
+      search_text_save_reply: '',
+      saveLoading: true,
+      typingMsg: '',
+      conversationStatus: 0,
+      imageModalShow:false,
+      modalImg:''
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -92,15 +64,34 @@ class ConversationContainer extends Component {
     this.listRef = React.createRef();
     this.attachmentBottomSheetRef = React.createRef();
     this.onTeamItemPress = this.onTeamItemPress.bind(this);
+    this.onSaveReplyClick = this.onSaveReplyClick.bind(this);
   }
 
   componentDidMount = () => {
-    this.setState({conversationJoined: true});
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    this.setState({
+      conversationJoined: true,
+      conversationStatus: itemData?.status_id,
+    });
+    this.props?.setConversationsHistory([]);
     this.callFetchTeamData();
     this.callFetchTeammateData();
+    this.callFetchConversationHistory(true);
+    this.props.navigation.addListener('focus', () => {
+      registerMessageHandler(this.onMessageReceived);
+      registerAssigneeChangedHandler(this.changeAssigneeHandler);
+      registerStatusChangedHandler(this.changeConversationStatus);
+      registerVisitorTypingHandler(e => console.log(e));
+    });
+
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   };
+
   onPressMore = () => {
     const {
       route: {
@@ -108,7 +99,7 @@ class ConversationContainer extends Component {
       },
     } = this.props;
 
-    if (itemData?.status_id == CONVERSATION.CLOSED_MESSAGE_TYPE) {
+    if (this.state.conversationStatus == CONVERSATION.CLOSED_MESSAGE_TYPE) {
       // return;
     }
     this.moreInfoModalRef?.current?.open();
@@ -144,7 +135,12 @@ class ConversationContainer extends Component {
       timestamp: moment().unix(),
     };
     this.setLoading(true);
-    this.callSetIncomingEvent(param, true, 'You closed this conversation',true);
+    this.callSetIncomingEvent(
+      param,
+      true,
+      'You closed this conversation',
+      true,
+    );
   };
   closeMoreInfoModal = () => {
     this.moreInfoModalRef?.current?.close();
@@ -153,35 +149,80 @@ class ConversationContainer extends Component {
     goBack();
   };
   _keyboardDidShow(e) {
-    this.listRef.current?.scrollToEnd({animated: true});
+    // this.listRef.current?.scrollToEnd({animated: true});
     this.setState({keyboardHeight: e.endCoordinates.height});
   }
   _keyboardDidHide(e) {
     this.setState({keyboardHeight: 0});
   }
   updateMessageValue = message => {
+    const {
+      route: {
+        params: {itemData},
+      },
+      userPreference,
+    } = this.props;
+    let payload = {
+      conversation_key: itemData?.thread_key,
+      bot_id: [itemData?.bot_id],
+      account_id: [userPreference?.account_id],
+      agent_id: userPreference?.logged_in_user_id,
+      typing: 'ok',
+      visitor_key: itemData?.visitor_key,
+      sender: {
+        name: userPreference.logged_in_user_name,
+        image_url: userPreference.image_url
+          ? userPreference.image_url.small
+          : 'https://cdn.wotnot.io/static/img/navigation-panel/userProfile.svg',
+        type: 'agent',
+      },
+    };
+    if (message !== '' && message.trim() !== '') {
+      emitAgentTyping(payload);
+    }
     this.setState({messageToSend: message});
   };
   showMenuOptions = () => {
     this.attachmentBottomSheetRef?.current?.open();
   };
   onSendPress = () => {
+    if (this.state.messageToSend === '' && inputText.trim() === '') {
+      return;
+    }
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    let payload = {
+      conversation_key: itemData?.thread_key,
+      type: 'message',
+      payload: {
+        message: {text: this.state.messageToSend, type: 'text'},
+      },
+    };
+    this.callSetIncomingEvent(payload);
     this.setState({
-      messageList: [
-        ...this.state.messageList,
-        {
-          sent: true,
-          message: this.state.messageToSend,
-          timeStamp: '12:30',
-        },
-      ],
+      messageToSend: '',
     });
-    this.listRef.current?.scrollToEnd({animated: true});
-    //call api to send the message
+    // this.setState({
+    //   messageList: [
+    //     ...this.state.messageList,
+    //     {
+    //       sent: true,
+    //       message: this.state.messageToSend,
+    //       timeStamp: '12:30',
+    //     },
+    //   ],
+    // });
+    // this.listRef.current?.scrollToEnd({animated: true});
   };
   onSavedReplyPress = () => {
-    Alert.alert('TBD');
     this.attachmentBottomSheetRef?.current?.close();
+    this.setState({
+      showSavedReply: true,
+    });
+    this._callSaveReply();
   };
   onCalendarPress = () => {
     Alert.alert('TBD');
@@ -323,8 +364,6 @@ class ConversationContainer extends Component {
       filterTeamMateData: filterTeamMateData,
       filterTeamData: filterTeamData,
     });
-
-    console.log('filterTemMateData', JSON.stringify(filterTeamMateData));
   };
 
   joinConversationPress = () => {
@@ -356,6 +395,273 @@ class ConversationContainer extends Component {
     this.setState(prev => ({...prev, conversationJoined: true}));
   };
 
+  callFetchConversationHistory = showLoader => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    this.props.fetchConversationHistory(
+      itemData?.thread_key,
+      'limit=35',
+      showLoader,
+      {
+        SuccessCallback: res => {
+          if (res?.ok) {
+            this.setState(
+              {
+                messageList: res?.messages_list,
+              },
+              () =>
+                this.onEmitReadMsg(
+                  res?.messages_list,
+                  this.state.conversationStatus,
+                ),
+            );
+          }
+        },
+        FailureCallback: res => {
+          handleFailureCallback(res, false);
+        },
+      },
+    );
+  };
+
+  setJoinButton = () => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+
+    if (this.state.conversationStatus === CONVERSATION.CLOSED_MESSAGE_TYPE) {
+      return false;
+    }
+
+    return (
+      itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE ||
+      (itemData?.assignee && itemData?.assignee?.user_type === 'bot') ||
+      itemData?.assignee?.type_id === 2
+    );
+  };
+
+  _callSaveReply = () => {
+    this.props.fetchSavedReply(
+      this.props?.userPreference?.account_id,
+      0,
+      50,
+      false,
+      {
+        SuccessCallback: res => {
+          this.setState({saveLoading: false});
+        },
+        FailureCallback: res => {
+          this.setState({saveLoading: false});
+          handleFailureCallback(res, false);
+        },
+      },
+    );
+  };
+
+  onCloseSaveReply = () => {
+    this.setState({
+      showSavedReply: false,
+    });
+  };
+
+  onSearchSaveReply = searchText => {
+    this.setState({search_text_save_reply: searchText});
+    let {save_reply_list} = this.props;
+
+    if (!searchText || searchText === '') {
+      this.setState({
+        filterSaveReplyData: [],
+      });
+      return;
+    }
+
+    let filterSaveReply = save_reply_list.filter(
+      item =>
+        item?.reply?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+        item?.title?.toLowerCase()?.includes(searchText?.toLowerCase()),
+    );
+
+    console.log('filterSaveReply', JSON.stringify(filterSaveReply));
+
+    this.setState({
+      filterSaveReplyData: filterSaveReply,
+    });
+  };
+
+  onSaveReplyClick = item => {
+    this.setState((prevState, props) => ({
+      messageToSend: prevState.messageToSend + item?.reply,
+      showSavedReply: false,
+    }));
+  };
+
+  onMessageReceived = msg => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    if (!(this.props.isLoading || this.state.isLoading) && msg) {
+      if (itemData?.thread_key === msg?.conversation_key) {
+        let convertedMessage = getMessageFromEventPayload(
+          msg,
+          this.props.messageHistory,
+        );
+        let newMsg;
+        if (!convertedMessage) return;
+        if (convertedMessage?.bot) {
+          const assignee = itemData?.assignee
+            ? itemData?.assignee
+            : convertedMessage.bot;
+          newMsg = {
+            agent: {
+              ...assignee,
+              ...convertedMessage.bot,
+              message: isValidJSON(convertedMessage.bot.message)
+                ? stringToObj(convertedMessage.bot.message)
+                : convertedMessage.bot.message,
+            },
+
+            timestamp: '0', // 0 is set so the ticker will be start from now and increament by 1,2,3 ... and forth
+          };
+        } else if (convertedMessage?.agent) {
+          const assignee = itemData?.assignee
+            ? itemData?.assignee
+            : convertedMessage.agent;
+          let text = convertedMessage.agent.message
+            ? JSON.parse(convertedMessage.agent.message)['text']
+            : '';
+          let created_by = convertedMessage.assignee
+            ? convertedMessage.assignee.id
+            : null;
+          let oldMessage = isValidJSON(convertedMessage.agent.message)
+            ? stringToObj(convertedMessage.agent.message)
+            : {};
+          newMsg = {
+            agent: {
+              created_by: created_by,
+              ...assignee,
+              ...convertedMessage.agent,
+              message: {
+                ...oldMessage,
+                text: text,
+                type:
+                  isValidJSON(convertedMessage.agent.message) &&
+                  stringToObj(convertedMessage.agent.message).type
+                    ? stringToObj(convertedMessage.agent.message).type
+                    : 'text',
+              },
+            },
+            timestamp: '0', // 0 is set so the ticker will be start from now and increament by 1,2,3 ... and forth
+          };
+        } else {
+          let oldMessage = isValidJSON(convertedMessage.user.message)
+            ? stringToObj(convertedMessage.user.message)
+            : {};
+          newMsg = {
+            user: {
+              ...oldMessage,
+              message: {
+                ...convertedMessage.user.message,
+                text:
+                  isValidJSON(convertedMessage.user.message) &&
+                  stringToObj(convertedMessage.user.message).text
+                    ? stringToObj(convertedMessage.user.message).text
+                    : '',
+                type:
+                  isValidJSON(convertedMessage.user.message) &&
+                  stringToObj(convertedMessage.user.message).type
+                    ? stringToObj(convertedMessage.user.message).type
+                    : 'text',
+              },
+            },
+            timestamp: '0', // 0 is set so the ticker will be start from now and increament by 1,2,3 ... and forth
+          };
+        }
+
+        this.setState({
+          messageList: [newMsg, ...this.state.messageList],
+        });
+      }
+    }
+  };
+
+  visitorTyping = data => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    if (!(this.props.isLoading || this.state.isLoading) && data) {
+      if (itemData?.thread_key === typingMsg.conversation_key) {
+        let newMsg = {
+          ...data,
+          type: 'typing',
+          name: itemData?.title,
+          key: Math.random(),
+        };
+        this.setState({
+          typingMsg: newMsg,
+        });
+      }
+    }
+  };
+
+  onEmitReadMsg = async (data, conversationStatusId) => {
+    // if (
+    //   (conversationStatusId === CONVERSATION_STATUS.OPEN ||
+    //     route.params.conversationStatusId === CONVERSATION_STATUS.OPEN) &&
+    //   (!route.params.unreadMessagesCount ||
+    //     route.params.unreadMessagesCount > 0)
+    // ) {
+    //   let readMsgCounts = getChatMsgCountWithoutStatusMsg(data);
+    //   // triggerMsgReadEvent(readMsgCounts);
+    // }
+  };
+
+  changeAssigneeHandler = data => {
+    console.log('changeAssigneeHandler------->', data);
+  };
+
+  changeConversationStatus = data => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    if (data && data?.conversation_key === itemData?.thread_key) {
+      console.log('changeAssigneeHandler------->1', data);
+      console.log(
+        'changeAssigneeHandler------->2',
+        data?.event_payload?.status?.name === CONVERSATION_STATUS_NAME.CLOSED,
+      );
+      let newStatus =
+        data?.event_payload?.status?.name === CONVERSATION_STATUS_NAME.CLOSED
+          ? CONVERSATION_STATUS.CLOSED
+          : CONVERSATION_STATUS.OPEN;
+      this.setState(
+        {
+          conversationStatus: newStatus,
+        },
+        () => {
+          setTimeout(() => {
+            this.callFetchConversationHistory(false);
+          }, 500);
+        },
+      );
+    }
+  };
+
+
+  onToggleImageModal = (img) => {
+    console.log("onToggleImageModal",img)
+  }
+
   render() {
     const {
       teamMateData,
@@ -364,8 +670,16 @@ class ConversationContainer extends Component {
         params: {itemData},
       },
       userPreference,
+      messageHistory,
+      save_reply_list,
     } = this.props;
-    let {filterTeamMateData, filterTeamData, search_text} = this.state;
+    let {
+      filterTeamMateData,
+      filterTeamData,
+      search_text,
+      search_text_save_reply,
+      filterSaveReplyData,
+    } = this.state;
     return (
       <>
         <ConversationComponent
@@ -378,7 +692,7 @@ class ConversationContainer extends Component {
           joinConversation={strings('chat.join_conversation_message')}
           joinConversationBtn={strings('button.join_conversation')}
           joinConversationPress={this.joinConversationPress}
-          conversationJoined={
+          joinButton={
             itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE
           }
           scrollViewRef={this.scrollViewRef}
@@ -415,9 +729,29 @@ class ConversationContainer extends Component {
           itemData={itemData}
           userID={userPreference?.logged_in_user_id}
           onTeamItemPress={this.onTeamItemPress}
-          isLoading={this.state.isLoading}
+          isLoading={this.props.isLoading || this.state.isLoading}
           searchValue={this.state.search_text}
           onChangeText={this.onSearchText}
+          // messageHistory={messageHistory}
+          messageHistory={this.state.messageList}
+          users={this.props.conversationHistory?.users}
+          isClosed={this.state.conversationStatus === 2}
+          showSavedReply={this.state.showSavedReply}
+          save_reply_list={
+            search_text_save_reply !== ''
+              ? filterSaveReplyData
+              : save_reply_list
+          }
+          onCloseSaveReply={this.onCloseSaveReply}
+          replyLoading={this.state.saveLoading}
+          searchSaveReply={this.state.search_text_save_reply}
+          onSearchSaveReply={this.onSearchSaveReply}
+          onSaveReplyClick={this.onSaveReplyClick}
+          userName={itemData?.title}
+          conversationStatus={this.state?.conversationStatus}
+          modalImg={this.state.modalImg}
+          imageModalShow={this.state.imageModalShow}
+          onToggleImageModal={this.onToggleImageModal}
         />
       </>
     );
@@ -429,12 +763,20 @@ const mapActionCreators = {
   fetchTeammateData,
   setTeammateData,
   setIncomingEvent,
+  fetchConversationHistory,
+  setConversationsHistory,
+  fetchSavedReply,
 };
 const mapStateToProps = state => {
   return {
     teamData: state.accountReducer?.teamData?.teams,
     teamMateData: state.accountReducer?.teamMateData?.users,
     userPreference: state.detail?.userPreference,
+    messageHistory:
+      state.conversationReducer?.conversationHistory?.messages_list,
+    isLoading: state.global.loading,
+    conversationHistory: state.conversationReducer?.conversationHistory,
+    save_reply_list: state.accountReducer?.savedReply?.replies,
   };
 };
 export default connect(

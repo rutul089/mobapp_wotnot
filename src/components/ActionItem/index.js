@@ -33,7 +33,9 @@ const ActionItem = ({
           }}
           borderColor="coolGray.300">
           {leftIcon}
-          <Text type={'body1'} style={{flex: 1, paddingHorizontal: 10}}>
+          <Text
+            type={'body1'}
+            style={{flex: 1, paddingHorizontal: 10, ...textStyle}}>
             {label}
           </Text>
           {rightIcon}

@@ -67,18 +67,18 @@ export const fetchTeammateData = (
 };
 
 export const fetchSavedReply = (
-  userID,
+  account_id,
   from,
   limit,
-  param,
+  isLoading,
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
-    dispatch(loadingSet());
+    isLoading ? dispatch(loadingSet()) : null;
     API.getInstance().Fetch(
-      endPoints.fetchSavedReply(userID, from, limit),
+      endPoints.fetchSavedReply(account_id, from, limit),
       defaultHeaders,
-      param,
+      '',
       {
         SuccessCallback: response => {
           dispatch(loadingUnset());

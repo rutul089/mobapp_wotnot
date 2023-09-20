@@ -8,6 +8,8 @@ import {
   Modal,
   SafeAreaView,
   ScrollView,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import images from '../../../assets/images';
 import {
@@ -18,6 +20,7 @@ import {
   Text,
   Loader,
   Input,
+  ImageViewer,
 } from '../../../components';
 import Spacing from '../../../components/Spacing';
 import {strings} from '../../../locales/i18n';
@@ -27,6 +30,26 @@ import styles from '../Style';
 import ButtonTeammate from './ButtonTeammate';
 import AssigneeItem from './AssigneeItem';
 import {CONVERSATION} from '../../../constants/global';
+import {
+  getAgentDetails,
+  getChatMsgType,
+  getFormChatItemWithResponse,
+  userFileResponseElement,
+} from '../../../util/ChatHistoryHelper';
+import ChatDateStampLabel from './ChatComponent/ChatDateStampLabel';
+import ChatText from './ChatComponent/ChatText';
+import ChatImg from './ChatComponent/ChatImg';
+import ChatFileBlock from './ChatComponent/ChatFileBlock';
+import ChatFileResponse from './ChatComponent/ChatFileResponse';
+import ChatNote from './ChatComponent/ChatNote';
+import ChatSlider from './ChatComponent/ChatSlider';
+import ChatOptionsButton from './ChatComponent/ChatOptionsButton';
+import ChatCalendar from './ChatComponent/ChatCalendar';
+import ChatForm from './ChatComponent/ChatForm';
+import ChatCardView from './ChatComponent/ChatCardView';
+import AutoGrowTextInputManager from '../../../util/AutoGrowTextInputManager';
+import ChatTyping from './ChatComponent/ChatTyping';
+import {registerVisitorTypingHandler} from '../../../websocket';
 
 const ConversationComponent = ({
   joinConversation,
@@ -38,7 +61,7 @@ const ConversationComponent = ({
   onChangeAssignee,
   onCloseConversation,
   onPressLeftContent,
-  conversationJoined,
+  joinButton,
   messageList,
   keyboardHeight,
   inputHeight,
@@ -65,53 +88,65 @@ const ConversationComponent = ({
   isLoading,
   isMoreIconHidden,
   searchValue,
-  onChangeText
+  onChangeText,
+  messageHistory,
+  users,
+  isClosed,
+  chatUserName,
+  searchSaveReply,
+  savedReply,
+  onSearchSaveReply,
+  showSavedReply,
+  save_reply_list,
+  onCloseSaveReply,
+  replyLoading,
+  onSaveReplyClick,
+  // onToggleImageModal,
+  // imageModalShow,
+  // modalImg,
 }) => {
-  const _renderListHeaderView = () => {
-    return (
-      <View style={styles.listHeader.mainAssignContainer}>
-        <View style={styles.listHeader.assignContainer}>
-          <Text type={'caption12'} style={{color: colors.white}}>
-            You assigned this conversation to yourself - 5m
-          </Text>
-        </View>
-      </View>
-    );
-  };
-  const _renderItemView = ({item}) => {
-    const {sent, message, uri, timeStamp} = item;
+  const [typingData, setTypingData] = React.useState();
+  const [imageModalShow, setImageModalShow] = React.useState(false);
+  const [modalImg, setImageModalUrl] = React.useState();
+
+  React.useEffect(() => {
+    registerVisitorTypingHandler(e => {
+      if (!isLoading && itemData) {
+        if (itemData?.thread_key === e?.conversation_key) {
+          let newMsg = {
+            ...itemData,
+            type: 'typing',
+            name: itemData?.title,
+            key: Math.random(),
+          };
+          setTypingData(newMsg);
+        }
+      }
+    });
+  });
+
+  function onToggleImageModal(img) {
+    console.log('-------onToggleImageModal------');
+    setImageModalShow(true);
+    setImageModalUrl(img);
+  }
+
+  const _renderItemView = ({item, index}) => {
+    let msgType = getChatMsgType(item);
+    let itemWithAccountDetails =
+      item.agent && !item.agent.id ? getAgentDetails(item, users) : item;
+    let formResponse =
+      msgType === 'form'
+        ? getFormChatItemWithResponse(
+            index,
+            messageHistory,
+            itemWithAccountDetails,
+          )
+        : null;
+
     return (
       <View style={styles.renderItem.mainContainer}>
-        {!sent && <Image source={{uri: uri}} style={styles.renderItem.image} />}
-        <View
-          style={[
-            styles.renderItem.renderItemContainer,
-            sent
-              ? styles.renderItem.sentBubble
-              : styles.renderItem.receivedBubble,
-          ]}>
-          <View
-            style={[
-              styles.renderItem.innerContainer,
-              sent
-                ? styles.renderItem.innerContainerSent
-                : styles.renderItem.innerContainerReceived,
-            ]}>
-            <Text
-              style={
-                sent
-                  ? {
-                      color: colors.white,
-                    }
-                  : {
-                      color: colors.black,
-                    }
-              }>
-              {message}
-            </Text>
-          </View>
-          <Text style={styles.renderItem.timeStamp}>{timeStamp}</Text>
-        </View>
+        {renderItem(item, msgType, itemWithAccountDetails, formResponse)}
       </View>
     );
   };
@@ -203,6 +238,358 @@ const ConversationComponent = ({
       </Modal>
     );
   };
+  const _renderJoinConversationView = () => {
+    return (
+      <View style={styles.bottomMainContainer}>
+        <View style={styles.bottomContainer}>
+          <Text type={'caption12'} style={{width: '96%'}} textAlign={'center'}>
+            {joinConversation}
+          </Text>
+          <Spacing />
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.btnStyle}
+            onPress={joinConversationPress}>
+            <Text type={'button2'} color={'white'}>
+              {joinConversationBtn}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+  const _renderInputTextView = () => {
+    return (
+      <View
+        style={{
+          backgroundColor: '#FEFEFE',
+          flexDirection: 'row',
+          padding: 8,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: -4,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3.84,
+          elevation: 3,
+          zIndex: 50000,
+          // borderTopWidth: 1,
+          // borderTopColor: theme.colors.typography.silver,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+            backgroundColor: '#f0f2f5',
+            borderRadius: 12,
+            paddingHorizontal: 10,
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={showMenuOptions}
+            style={{
+              justifyContent: 'flex-end',
+              bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
+            }}>
+            <Image
+              source={images.ic_hamburger}
+              resizeMode="contain"
+              style={styles.sendMessageContainer.attachmentButton}
+            />
+          </TouchableOpacity>
+          <AutoGrowTextInputManager
+            style={{
+              paddingHorizontal: theme.normalize(10),
+              paddingVertical: theme.normalize(5),
+              fontSize: 16,
+              flex: 1,
+              // backgroundColor: '#f0f2f5',
+              // borderRadius: 12,
+              textAlignVertical: 'top',
+              justifyContent: 'center',
+              fontFamily: theme.typography.fonts.circularStdBook,
+            }}
+            placeholder={'Send Message'}
+            placeholderTextColor={theme.colors.typography.silver}
+            maxHeight={100}
+            minHeight={40}
+            enableScrollToCaret
+            numberOfLines={1}
+            onChangeText={updateMessageValue}
+            value={messageToSend}
+          />
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={onSendPress}
+            style={{
+              justifyContent: 'flex-end',
+              bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
+            }}>
+            <Image
+              source={images.ic_send}
+              resizeMode="contain"
+              style={styles.sendMessageContainer.attachmentButton}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+  const renderItem = (item, msgType, itemWithAccountDetails, formResponse) => {
+    // console.log('msgType==========>', msgType);
+    switch (msgType) {
+      case 'file.response': {
+        let files = userFileResponseElement(itemWithAccountDetails);
+        return (
+          <ChatFileResponse
+            fileList={files}
+            chatUserName={itemData?.title}
+            itemWithAccountDetails={itemWithAccountDetails}
+            onToggleImageModal={onToggleImageModal}
+          />
+        );
+      }
+      case 'status': {
+        return (
+          <ChatDateStampLabel
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            loggedInUserId={userID}
+          />
+        );
+      }
+      case 'assigned': {
+        return (
+          <ChatDateStampLabel
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            loggedInUserId={userID}
+          />
+        );
+      }
+      case 'text': {
+        return (
+          <ChatText
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            onToggleImageModal={() => {}}
+            chatUserName={itemData?.title}
+          />
+        );
+      }
+      case 'image': {
+        return (
+          <ChatImg
+            // pos={
+            //   itemWithAccountDetails.pos
+            //     ? itemWithAccountDetails.pos
+            //     : 'relative'
+            // }
+            chatItem={itemWithAccountDetails}
+            onToggleImageModal={onToggleImageModal}
+            onToggleImageModal123={e => console.log('00000')}
+          />
+        );
+      }
+      case 'file': {
+        // will show link at agent side instead of preview box
+        return (
+          <ChatText
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+          />
+        );
+      }
+      case 'slider.response': {
+        return (
+          <ChatText
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            textMsg={JSON.parse(itemWithAccountDetails.user.message.text)}
+          />
+        );
+      }
+      case 'note': {
+        return (
+          <ChatNote
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            textMsg={itemWithAccountDetails.agent.note}
+            onToggleImageModal={() => {}}
+          />
+        );
+      }
+      case 'slider': {
+        return (
+          <ChatSlider
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+          />
+        );
+      }
+      case 'options': {
+        return (
+          <ChatOptionsButton
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            // retainButtonListUponSelection={retainButtonListUponSelection}
+          />
+        );
+      }
+      case 'calendar': {
+        return (
+          <ChatCalendar
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            textMsg={
+              JSON.parse(itemWithAccountDetails.agent.message.text).title
+            }
+          />
+        );
+      }
+      case 'form': {
+        return (
+          <ChatForm
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={formResponse ? formResponse : itemWithAccountDetails}
+          />
+        );
+      }
+      case 'cardview': {
+        return (
+          <ChatCardView
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            slides={JSON.parse(itemWithAccountDetails.agent.message.text).items}
+            avatar={itemWithAccountDetails.agent.avatar}
+            onToggleImageModal={onToggleImageModal}
+          />
+        );
+      }
+    }
+  };
+  const _renderSaveReplyView = () => {
+    return (
+      <Modal
+        animationType="slide"
+        visible={showSavedReply}
+        style={{backgroundColor: 'black'}}
+        statusBarTranslucent={false}>
+        <SafeAreaView
+          style={{flex: 1, backgroundColor: theme.colors.brandColor.FAFAFA}}>
+          <View style={{overflow: 'hidden', paddingBottom: 1}}>
+            <View style={styles.assigneeHeader}>
+              <TouchableOpacity activeOpacity={0.5} onPress={onCloseSaveReply}>
+                <Image
+                  source={images.ic_cross}
+                  resizeMode="contain"
+                  style={styles.assigneeIcon}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <Input
+            containerStyle={{padding: 5, backgroundColor: 'white'}}
+            computedLeftIcon={images.ic_search}
+            isLeftIconElementVisible
+            tintColor={theme.colors.brandColor.blue}
+            placeholder={'Search'}
+            onChangeText={onSearchSaveReply}
+            value={searchSaveReply}
+            leftIconDisabled
+            returnKeyType="done"
+            // onSubmitEditing={onSubmitEditing && onSubmitEditing}
+          />
+          {replyLoading ? (
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <ActivityIndicator
+                size="large"
+                color={theme.colors.brandColor.blue}
+              />
+            </View>
+          ) : (
+            <FlatList
+              stickyHeaderHiddenOnScroll={true}
+              ListHeaderComponentStyle={{paddingVertical: theme.normalize(8)}}
+              ref={listRef}
+              contentContainerStyle={{backgroundColor: 'white', flexGrow: 1}}
+              data={save_reply_list}
+              renderItem={({item, index}) => (
+                <ActionItem
+                  label={`${item?.title} - ${item?.reply}`}
+                  onItemPress={() => onSaveReplyClick && onSaveReplyClick(item)}
+                />
+              )}
+              style={{}}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                replyLoading ? null : (
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignContent: 'center',
+                      alignSelf: 'center',
+                      flexGrow: 1,
+                    }}>
+                    <Text>No saved replies found</Text>
+                  </View>
+                )
+              }
+            />
+          )}
+        </SafeAreaView>
+
+        {/* <View /> */}
+      </Modal>
+    );
+  };
+
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header
@@ -217,70 +604,49 @@ const ConversationComponent = ({
           isOnline:
             itemData?.visitor_status === CONVERSATION.USER_STATUS.ONLINE,
         }}
-        isMoreIconHidden={
-          itemData?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE
-        }
+        isMoreIconHidden={isClosed}
       />
-      {conversationJoined ? (
+      {isLoading ? null : (
         <View style={styles.container}>
           <FlatList
             ref={listRef}
-            data={messageList}
+            data={messageHistory}
             renderItem={_renderItemView}
-            ListHeaderComponent={_renderListHeaderView}
+            keyExtractor={(item, index) =>
+              item?.timestamp + String(messageHistory.length - index)
+            }
+            // ListHeaderComponent={_renderListHeaderView}
+            extraData={messageList}
             style={{
               paddingHorizontal: theme.sizes.spacing.ph,
-              paddingBottom: theme.sizes.spacing.xl,
             }}
+            contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}
+            // ListHeaderComponent={<View style={{height: 50}} />}
+            inverted
+            ListEmptyComponent={
+              isLoading ? null : (
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    alignSelf: 'center',
+                    flexGrow: 1,
+                  }}>
+                  <Text>No conversation found</Text>
+                </View>
+              )
+            }
           />
-          <View
-            style={styles.sendMessageContainer.mainContainer(
-              inputHeight,
-              keyboardHeight,
-            )}>
-            <TouchableOpacity activeOpacity={0.5} onPress={showMenuOptions}>
-              <Image
-                source={images.ic_hamburger}
-                resizeMode="contain"
-                style={styles.sendMessageContainer.attachmentButton}
-              />
-            </TouchableOpacity>
-            <TextInput
-              style={styles.sendMessageContainer.inputBox(inputHeight)}
-              underlineColorAndroid="transparent"
-              value={messageToSend}
-              onChangeText={updateMessageValue}
-              placeholder={placeHolderMessage}
-            />
-            <TouchableOpacity activeOpacity={0.5} onPress={onSendPress}>
-              <Image
-                source={images.ic_send}
-                resizeMode="contain"
-                style={styles.sendMessageContainer.sendButton}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <View style={styles.bottomMainContainer}>
-          <View style={styles.bottomContainer}>
-            <Text
-              type={'caption12'}
-              style={{width: '96%'}}
-              textAlign={'center'}>
-              {joinConversation}
-            </Text>
-            <Spacing />
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.btnStyle}
-              onPress={joinConversationPress}>
-              <Text type={'button2'} color={'white'}>
-                {joinConversationBtn}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <ChatTyping
+            typingMsg={typingData}
+            style={{paddingHorizontal: theme.sizes.spacing.ph, marginBottom: 5}}
+          />
+          {isClosed
+            ? null
+            : joinButton
+            ? _renderInputTextView()
+            : _renderJoinConversationView()}
         </View>
       )}
       <BottomSheet
@@ -301,10 +667,12 @@ const ConversationComponent = ({
       </BottomSheet>
       <BottomSheet
         ref={attachmentBottomSheetRef}
-        height={theme.normalize(160)}
-        closeOnDragDown
+        height={theme.normalize(180)}
+        closeOnDragDown={false}
         customStyles={styles.bottomSheetContainer.mainContainer}>
-        <>
+        <ScrollView
+          style={{flexGrow: 1}}
+          contentContainerStyle={{paddingTop: 10}}>
           <ActionItem
             label={strings('chat.saved_reply')}
             onItemPress={onSavedReplyPress}
@@ -338,9 +706,15 @@ const ConversationComponent = ({
               />
             }
           />
-        </>
+        </ScrollView>
       </BottomSheet>
       {_renderChangeAssigneeView()}
+      {_renderSaveReplyView()}
+      <ImageViewer
+        modalShow={imageModalShow}
+        modalImg={modalImg}
+        onRequestClose={() => setImageModalShow(false)}
+      />
       <Loader loading={isLoading} />
     </FlexContainer>
   );

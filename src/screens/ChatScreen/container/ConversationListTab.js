@@ -113,8 +113,6 @@ class ConversationListTab extends Component {
     if (prevState?.currentTab != this.props.currentTab) {
       this.onRefresh();
     }
-    // console.log('-------------->', JSON.stringify(prevState?.currentTab));
-    // console.log('-------------->', JSON.stringify(this.props.currentTab));
   }
 
   loadMoreData = () => {

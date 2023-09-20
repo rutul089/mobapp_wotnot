@@ -46,22 +46,29 @@ const ChatItem = ({
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
   const [isTyping, setIsTyping] = React.useState(false);
+  const [isTypingData, setTypingData] = React.useState(null);
 
   let typingTimeout = null;
 
   React.useEffect(() => {
-    if (typingData?.conversation_key === itemData?.thread_key) {
-      typingData ? setIsTyping(true) : null;
+    setTypingData(typingData);
+  }, [typingData]);
+
+  React.useEffect(() => {
+    if (isTypingData?.conversation_key === itemData?.thread_key) {
+      isTypingData ? setIsTyping(true) : null;
     }
   }, [typingData]);
 
   React.useEffect(() => {
     typingTimeout = setTimeout(() => {
       setIsTyping(false);
+      setTypingData(false);
     }, 800);
     return () => {
       clearTimeout(typingTimeout);
       typingTimeout = null;
+      setTypingData(null);
     };
   }, [typingData]);
 

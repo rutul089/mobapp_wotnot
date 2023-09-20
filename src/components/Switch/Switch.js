@@ -5,42 +5,41 @@ import {
   StyleSheet,
   Animated,
   PanResponder,
-  TouchableWithoutFeedback,
-  ViewPropTypes
+  TouchableWithoutFeedback
 } from "react-native";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 
 export class Switch extends Component {
-  static propTypes = {
-    onValueChange: PropTypes.func,
-    disabled: PropTypes.bool,
-    activeText: PropTypes.string,
-    inActiveText: PropTypes.string,
-    backgroundActive: PropTypes.string,
-    backgroundInactive: PropTypes.string,
-    value: PropTypes.bool,
-    circleActiveColor: PropTypes.string,
-    circleInActiveColor: PropTypes.string,
-    circleSize: PropTypes.number,
-    circleBorderActiveColor: PropTypes.string,
-    circleBorderInactiveColor: PropTypes.string,
-    activeTextStyle: PropTypes.object,
-    inactiveTextStyle: PropTypes.object,
-    containerStyle: PropTypes.object,
-    barHeight: PropTypes.number,
-    circleBorderWidth: PropTypes.number,
-    innerCircleStyle: PropTypes.object,
-    renderInsideCircle: PropTypes.func,
-    changeValueImmediately: PropTypes.bool,
-    innerCircleStyle: PropTypes.object,
-    outerCircleStyle: PropTypes.object,
-    renderActiveText: PropTypes.bool,
-    renderInActiveText: PropTypes.bool,
-    switchLeftPx: PropTypes.number,
-    switchRightPx: PropTypes.number,
-    switchWidthMultiplier: PropTypes.number,
-    switchBorderRadius: PropTypes.number
-  };
+  // static propTypes = {
+  //   onValueChange: PropTypes.func,
+  //   disabled: PropTypes.bool,
+  //   activeText: PropTypes.string,
+  //   inActiveText: PropTypes.string,
+  //   backgroundActive: PropTypes.string,
+  //   backgroundInactive: PropTypes.string,
+  //   value: PropTypes.bool,
+  //   circleActiveColor: PropTypes.string,
+  //   circleInActiveColor: PropTypes.string,
+  //   circleSize: PropTypes.number,
+  //   circleBorderActiveColor: PropTypes.string,
+  //   circleBorderInactiveColor: PropTypes.string,
+  //   activeTextStyle: PropTypes.object,
+  //   inactiveTextStyle: PropTypes.object,
+  //   containerStyle: PropTypes.object,
+  //   barHeight: PropTypes.number,
+  //   circleBorderWidth: PropTypes.number,
+  //   innerCircleStyle: PropTypes.object,
+  //   renderInsideCircle: PropTypes.func,
+  //   changeValueImmediately: PropTypes.bool,
+  //   innerCircleStyle: PropTypes.object,
+  //   outerCircleStyle: PropTypes.object,
+  //   renderActiveText: PropTypes.bool,
+  //   renderInActiveText: PropTypes.bool,
+  //   switchLeftPx: PropTypes.number,
+  //   switchRightPx: PropTypes.number,
+  //   switchWidthMultiplier: PropTypes.number,
+  //   switchBorderRadius: PropTypes.number
+  // };
 
   static defaultProps = {
     value: false,

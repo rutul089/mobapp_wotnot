@@ -20,7 +20,11 @@ import theme from '../../../util/theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LOCAL_STORAGE} from '../../../constants/storage';
 import {getAgentPayload} from '../../../common/common';
-import {emitVisitorTyping, initSocket,registerVisitorTypingHandler} from '../../../websocket';
+import {
+  emitVisitorTyping,
+  initSocket,
+  registerVisitorTypingHandler,
+} from '../../../websocket';
 import {emitAgentJoin} from '../../../websocket';
 
 class TestChatScreen extends Component {
@@ -33,7 +37,7 @@ class TestChatScreen extends Component {
       search_after: '',
       isDisable: true,
       isRefreshing: false,
-      typingData:null
+      typingData: null,
     };
     this.onSelectTab = this.onSelectTab.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
@@ -49,6 +53,9 @@ class TestChatScreen extends Component {
     this.callFetchTeammateData();
     this.cllFetchAccounts();
     this.callFetchConversation(this.state.currentTab, false, true);
+    this.props.navigation.addListener('focus', () => {
+      this.callFetchConversation(this.state.currentTab, false, false);
+    });
     let agentpayload = await getAgentPayload();
     initSocket();
     emitAgentJoin();
@@ -203,7 +210,7 @@ class TestChatScreen extends Component {
   };
 
   onConversationClick = item => {
-    navigate('ConversationScreen', {itemData: item});
+    navigate('ConversationScreen', {itemData: item, chatUserName: item?.title});
   };
 
   loadMoreData = distanceFromEnd => {

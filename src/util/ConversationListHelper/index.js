@@ -168,7 +168,8 @@ export function parseJsonMessage(msg) {
   }
 }
 export const messageParser = msg => {
-  if (isValidJSON(msg.replace(/\\/gim, ''))) {
+  if (!msg) return;
+  if (isValidJSON(msg?.replace(/\\/gim, ''))) {
     return parseJsonMessage(msg);
   }
 
@@ -267,7 +268,16 @@ export const getMessage = item => {
     data?.text &&
     data?.text?.length > 0
   ) {
-    message = "CAROUSEL" ;
+    message = 'CAROUSEL';
+  } else if (data && data?.type === 'calendar' && data?.text) {
+    message = 'Calendar';
+  } else if (
+    data &&
+    (data.type === 'form' || data.type === 'file') &&
+    data?.text
+  ) {
+    let messageItem = JSON.parse(data?.text);
+    message = messageItem?.message;
   } else {
     message = item.message;
   }

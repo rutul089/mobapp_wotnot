@@ -263,18 +263,18 @@ export function getAgentDetails(item, users) {
   return agentWithAccountDetails;
 }
 export function getChatMsgUserType(item) {
-  return item.agent
-    ? item.agent
-    : item.auto_reply
-    ? item.auto_reply
-    : item.user
-    ? item.user
+  return item?.agent
+    ? item?.agent
+    : item?.auto_reply
+    ? item?.auto_reply
+    : item?.user
+    ? item?.user
     : null;
 }
 
 export function getChatMsgType(item) {
   let chatItem = getChatMsgUserType(item);
-  let msgType = chatItem.type
+  let msgType = chatItem?.type
     ? chatItem.type
     : chatItem.message
     ? typeof chatItem.message === 'string' && isValidJSON(chatItem.message)

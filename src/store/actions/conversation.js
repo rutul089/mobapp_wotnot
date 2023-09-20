@@ -8,6 +8,7 @@ import {
   setFilterConversation,
   loadingSetConversations,
   loadingUnsetConversations,
+  setConversationsHistory,
 } from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -80,6 +81,33 @@ export const fetchConversationSummary = (
         SuccessCallback: response => {
           dispatch(loadingUnset());
           dispatch(setConversationsCount(response));
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
+  };
+};
+
+export const fetchConversationHistory = (
+  thready_key,
+  query,
+  isLoading,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    isLoading ? dispatch(loadingSet()) : null;
+    API.getInstance().Fetch(
+      endPoints.fetchConversationHistory(thready_key, query),
+      defaultHeaders,
+      '',
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          dispatch(setConversationsHistory(response));
           SuccessCallback(response);
         },
         FailureCallback: response => {

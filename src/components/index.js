@@ -15,3 +15,4 @@ export {default as ActionItem} from './ActionItem';
 export {default as Input} from './Input';
 export {default as Loader} from './Loader';
 export {default as OfflineNotice} from './OfflineNotice';
+export {default as ImageViewer} from './ImageViewer';
