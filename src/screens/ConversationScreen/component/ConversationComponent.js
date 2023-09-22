@@ -101,9 +101,8 @@ const ConversationComponent = ({
   onCloseSaveReply,
   replyLoading,
   onSaveReplyClick,
-  // onToggleImageModal,
-  // imageModalShow,
-  // modalImg,
+  handleLoadMore,
+  isLoadMore,
 }) => {
   const [typingData, setTypingData] = React.useState();
   const [imageModalShow, setImageModalShow] = React.useState(false);
@@ -606,49 +605,65 @@ const ConversationComponent = ({
         }}
         isMoreIconHidden={isClosed}
       />
-      {isLoading ? null : (
-        <View style={styles.container}>
-          <FlatList
-            ref={listRef}
-            data={messageHistory}
-            renderItem={_renderItemView}
-            keyExtractor={(item, index) =>
-              item?.timestamp + String(messageHistory.length - index)
-            }
-            // ListHeaderComponent={_renderListHeaderView}
-            extraData={messageList}
-            style={{
-              paddingHorizontal: theme.sizes.spacing.ph,
-            }}
-            contentContainerStyle={{flexGrow: 1}}
-            showsVerticalScrollIndicator={false}
-            // ListHeaderComponent={<View style={{height: 50}} />}
-            inverted
-            ListEmptyComponent={
-              isLoading ? null : (
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignContent: 'center',
-                    alignSelf: 'center',
-                    flexGrow: 1,
-                  }}>
-                  <Text>No conversation found</Text>
-                </View>
-              )
-            }
-          />
-          <ChatTyping
-            typingMsg={typingData}
-            style={{paddingHorizontal: theme.sizes.spacing.ph, marginBottom: 5}}
-          />
-          {isClosed
-            ? null
-            : joinButton
-            ? _renderInputTextView()
-            : _renderJoinConversationView()}
-        </View>
-      )}
+
+      <View style={styles.container}>
+        <FlatList
+          ref={listRef}
+          data={messageHistory}
+          renderItem={_renderItemView}
+          keyExtractor={(item, index) =>
+            item?.timestamp + String(messageHistory.length - index)
+          }
+          // ListHeaderComponent={_renderListHeaderView}
+          extraData={messageList}
+          style={{
+            paddingHorizontal: theme.sizes.spacing.ph,
+          }}
+          contentContainerStyle={{flexGrow: 1}}
+          showsVerticalScrollIndicator={false}
+          // ListHeaderComponent={<View style={{height: 100}} />}
+          ListFooterComponent={
+            <View style={{marginTop: theme.sizes.spacing.pv}}>
+              {isLoadMore ? (
+                <ActivityIndicator
+                  size="large"
+                  color={theme.colors.brandColor.blue}
+                />
+              ) : null}
+            </View>
+          }
+          inverted
+          ListEmptyComponent={
+            isLoading ? null : (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  alignSelf: 'center',
+                  flexGrow: 1,
+                }}>
+                <Text>No conversation found</Text>
+              </View>
+            )
+          }
+          // maxToRenderPerBatch={35}
+          // scrollEventThrottle={16}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+        />
+        <ChatTyping
+          typingMsg={typingData}
+          style={{paddingHorizontal: theme.sizes.spacing.ph, marginBottom: 5}}
+        />
+        {isLoading
+          ? null
+          : isClosed
+          ? null
+          : joinButton
+          ? _renderInputTextView()
+          : _renderJoinConversationView()}
+      </View>
+
       <BottomSheet
         ref={moreInfoModalRef}
         height={theme.normalize(160)}

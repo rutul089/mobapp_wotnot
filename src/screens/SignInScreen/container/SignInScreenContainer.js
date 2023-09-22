@@ -14,13 +14,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {LOCAL_STORAGE} from '../../../constants/storage';
 import DeviceWebSocketManager from '../../../apiService/WebSocketManager';
 import {setItemToStorage} from '../../../util/DeviceStorageOperations';
+import {emitAgentJoin, initSocket} from '../../../websocket';
 
 class SignInScreenContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
+      email: 'it.rutul@gmail.com',
+      password: 'Navkar@2021',
       isErrEmail: false,
       isErrPwd: false,
       isPwdVisible: false,
@@ -125,9 +126,9 @@ class SignInScreenContainer extends Component {
 
   _googleSignIn = () => {};
 
-  callFetchUserPreference = () => {
+  callFetchUserPreference = async () => {
     this.props.fetchUserPreference(null, {
-      SuccessCallback: res => {
+      SuccessCallback: async res => {
         setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE, res);
         // AsyncStorage.setItem(
         //   LOCAL_STORAGE?.USER_PREFERENCE,

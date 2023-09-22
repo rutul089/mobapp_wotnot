@@ -22,6 +22,7 @@
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^1.4.0",
+    "expo-av": "^13.6.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "native-base": "^3.4.28",

@@ -12,6 +12,7 @@ export const LOCAL_STORAGE = {
   USER_DETAIL: `${prefix}userDetail`,
   USER_PREFERENCE: `${prefix}user_preference`,
   AGENT_ACCOUNT_LIST: `${prefix}AGENT_ACCOUNT_LIST`,
+  USER_LIST: `${prefix}USER_LIST`,
   
 };
 

@@ -294,3 +294,66 @@ export const unEscape = htmlStr => {
   text = text.replace(/&amp;/g, '&');
   return text;
 };
+
+export const assigneeChangeText = (data, assignee_id) => {
+  let by_id = data['event_payload']['assigned']['by']['id'];
+  let by = data['event_payload']['assigned']['by']['name'];
+  let changeStatusText = '';
+
+  if (
+    data['event_payload']['assigned']['to'] &&
+    data['event_payload']['assigned']['to']['id'] != null
+  ) {
+    let to = data['event_payload']['assigned']['to']['name'];
+    let to_id = data['event_payload']['assigned']['to']['id'];
+
+    if (assignee_id === by_id && assignee_id === to_id) {
+      changeStatusText =
+        'You' + ' ' + 'assigned this conversation to' + ' ' + 'yourself.';
+    } else if (by_id === to_id) {
+      changeStatusText =
+        by + ' ' + 'assigned this conversation to ' + ' ' + 'themselves.';
+    } else if (assignee_id === by_id) {
+      changeStatusText =
+        'You' + ' ' + 'assigned this conversation to' + ' ' + to + '.';
+    } else if (assignee_id === to_id) {
+      changeStatusText =
+        by + ' ' + 'assigned this conversation to' + ' ' + 'you.';
+    } else {
+      changeStatusText =
+        by + ' ' + 'assigned this conversation to' + ' ' + to + '.';
+    }
+  } else {
+    if (assignee_id === by_id) {
+      changeStatusText = 'You unassigned this conversation.';
+    } else {
+      changeStatusText = by + ' ' + 'unassigned this conversation.';
+    }
+  }
+  return changeStatusText;
+};
+
+export const statusChangeText = (data, assignee_id) => {
+  var changeStatusText = '';
+  if (data['agent']['name']) {
+    var status = data['event_payload']['status']['name'];
+    if (status.toLowerCase() === 'open') {
+      status = 'opened';
+    }
+    if (
+      data['agent']['name'] === 'System User' &&
+      data['event_payload']['status']['name'] === 'Closed'
+    ) {
+      changeStatusText = 'Conversation closed due to time-out';
+    } else if (assignee_id === data['agent']['id']) {
+      changeStatusText = 'You ' + status.toLowerCase() + ' this conversation';
+    } else {
+      changeStatusText =
+        data['agent']['name'].trim() +
+        ' ' +
+        status.toLowerCase() +
+        ' this conversation';
+    }
+  }
+  return changeStatusText;
+};

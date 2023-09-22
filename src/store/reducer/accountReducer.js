@@ -5,6 +5,7 @@ const initialState = {
   teamMateData: [],
   savedReply: [],
   userQualifications: [],
+  userList: {},
 };
 
 const global = (state = initialState, action) => {
@@ -17,6 +18,8 @@ const global = (state = initialState, action) => {
       return {...state, savedReply: action.payload};
     case types.SET_QUALIFICATIONS:
       return {...state, userQualifications: action.payload};
+    case types.USER_LIST:
+      return {...state, userList: action.payload};
     case types.USER_LOGOUT:
       return {...initialState};
     default:

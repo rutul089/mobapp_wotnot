@@ -7,6 +7,7 @@ import {
   setTeammateData,
   saveReply,
   setUserPreference,
+  setUserList
 } from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -108,5 +109,29 @@ export const changeAccount = (param, {SuccessCallback, FailureCallback}) => {
         FailureCallback(response);
       },
     });
+  };
+};
+
+export const fetchUserList = (
+  account_id,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    API.getInstance().Fetch(
+      endPoints.fetchUserList(account_id),
+      defaultHeaders,
+      '',
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          dispatch(setUserList(response));
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
   };
 };

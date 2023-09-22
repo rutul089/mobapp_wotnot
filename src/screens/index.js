@@ -13,3 +13,4 @@ export {default as UserDetailScreen} from './UserDetailScreen/container/UserDeta
 export {default as RecoveryCodeScreen} from './RecoveryCodeScreen/container/RecoveryCodeContainer';
 export {default as SaveRecoveryScreen} from './SaveRecoveryScreen/container/SaveRecoveryContainer';
 export {default as HelpDeskScreen} from './HelpDeskScreen/container/HelpDeskContainer';
+export {default as NotificationScreen} from './NotificationScreen/container/NotificationContainer';

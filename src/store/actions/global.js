@@ -98,3 +98,13 @@ export const setConversationsHistory = data => ({
   type: types.CONVERSATION_HISTORY,
   payload: data,
 });
+
+export const setNotificationData = data => ({
+  type: types.NOTIFICATION_DATA,
+  payload: data,
+});
+
+export const setUserList = data => ({
+  type: types.USER_LIST,
+  payload: data,
+});

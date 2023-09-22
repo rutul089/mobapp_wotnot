@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {View, AppState} from 'react-native';
 import ChatScreenComponent from '../component/index';
 import {CONVERSATION} from '../../../constants/global';
 import {connect} from 'react-redux';
@@ -12,6 +12,7 @@ import {
   fetchConversationBySearch,
   setConversations,
   fetchAccounts,
+  fetchUserList,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {getAssigneeId} from '../../../util/helper';
@@ -23,9 +24,20 @@ import {getAgentPayload} from '../../../common/common';
 import {
   emitVisitorTyping,
   initSocket,
+  registerConversationCreateHandler,
   registerVisitorTypingHandler,
+  registerAssigneeChangedHandler,
+  registerStatusChangedHandler,
+  registerUserStatus,
+  reconnect,
 } from '../../../websocket';
 import {emitAgentJoin} from '../../../websocket';
+import {
+  assigneeChangeText,
+  statusChangeText,
+} from '../../../util/ConversationListHelper';
+import {findIndex} from '../../../util/JSONOperations';
+import {setItemToStorage} from '../../../util/DeviceStorageOperations';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -38,27 +50,34 @@ class TestChatScreen extends Component {
       isDisable: true,
       isRefreshing: false,
       typingData: null,
+      appState: AppState.currentState,
     };
     this.onSelectTab = this.onSelectTab.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
     this.onConversationClick = this.onConversationClick.bind(this);
     this.onSearchClick = this.onSearchClick.bind(this);
     this.loadMoreData = this.loadMoreData.bind(this);
+    this.appStateRef = null;
   }
 
   async componentDidMount() {
     this.setLoader(true);
+    this.registerAppStateEvent();
     this.callSummary();
     this.callFetchTeamData();
     this.callFetchTeammateData();
     this.cllFetchAccounts();
     this.callFetchConversation(this.state.currentTab, false, true);
+    this.callFetchUserList();
     this.props.navigation.addListener('focus', () => {
       this.callFetchConversation(this.state.currentTab, false, false);
+      registerAssigneeChangedHandler(this.onAssigneeChange);
+      registerConversationCreateHandler(this.onConvCreateReceived);
+      registerStatusChangedHandler(this.msgStatusChange);
     });
-    let agentpayload = await getAgentPayload();
-    initSocket();
+    initSocket()
     emitAgentJoin();
+    reconnect();
     // registerVisitorTypingHandler(this.visitorTypingStatus);
   }
 
@@ -74,7 +93,7 @@ class TestChatScreen extends Component {
       {
         SuccessCallback: res => {},
         FailureCallback: res => {
-          handleFailureCallback(res, true, true);
+          handleFailureCallback(res, true, true, false);
         },
       },
     );
@@ -100,7 +119,18 @@ class TestChatScreen extends Component {
     this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
       SuccessCallback: res => {},
       FailureCallback: res => {
-        handleFailureCallback(res, true);
+        handleFailureCallback(res, true, false, false);
+      },
+    });
+  };
+
+  callFetchUserList = () => {
+    this.props.fetchUserList(this.props?.userPreference?.account_id, {
+      SuccessCallback: res => {
+        setItemToStorage(LOCAL_STORAGE.USER_LIST, res);
+      },
+      FailureCallback: res => {
+        handleFailureCallback(res, true, false, false);
       },
     });
   };
@@ -113,7 +143,7 @@ class TestChatScreen extends Component {
       {
         SuccessCallback: res => {},
         FailureCallback: res => {
-          handleFailureCallback(res, true);
+          handleFailureCallback(res, true, false, false);
         },
       },
     );
@@ -143,7 +173,7 @@ class TestChatScreen extends Component {
         break;
     }
 
-    let url = `status_ids=${statusId}&is_order_by_asc=false&limit=25&offset=1${assignee}${offset}`;
+    let url = `status_ids=${statusId}&is_order_by_asc=false&limit=35&offset=1${assignee}${offset}`;
 
     this.props.fetchConversationBySearch(
       userPreference?.account_id,
@@ -234,9 +264,115 @@ class TestChatScreen extends Component {
         );
       },
       FailureCallback: res => {
-        handleFailureCallback(res);
+        handleFailureCallback(res, false, false, false);
       },
     });
+  };
+
+  onConvCreateReceived = data => {
+    console.log('onConvCreateReceived------------>', JSON.stringify(data));
+    // alert(data)
+    // this.setTimeout(() => {
+    this.callFetchConversation(this.state.currentTab, false, false);
+    // });
+  };
+
+  registerAppStateEvent() {
+    this.appStateRef = AppState.addEventListener(
+      'change',
+      this._handleAppStateChange,
+    );
+  }
+
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      // API call
+      console.log('nextAppState---------1', nextAppState);
+    } else {
+    }
+    this.setState({appState: nextAppState});
+  };
+
+  onAssigneeChange = payload => {
+    let {userPreference} = this.props;
+
+    if (
+      !this.state.isLoading &&
+      !this.state.isRefreshing &&
+      !this.state.moreLoading &&
+      payload
+    ) {
+      let changeAssigneeText = assigneeChangeText(
+        payload,
+        userPreference.logged_in_user_id,
+      );
+      let index = findIndex(
+        this.props.conversations,
+        'thread_key',
+        payload?.conversation_key,
+      );
+
+      if (index !== -1) {
+        let newData = [...this.props.conversations];
+        let assigneeIndex = payload.event_payload.assigned.to.id
+          ? findIndex(
+              this.props.userList?.users,
+              'user_id',
+              payload.event_payload.assigned.to.id,
+            )
+          : -1;
+        newData[index] = {
+          ...newData[index],
+          ...(payload.event_payload &&
+            assigneeIndex !== -1 && {
+              assignee: this.props.userList.users[assigneeIndex],
+            }),
+          assigneeChangeText: changeAssigneeText,
+          assignee: payload.event_payload.assigned.to,
+        };
+        this.props.setConversations(newData);
+      } else {
+      }
+    }
+  };
+
+  msgStatusChange = payload => {
+    let {userPreference} = this.props;
+    if (
+      !this.state.isLoading &&
+      !this.state.isRefreshing &&
+      !this.state.moreLoading &&
+      payload
+    ) {
+      let changeStatusText = statusChangeText(
+        payload,
+        userPreference?.logged_in_user_id,
+      );
+      if (changeStatusText !== '') {
+        let index = findIndex(
+          this.props.conversations,
+          'thread_key',
+          payload.conversation_key,
+        );
+        if (index !== -1) {
+          let newData = [...this.props.conversations];
+          newData[index] = {
+            ...newData[index],
+            status_id:
+              payload?.['event_payload']?.['status']?.['name'].toLowerCase() ===
+              'closed'
+                ? 2
+                : 1,
+            statusChangeText: changeStatusText,
+          };
+          this.props.setConversations(newData);
+        } else {
+        }
+      }
+    }
   };
 
   render() {
@@ -272,6 +408,7 @@ const mapActionCreators = {
   fetchConversationBySearch,
   setConversations,
   fetchAccounts,
+  fetchUserList,
 };
 const mapStateToProps = state => {
   return {
@@ -280,6 +417,7 @@ const mapStateToProps = state => {
     conversations: state.conversationReducer.conversations,
     userPreference: state.detail?.userPreference,
     teamMateData: state.accountReducer?.teamMateData?.users,
+    userList: state.accountReducer?.userList,
   };
 };
 export default connect(mapStateToProps, mapActionCreators)(TestChatScreen);

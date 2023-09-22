@@ -80,6 +80,7 @@ export function getFileExtension(file) {
 }
 
 export function getExtensionIcon(ext) {
+  console.log('-------', ext);
   switch (ext) {
     case 'csv':
       return 'exclefile1';
@@ -101,7 +102,10 @@ export function getExtensionIcon(ext) {
       return 'wordfile1';
     case 'pdf':
       return 'pdffile1';
+    case 'mp4':
+      return 'play';
     default:
+      return 'file1';
       return 'unknowfile1';
   }
 }

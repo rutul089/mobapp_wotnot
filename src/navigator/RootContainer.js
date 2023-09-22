@@ -18,10 +18,12 @@ import {
   UserDetailScreen,
   SaveRecoveryScreen,
   HelpDeskScreen,
+  NotificationScreen,
 } from '../screens';
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
 import OfflineNotice from '../components/OfflineNotice/index';
+import {reconnect} from '../websocket';
 const Stack = createStackNavigator();
 
 export default class RootContainer extends Component {
@@ -89,7 +91,10 @@ export default class RootContainer extends Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
+      reconnect();
+      console.log('nextAppState---------1', nextAppState);
     } else {
+      console.log('nextAppState---------', nextAppState);
     }
     this.setState({appState: nextAppState});
   };
@@ -169,9 +174,14 @@ export default class RootContainer extends Component {
               component={HelpDeskScreen}
               options={{headerShown: false}}
             />
+            <Stack.Screen
+              name={'NotificationScreen'}
+              component={NotificationScreen}
+              options={{headerShown: false}}
+            />
           </Stack.Navigator>
         </NavigationContainer>
-        <OfflineNotice onNetInfo={() =>{}} />
+        <OfflineNotice onNetInfo={() => {}} />
       </View>
     );
   }

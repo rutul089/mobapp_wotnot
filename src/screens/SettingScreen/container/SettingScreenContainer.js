@@ -18,8 +18,13 @@ import {
   setProfileEvents,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import {changeUserStatus, reconnect, registerUserStatus} from '../../../websocket';
-import { getAgentPayload } from '../../../common/common';
+import {
+  changeUserStatus,
+  disconnect,
+  reconnect,
+  registerUserStatus,
+} from '../../../websocket';
+import {getAgentPayload} from '../../../common/common';
 
 class SettingScreenContainer extends Component {
   constructor(props) {
@@ -56,7 +61,7 @@ class SettingScreenContainer extends Component {
   }
 
   getUserStatus = status => {
-    console.log('------->',status)
+    console.log('------->', status);
     this.setState(
       {
         isActive: status?.user_status === 'online' ? true : false,
@@ -75,7 +80,9 @@ class SettingScreenContainer extends Component {
     this.setState({isOpen: true});
   };
 
-  onNotificationClick = () => {};
+  onNotificationClick = () => {
+    navigate('NotificationScreen');
+  };
 
   onSwitchToggle = () => {
     this.setState({isActive: !this.state.isActive}, () => {
@@ -135,9 +142,11 @@ class SettingScreenContainer extends Component {
         //   LOCAL_STORAGE.USER_PREFERENCE,
         //   JSON.stringify({}),
         // );
+        disconnect();
         navigateAndSimpleReset('SignInScreen');
       },
       FailureCallback: res => {
+        disconnect();
         Object.keys(LOCAL_STORAGE).map(key =>
           removeItemFromStorage(LOCAL_STORAGE[key]),
         );
@@ -283,7 +292,6 @@ const mapStateToProps = state => {
     isLoading: state.global.loading,
     userPreference: state.detail?.userPreference,
     accounts: state.settings?.accounts?.account_info,
-    
   };
 };
 export default connect(

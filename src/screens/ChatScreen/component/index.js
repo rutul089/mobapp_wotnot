@@ -215,8 +215,11 @@ const ChatScreenComponent = ({
               />
             }
             onEndReached={({distanceFromEnd}) => onEndReach(distanceFromEnd)}
-            onEndReachedThreshold={0.5}
+            // onEndReachedThreshold={0.5}
             ListFooterComponent={renderFooter(moreLoading)}
+            maxToRenderPerBatch={16}
+            scrollEventThrottle={16}
+            onEndReachedThreshold={0.9}
           />
         )}
       </SafeAreaView>

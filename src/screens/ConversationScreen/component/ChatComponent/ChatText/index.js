@@ -134,6 +134,7 @@ function ChatText(props) {
                   <FileItemRow
                     fileName={`${fileItem.file_name}`}
                     ext={getExtensionIcon(ext)}
+                    onFileClick={() => Linking.openURL(fileItem.link)}
                   />
                 </View>
                 <ChatMsgInfo

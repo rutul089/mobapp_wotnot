@@ -199,6 +199,29 @@ const ChatItem = ({
       }}
       onPress={onPress}>
       <View>
+        {itemData.assigneeChangeText || itemData.statusChangeText ? (
+          <View
+            style={{
+              backgroundColor: 'rgba(255,255,255,.8)',
+              right: 0,
+              left: 0,
+              top: 0,
+              bottom: 0,
+              flex: 1,
+              zIndex: 1,
+              paddingHorizontal: 5,
+              position: 'absolute',
+              justifyContent: 'center',
+            }}>
+            <Text color={theme.colors.clear_blue} textAlign={'center'}>
+              {itemData.statusChangeText
+                ? itemData.statusChangeText
+                : itemData.assigneeChangeText
+                ? itemData.assigneeChangeText
+                : null}
+            </Text>
+          </View>
+        ) : null}
         <View style={{flex: 1, flexDirection: 'row'}}>
           {renderAvatarView()}
           <Spacing direction="y" size="xs" />
@@ -243,96 +266,6 @@ const ChatItem = ({
         ) : null}
       </View>
     </TouchableHighlight>
-    // <Pressable style={styles.pressableContainer} onPress={onPress}>
-    //   <View style={{flex: 0.8}}>
-    //     <View style={{gap: hp(0.1)}}>
-    //       <View style={styles.container}>
-    //         <View>
-    //           {isAvatar ? (
-    //             <Image
-    //               source={uri.length > 0 ? {uri: uri} : images.ic_userprofile}
-    //               style={styles.image}
-    //             />
-    //           ) : (
-    //             <View
-    //               style={[
-    //                 styles.image,
-    //                 {
-    //                   justifyContent: 'center',
-    //                   alignItems: 'center',
-    //                 },
-    //               ]}>
-    //               <Text>{name?.slice(0, 2)?.toUpperCase()}</Text>
-    //             </View>
-    //           )}
-    //           <View
-    //             style={[
-    //               styles.badgeContainer,
-    //               {
-    //                 backgroundColor: isOnline
-    //                   ? theme.colors.brandColor.green
-    //                   : theme.colors.brandColor.silver,
-    //               },
-    //             ]}
-    //           />
-    //         </View>
-    //         <Spacing direction="y" size="xs" />
-    //         <View style={styles.rightContainer}>
-    //           <Text type={'body2'} weight={theme.typography.fontWeights.medium}>
-    //             {name}
-    //           </Text>
-    //           <Text
-    //             type={'caption12'}
-    //             style={{color: colors.brandColor.silver}}
-    //             numberOfLines={1}>
-    //             {email}
-    //           </Text>
-    //         </View>
-    //       </View>
-    //     </View>
-    //     {subTittle && (
-    //       <Text
-    //         type={'caption12'}
-    //         size={'xxs'}
-    //         style={styles.subTittle}
-    //         numberOfLines={1}>
-    //         {subTittle}
-    //       </Text>
-    //     )}
-    //   </View>
-    //   <View style={styles.rightSideContainer}>
-    //     {!isClosedMode ? (
-    //       <View style={styles.unreadCountContainer}>
-    //         <Text
-    //           type={'caption12'}
-    //           weight={theme.typography.fontWeights.bold}
-    //           style={{color: colors.brandColor.blue}}>
-    //           {unreadCount}
-    //         </Text>
-    //       </View>
-    //     ) : (
-    //       <View
-    //         style={[
-    //           styles.unreadCountContainer,
-    //           {backgroundColor: '#00000000'},
-    //         ]}
-    //       />
-    //     )}
-    //     <View style={styles.statusContainer}>
-    //       <Text type={'caption12'} style={{color: colors.brandColor.silver}}>
-    //         {lastMessageDay}
-    //       </Text>
-    //       <View style={{width: radius * 2, height: radius * 2}}>
-    //         <ActivityIndicator
-    //           // strokeWidth={STROKE_WIDTH}
-    //           radius={radius}
-    //           // backgroundColor="#f93986"
-    //           percentageComplete={30}
-    //         />
-    //       </View>
-    //     </View>
-    //   </View>
-    // </Pressable>
   );
 };
 

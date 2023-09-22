@@ -148,6 +148,16 @@ export const endPoints = {
       method: Method.GET,
     };
   },
+  changeNotificationPreference: {
+    endpoint: '/v1/notification-preference',
+    method: Method.PUT,
+  },
+  fetchUserList: account_id => {
+    return {
+      endpoint: `/v1/user-list?${account_id}`,
+      method: Method.GET,
+    };
+  },
 };
 
 // export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD

@@ -52,8 +52,7 @@ class ConversationContainer extends Component {
       saveLoading: true,
       typingMsg: '',
       conversationStatus: 0,
-      imageModalShow:false,
-      modalImg:''
+      search_after: '',
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -104,6 +103,7 @@ class ConversationContainer extends Component {
     }
     this.moreInfoModalRef?.current?.open();
   };
+
   onPressInfo = () => {
     const {
       route: {
@@ -112,12 +112,14 @@ class ConversationContainer extends Component {
     } = this.props;
     navigate('UserDetailScreen', {itemData: itemData});
   };
+
   onChangeAssignee = () => {
     this.closeMoreInfoModal();
     setTimeout(() => {
       this.setState({showChangeAssignee: true}, () => {});
     }, 200);
   };
+
   onCloseConversation = () => {
     const {
       route: {
@@ -142,19 +144,24 @@ class ConversationContainer extends Component {
       true,
     );
   };
+
   closeMoreInfoModal = () => {
     this.moreInfoModalRef?.current?.close();
   };
+
   onPressLeftContent = () => {
     goBack();
   };
+
   _keyboardDidShow(e) {
     // this.listRef.current?.scrollToEnd({animated: true});
     this.setState({keyboardHeight: e.endCoordinates.height});
   }
+
   _keyboardDidHide(e) {
     this.setState({keyboardHeight: 0});
   }
+
   updateMessageValue = message => {
     const {
       route: {
@@ -182,9 +189,11 @@ class ConversationContainer extends Component {
     }
     this.setState({messageToSend: message});
   };
+
   showMenuOptions = () => {
     this.attachmentBottomSheetRef?.current?.open();
   };
+
   onSendPress = () => {
     if (this.state.messageToSend === '' && inputText.trim() === '') {
       return;
@@ -205,18 +214,9 @@ class ConversationContainer extends Component {
     this.setState({
       messageToSend: '',
     });
-    // this.setState({
-    //   messageList: [
-    //     ...this.state.messageList,
-    //     {
-    //       sent: true,
-    //       message: this.state.messageToSend,
-    //       timeStamp: '12:30',
-    //     },
-    //   ],
-    // });
     // this.listRef.current?.scrollToEnd({animated: true});
   };
+
   onSavedReplyPress = () => {
     this.attachmentBottomSheetRef?.current?.close();
     this.setState({
@@ -328,7 +328,6 @@ class ConversationContainer extends Component {
 
   onSearchText = searchText => {
     const {teamMateData, teamData} = this.props;
-    // --------teamData/name | teamMateData/display_name
 
     this.setState({
       search_text: searchText,
@@ -395,7 +394,12 @@ class ConversationContainer extends Component {
     this.setState(prev => ({...prev, conversationJoined: true}));
   };
 
-  callFetchConversationHistory = showLoader => {
+  callFetchConversationHistory = (showLoader, isLoadMore = false) => {
+    let offset = isLoadMore
+      ? this.state.search_after
+        ? `&search_after=${this.state.search_after?.toString()}`
+        : ''
+      : '';
     const {
       route: {
         params: {itemData},
@@ -403,14 +407,19 @@ class ConversationContainer extends Component {
     } = this.props;
     this.props.fetchConversationHistory(
       itemData?.thread_key,
-      'limit=35',
+      `limit=35${offset}`,
       showLoader,
       {
         SuccessCallback: res => {
           if (res?.ok) {
+            console.log("res?.search_after",res?.search_after)
             this.setState(
               {
-                messageList: res?.messages_list,
+                messageList: offset
+                  ? [...this.state.messageList, ...res?.messages_list]
+                  : res?.messages_list,
+                search_after: res?.search_after,
+                isLoadMore: false,
               },
               () =>
                 this.onEmitReadMsg(
@@ -635,11 +644,6 @@ class ConversationContainer extends Component {
       },
     } = this.props;
     if (data && data?.conversation_key === itemData?.thread_key) {
-      console.log('changeAssigneeHandler------->1', data);
-      console.log(
-        'changeAssigneeHandler------->2',
-        data?.event_payload?.status?.name === CONVERSATION_STATUS_NAME.CLOSED,
-      );
       let newStatus =
         data?.event_payload?.status?.name === CONVERSATION_STATUS_NAME.CLOSED
           ? CONVERSATION_STATUS.CLOSED
@@ -657,10 +661,16 @@ class ConversationContainer extends Component {
     }
   };
 
+  handleLoadMore = e => {
+    console.log('e=======?', this.state.search_after + "123");
+    // if (this.state.search_after?.length > 0) {
+      this.setState({isLoadMore: true});
+      this.callFetchConversationHistory(false, true);
+      console.log('----<', this.state.search_after?.toString());
+    // } 
+    this.setState({isLoadMore: false});
 
-  onToggleImageModal = (img) => {
-    console.log("onToggleImageModal",img)
-  }
+  };
 
   render() {
     const {
@@ -749,9 +759,8 @@ class ConversationContainer extends Component {
           onSaveReplyClick={this.onSaveReplyClick}
           userName={itemData?.title}
           conversationStatus={this.state?.conversationStatus}
-          modalImg={this.state.modalImg}
-          imageModalShow={this.state.imageModalShow}
-          onToggleImageModal={this.onToggleImageModal}
+          handleLoadMore={this.handleLoadMore}
+          isLoadMore={this.state.isLoadMore}
         />
       </>
     );

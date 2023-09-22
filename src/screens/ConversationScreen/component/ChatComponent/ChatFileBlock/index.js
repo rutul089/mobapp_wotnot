@@ -3,56 +3,49 @@ import React, {useMemo} from 'react';
 // import * as FileSystem from 'expo-file-system';
 // import * as Linking from 'expo-linking';
 // import * as IntentLauncher from 'expo-intent-launcher';
-import {HStack as Row, VStack as Col} from 'native-base';
+import {View, Linking,Platform} from 'react-native';
 import {
-  TouchableHighlight,
-  View,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
-import IconAnt from 'react-native-vector-icons/AntDesign';
-import {Text} from '../../../../../components';
-import ChatMsgInfo from '../ChatMsgInfo';
-import {chatFileStyles} from './ChatFileBlock.style';
-import {stringToObj} from '../../../../../util/JSONOperations';
-import {
-  getFileName,
-  getFileExtension,
   getExtensionIcon,
+  getFileExtension,
+  getFileName,
 } from '../../../../../util/ChatHistoryHelper';
 import {getTimeStamp} from '../../../../../util/ConversationListHelper';
-import {styles as chatBubbleStyle} from '../ChatStyle/chatBubbleStyle';
-import theme from '../../../../../util/theme';
-import FileItemRow from '../FileItemRow';
+import {stringToObj} from '../../../../../util/JSONOperations';
 import ChatBubbleAgent from '../../ChatBubbleAgent';
+import ChatMsgInfo from '../ChatMsgInfo';
+import FileItemRow from '../FileItemRow';
+import {chatFileStyles} from './ChatFileBlock.style';
 
 function ChatFileBlock(props) {
-  const {chatItem, pos,chatUserName} = props;
+  const {chatItem, pos, chatUserName} = props;
   const text = chatItem.agent
     ? stringToObj(chatItem.agent.message.text).files[props.fileIndex]
     : stringToObj(chatItem.user.message.text).files[props.fileIndex];
-  // const {link} = text;
+  const {link} = text;
   const fileName = getFileName(text.filename);
   const ext = getFileExtension(text.filename);
   const {msgContainer, fileContainer, fileBlock} = chatFileStyles();
 
-  // let cUri = link;
+  let cUri = link;
   const showFile = () => {
-    // Platform.OS === 'ios'
-    //   ? Linking.canOpenURL(cUri).then(supported => {
-    //       supported ? Linking.openURL(cUri) : null;
-    //     })
-    //   : FileSystem.downloadAsync(
-    //       link,
-    //       FileSystem.documentDirectory + fileName,
-    //     ).then(({uri}) => {
-    //       FileSystem.getContentUriAsync(uri).then(cUri => {
-    //         IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
-    //           data: cUri,
-    //           flags: 1,
-    //         });
-    //       });
+    console.log('-------')
+    Platform.OS === 'ios'
+      ? Linking.canOpenURL(cUri).then(supported => {
+        console.log('supported',supported)
+          supported ? Linking.openURL(cUri) : null;
+        })
+      : null;
+    // FileSystem.downloadAsync(
+    //   link,
+    //   FileSystem.documentDirectory + fileName,
+    // ).then(({uri}) => {
+    //   FileSystem.getContentUriAsync(uri).then(cUri => {
+    //     IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
+    //       data: cUri,
+    //       flags: 1,
     //     });
+    //   });
+    // });
   };
   return useMemo(
     () => (
@@ -77,6 +70,7 @@ function ChatFileBlock(props) {
                 tintColor={'black'}
                 iconTintColor={'black'}
                 ext={getExtensionIcon(ext)}
+                onFileClick={showFile}
               />
             }
           />

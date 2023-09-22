@@ -1,6 +1,11 @@
 import {API} from '../../apiService';
 import {endPoints} from '../../constants/urls';
-import {loadingSet, loadingUnset, setAccountList} from './global';
+import {
+  loadingSet,
+  loadingUnset,
+  setAccountList,
+  setNotificationData,
+} from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
 };
@@ -61,6 +66,53 @@ export const setProfileEvents = (
       {
         SuccessCallback: response => {
           dispatch(loadingUnset());
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
+  };
+};
+
+export const notificationPreference = ({SuccessCallback, FailureCallback}) => {
+  return dispatch => {
+    dispatch(loadingSet());
+    API.getInstance().Fetch(
+      endPoints.notificationPreference,
+      defaultHeaders,
+      '',
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          dispatch(setNotificationData(response));
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
+  };
+};
+
+export const setNotificationPreference = (
+  param,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    dispatch(loadingSet());
+    API.getInstance().Fetch(
+      endPoints.changeNotificationPreference,
+      defaultHeaders,
+      param,
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          dispatch(setNotificationData(response));
           SuccessCallback(response);
         },
         FailureCallback: response => {
