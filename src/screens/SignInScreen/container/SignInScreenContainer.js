@@ -1,20 +1,24 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {API, Headers} from '../../../apiService';
+import {LOCAL_STORAGE} from '../../../constants/storage';
+import {strings} from '../../../locales/i18n';
 import {
   navigate,
   navigateAndSimpleReset,
 } from '../../../navigator/NavigationUtils';
-import {userLogin, fetchUserPreference} from '../../../store/actions';
-import SignInScreenComponent from '../component/SignInScreenComponent';
-import {VALIDATION_REGEX} from '../../../util/helper';
-import {strings} from '../../../locales/i18n';
+import {
+  fetchAccounts,
+  fetchUserPreference,
+  userLogin,
+} from '../../../store/actions';
+import {
+  getItemFromStorage,
+  setItemToStorage,
+} from '../../../util/DeviceStorageOperations';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import {API, Headers} from '../../../apiService';
-import AsyncStorage from '@react-native-community/async-storage';
-import {LOCAL_STORAGE} from '../../../constants/storage';
-import DeviceWebSocketManager from '../../../apiService/WebSocketManager';
-import {setItemToStorage} from '../../../util/DeviceStorageOperations';
-import {emitAgentJoin, initSocket} from '../../../websocket';
+import {VALIDATION_REGEX} from '../../../util/helper';
+import SignInScreenComponent from '../component/SignInScreenComponent';
 
 class SignInScreenContainer extends Component {
   constructor(props) {
@@ -129,16 +133,52 @@ class SignInScreenContainer extends Component {
   callFetchUserPreference = async () => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: async res => {
+        console.log(
+          'type of res-------------------------------->',
+          typeof res,
+          res,
+        );
+
         setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE, res);
         // AsyncStorage.setItem(
         //   LOCAL_STORAGE?.USER_PREFERENCE,
         //   JSON.stringify(res),
         // );
-        navigateAndSimpleReset('MainNavigator');
+        this.cllFetchAccounts()
+          .then(data => {
+            if (data) {
+              navigateAndSimpleReset('MainNavigator');
+            } else {
+              console.log('Something went wrong');
+            }
+          })
+          .catch(() => {
+            console.log('Something went wrong');
+          });
       },
       FailureCallback: res => {
         handleFailureCallback(res);
       },
+    });
+  };
+
+  cllFetchAccounts = () => {
+    return new Promise((resolve, reject) => {
+      this.props.fetchAccounts({
+        SuccessCallback: async res => {
+          await setItemToStorage(
+            LOCAL_STORAGE?.AGENT_ACCOUNT_LIST,
+            res?.account_info,
+          );
+          resolve(
+            getItemFromStorage(LOCAL_STORAGE?.AGENT_ACCOUNT_LIST) ?? undefined,
+          );
+        },
+        FailureCallback: res => {
+          handleFailureCallback(res, false, false, false);
+          reject(res);
+        },
+      });
     });
   };
 
@@ -172,6 +212,7 @@ class SignInScreenContainer extends Component {
 const mapActionCreators = {
   userLogin,
   fetchUserPreference,
+  fetchAccounts,
 };
 const mapStateToProps = state => {
   return {
