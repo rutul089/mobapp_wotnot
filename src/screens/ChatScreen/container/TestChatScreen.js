@@ -71,7 +71,6 @@ class TestChatScreen extends Component {
   }
 
   async componentDidMount() {
-    this.setLoader(true);
     this.registerAppStateEvent();
     this.callSummary();
     this.callFetchTeamData();
@@ -224,7 +223,6 @@ class TestChatScreen extends Component {
       },
       () => {
         setTimeout(() => {
-          this.setLoader(true);
           this.callFetchConversation(tab, false, true);
           this.callSummary();
         }, 500);
