@@ -2,8 +2,9 @@
 import React, {useMemo} from 'react';
 // import * as FileSystem from 'expo-file-system';
 // import * as Linking from 'expo-linking';
-// import * as IntentLauncher from 'expo-intent-launcher';
-import {View, Linking,Platform} from 'react-native';
+import FileViewer from 'react-native-file-viewer';
+
+import {View, Linking, Platform} from 'react-native';
 import {
   getExtensionIcon,
   getFileExtension,
@@ -15,6 +16,9 @@ import ChatBubbleAgent from '../../ChatBubbleAgent';
 import ChatMsgInfo from '../ChatMsgInfo';
 import FileItemRow from '../FileItemRow';
 import {chatFileStyles} from './ChatFileBlock.style';
+import {getDownloadPermissionAndroid} from '../../../../../util/NotificationHelper';
+import {downloadFile} from './helper';
+import {IntentLauncher} from '@yz1311/react-native-intent-launcher';
 
 function ChatFileBlock(props) {
   const {chatItem, pos, chatUserName} = props;
@@ -28,13 +32,11 @@ function ChatFileBlock(props) {
 
   let cUri = link;
   const showFile = () => {
-    console.log('-------')
     Platform.OS === 'ios'
       ? Linking.canOpenURL(cUri).then(supported => {
-        console.log('supported',supported)
           supported ? Linking.openURL(cUri) : null;
         })
-      : null;
+      : callDownloadFile();
     // FileSystem.downloadAsync(
     //   link,
     //   FileSystem.documentDirectory + fileName,
@@ -47,6 +49,27 @@ function ChatFileBlock(props) {
     //   });
     // });
   };
+
+  const callDownloadFile = () => {
+    getDownloadPermissionAndroid().then(granted => {
+      if (granted) {
+        downloadFile(cUri, fileName).then(res => {
+          console.log('res', JSON.stringify(res));
+          // FileViewer.open(res?.data, {showOpenWithDialog: true}) // absolute-path-to-my-local-file.
+          //   .then(() => {
+          //     // success
+          //   })
+          //   .catch(error => {
+          //     // error
+          //   });
+          // Linking.openURL(
+          //   '/storage/emulated/0/Download/outbound_Catalya_One-off_-_HB_2023-09-28T175707',
+          // );
+        });
+      }
+    });
+  };
+
   return useMemo(
     () => (
       <View style={{flex: 0}}>

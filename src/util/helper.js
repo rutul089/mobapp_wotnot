@@ -10,7 +10,7 @@ export {
 } from './ResponsiveSize';
 
 export const VALIDATION_REGEX = {
-  email: /^\w+([\.-]?\w+)*([+]\w+)?@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+  email: /^\w+([\.-]?\w+)*([+]\w+)?@\w+([\.-]?\w+)*(\.\w{2,10})+$/,
   strongPassword:
     /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[-\/\\^$*+?.()|[\]{}"!@#%&,><':;_~=`])(?=.{8,})/,
   mediumPassword:
@@ -46,7 +46,7 @@ export const showSWWToast = (duration = LONG_DURATION) => {
 };
 
 export function helperLog(tag, type) {
-  if (_DEV_) {
+  if (__DEV__) {
     console.log(tag, JSON.stringify(type));
   }
 }
@@ -161,14 +161,27 @@ export const AVATAR_COLORS = {
   Z: '#506022',
 };
 
-export const DEFAULT_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAGQBAMAAACAGwOrAAAAG1BMVEXHx8d1dXWenp68vLyoqKh/f3+JiYmysrKTk5O6M/JeAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEhUlEQVR42u3YzXPTRhgHYGElcY6I2CZHJ9Dh6hAKOeaD0h5xwYQjhuYeF2h6xAMZ/u3uSrJiYYcxM53pKH2eGcdOtNrJ/mb16pWTBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+I+l50/7j1r3y/XDh0Nq9H59tN7faiRu3mxbWeq94v/VmcTF3f3y2LLd1U8PKDv/NsJ7/wOAGhjV6LqyVl3d6R1irL286ENbKy9t7I6yVl9fqXIXV3r0/qIfVHqTHJ6EnOn6Q/+3R7u5J0SQd3z9P9os/PVgaVjlX2U29z1/hrEE5z0kjw0pGVVitrDvcHtTCmhxOR1k/mXazd2Hhl7Ex+BwjGHfPuodn4dNBNhq+XBLWbK5Wvj/bnfgKZ2V5iQwnZe8aGdakX4aVjj8n6c5pPaxnp8lBZ6OTtEJD1n4dttXfsTObhHweboew2qOTpD3uL4RVzTUf1uS0GJsO74UPfzUxrM2tMqw8nXQ0qIV1Fn4dHYVraTp7Ookf8kGTbpL8/CJ82Ly7EFY111xYd7bjkNvlwc1uE8NKe2VYR/kGmXyqhRV/7MSyNpltn71+spbXuVYIayfvaV9VjchFNJibay6sLF7q8dTi4LSJYeULjmGNi4y2amHFBU7ihtmbhXjrU1mb0xDWqNhsg9rjTn9urvmw8oIfitY4H77XyLDiK4SVbhfPz51aWP1ZTlVzET5sFJfbKF96cHT+zc66mmsurOJv4Wevsa1DsYqQQLtYePlW3Q1nYa3nYaUXT4+qsHqzZCeH39Ssq7nmC3x5UplkM8OKJTuEVS68XMrysJ5loSN4U9wT4si1zn40q2dVWFdzLYT1apZkQ8MKTXwIq1Xe03rXh/W4dzK3CcNNsJVVVaoW1tVcy8LqNDmssA9WCisdnZfFaxrTmYZ7Xedidv/7v4QV2qaVLsOin8q7jO79p5dh4Nrd5c+GN/gyDP3QSgW+qPF78cb58Gz0djA3+NoCX8S5Nh9Wswt82DJxu/RqV9CSsIpWK9wNqw1VbcNvO/hqrmJoaz6ssjlbb2hYaS9vSge1BV8X1jhswurqGw+Wh1XNVUS0Xgtr2uCmNO6WsF3KB52j/rVh3YqDW6F1SIZf3hcpHX1aHlY1V7H3prWwytCbGtZGfG7bjIWm3U2uL/BxuTsfw9CDYWi4viTlOUvCupprHO6gm51aWK148PGrpoZVPORO/9h/Mn1xfVjp8OuTnzp5mU8vPvw2fBfPeTlI/3y7+H1WNdfenf1Ho4taWPHgw9FBU8NKpvk3AuMs+z1JvtOUZtn2YH32kBi/4srP6X5dDKuaqx0+fG7Xw1obZt3+ZuPCqks/vP/+gCe/zv9WFOqqJb1mrvTD+eLB5efcZEeHCauaCGt1O+cyWLnCdWWwgs38+vtlSxKrhJW9fXp82RtIYhWPLrPstYoFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADcFP8AJz/GH1jWWd8AAAAASUVORK5CYII=";
+export const DEFAULT_IMG =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAGQBAMAAACAGwOrAAAAG1BMVEXHx8d1dXWenp68vLyoqKh/f3+JiYmysrKTk5O6M/JeAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEhUlEQVR42u3YzXPTRhgHYGElcY6I2CZHJ9Dh6hAKOeaD0h5xwYQjhuYeF2h6xAMZ/u3uSrJiYYcxM53pKH2eGcdOtNrJ/mb16pWTBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+I+l50/7j1r3y/XDh0Nq9H59tN7faiRu3mxbWeq94v/VmcTF3f3y2LLd1U8PKDv/NsJ7/wOAGhjV6LqyVl3d6R1irL286ENbKy9t7I6yVl9fqXIXV3r0/qIfVHqTHJ6EnOn6Q/+3R7u5J0SQd3z9P9os/PVgaVjlX2U29z1/hrEE5z0kjw0pGVVitrDvcHtTCmhxOR1k/mXazd2Hhl7Ex+BwjGHfPuodn4dNBNhq+XBLWbK5Wvj/bnfgKZ2V5iQwnZe8aGdakX4aVjj8n6c5pPaxnp8lBZ6OTtEJD1n4dttXfsTObhHweboew2qOTpD3uL4RVzTUf1uS0GJsO74UPfzUxrM2tMqw8nXQ0qIV1Fn4dHYVraTp7Ookf8kGTbpL8/CJ82Ly7EFY111xYd7bjkNvlwc1uE8NKe2VYR/kGmXyqhRV/7MSyNpltn71+spbXuVYIayfvaV9VjchFNJibay6sLF7q8dTi4LSJYeULjmGNi4y2amHFBU7ihtmbhXjrU1mb0xDWqNhsg9rjTn9urvmw8oIfitY4H77XyLDiK4SVbhfPz51aWP1ZTlVzET5sFJfbKF96cHT+zc66mmsurOJv4Wevsa1DsYqQQLtYePlW3Q1nYa3nYaUXT4+qsHqzZCeH39Ssq7nmC3x5UplkM8OKJTuEVS68XMrysJ5loSN4U9wT4si1zn40q2dVWFdzLYT1apZkQ8MKTXwIq1Xe03rXh/W4dzK3CcNNsJVVVaoW1tVcy8LqNDmssA9WCisdnZfFaxrTmYZ7Xedidv/7v4QV2qaVLsOin8q7jO79p5dh4Nrd5c+GN/gyDP3QSgW+qPF78cb58Gz0djA3+NoCX8S5Nh9Wswt82DJxu/RqV9CSsIpWK9wNqw1VbcNvO/hqrmJoaz6ssjlbb2hYaS9vSge1BV8X1jhswurqGw+Wh1XNVUS0Xgtr2uCmNO6WsF3KB52j/rVh3YqDW6F1SIZf3hcpHX1aHlY1V7H3prWwytCbGtZGfG7bjIWm3U2uL/BxuTsfw9CDYWi4viTlOUvCupprHO6gm51aWK148PGrpoZVPORO/9h/Mn1xfVjp8OuTnzp5mU8vPvw2fBfPeTlI/3y7+H1WNdfenf1Ho4taWPHgw9FBU8NKpvk3AuMs+z1JvtOUZtn2YH32kBi/4srP6X5dDKuaqx0+fG7Xw1obZt3+ZuPCqks/vP/+gCe/zv9WFOqqJb1mrvTD+eLB5efcZEeHCauaCGt1O+cyWLnCdWWwgs38+vtlSxKrhJW9fXp82RtIYhWPLrPstYoFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADcFP8AJz/GH1jWWd8AAAAASUVORK5CYII=';
 
 export const CONVERSATION_STATUS = {
   OPEN: 1,
-  CLOSED:2
-}
+  CLOSED: 2,
+};
 
 export const CONVERSATION_STATUS_NAME = {
-  OPEN: "Open",
-  CLOSED: "Closed"
-}
+  OPEN: 'Open',
+  CLOSED: 'Closed',
+};
+
+export const bytesToSize = bytes => {
+  var sizes = ['B', 'KB', 'M', 'G', 'T', 'P'];
+  for (var i = 0; i < sizes.length; i++) {
+    if (bytes <= 1024) {
+      return bytes + ' ' + sizes[i];
+    } else {
+      bytes = parseFloat(bytes / 1024).toFixed(0);
+    }
+  }
+  return bytes + ' P';
+};

@@ -67,7 +67,6 @@ class SearchContainer extends Component {
       {
         SuccessCallback: res => {
           if (res?.ok) {
-            console.log('12312123',JSON.stringify(res))
             this.setState({
               // conversationData: res?.conversations,
               conversation_count: res?.total_conversations,

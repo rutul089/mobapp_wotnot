@@ -19,11 +19,11 @@ const App = () => {
   }, []);
   return (
     <RootSiblingParent>
-      <NativeBaseProvider>
-        <Provider store={store}>
-          <RootContainer />
-        </Provider>
-      </NativeBaseProvider>
+        <NativeBaseProvider>
+          <Provider store={store}>
+            <RootContainer />
+          </Provider>
+        </NativeBaseProvider>
     </RootSiblingParent>
   );
 };

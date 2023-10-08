@@ -46,13 +46,6 @@ class SettingScreenContainer extends Component {
   }
 
   async componentDidMount() {
-    let {userPreference} = this.props;
-    // let agentpayload = await getAgentPayload();
-    // console.log("-------<",JSON.stringify(agentpayload))
-    // reconnect()
-    // this.setState({
-    //   isActive: userPreference?.status_id === 1,
-    // });
     this.props.navigation.addListener('focus', () => {
       this.cllFetchAccounts();
       this.callFetchUserPreference();
@@ -137,11 +130,6 @@ class SettingScreenContainer extends Component {
         Object.keys(LOCAL_STORAGE).map(key =>
           removeItemFromStorage(LOCAL_STORAGE[key]),
         );
-        // await AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, 'false');
-        // await AsyncStorage.setItem(
-        //   LOCAL_STORAGE.USER_PREFERENCE,
-        //   JSON.stringify({}),
-        // );
         disconnect();
         navigateAndSimpleReset('SignInScreen');
       },
@@ -151,7 +139,6 @@ class SettingScreenContainer extends Component {
           removeItemFromStorage(LOCAL_STORAGE[key]),
         );
         navigateAndSimpleReset('SignInScreen');
-        console.log('1111111111111', JSON.stringify(res));
       },
     });
   };
@@ -168,9 +155,9 @@ class SettingScreenContainer extends Component {
   callFetchUserPreference = (isReset = false) => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: res => {
-        // this.setState({
-        //   isActive: res?.status_id === 1,
-        // });
+        this.setState({
+          isActive: res?.status_id === 1,
+        });
         AsyncStorage.setItem(
           LOCAL_STORAGE?.USER_PREFERENCE,
           JSON.stringify(res),

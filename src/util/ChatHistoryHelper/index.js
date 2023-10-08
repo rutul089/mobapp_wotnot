@@ -80,7 +80,6 @@ export function getFileExtension(file) {
 }
 
 export function getExtensionIcon(ext) {
-  console.log('-------', ext);
   switch (ext) {
     case 'csv':
       return 'exclefile1';
@@ -103,6 +102,7 @@ export function getExtensionIcon(ext) {
     case 'pdf':
       return 'pdffile1';
     case 'mp4':
+    case 'mp3':
       return 'play';
     default:
       return 'file1';
@@ -134,6 +134,11 @@ export function isTextComponentContainImage(text) {
 
 export function isValidHttpUrl(string) {
   var res = string.match(REGEX_PATTERNS.HTTP_URL);
+  return res !== null;
+}
+
+export function isValidEmail(string) {
+  var res = string.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/);
   return res !== null;
 }
 
@@ -278,6 +283,8 @@ export function getChatMsgUserType(item) {
 
 export function getChatMsgType(item) {
   let chatItem = getChatMsgUserType(item);
+  // console.log('chatItem', chatItem);
+  // console.log("item",item)
   let msgType = chatItem?.type
     ? chatItem.type
     : chatItem.message
@@ -292,14 +299,31 @@ export function getChatMsgType(item) {
     ? 'status'
     : null;
 
+  if (msgType === 'send_message') {
+    let data = isValidJSON(chatItem?.message?.text)
+      ? JSON.parse(chatItem?.message?.text)
+      : null;
+    return data?.type;
+  }
+
+  if(msgType === 'options'){
+    return 'options';
+    let data = isValidJSON(chatItem?.message?.text)
+      ? JSON.parse(chatItem?.message?.text)
+      : null;
+  }
+
   if (
     chatItem &&
     chatItem.message &&
     chatItem.message.version &&
     chatItem.message.version === 2
   ) {
-    let data = JSON.parse(chatItem.message.text);
-    return data.type === 'text' || data.type === 'image'
+    // let data = JSON.parse(JSON.stringify(chatItem?.message?.text)) ?? null;
+    let data = JSON.parse(JSON.stringify(chatItem?.message?.text)) ?? null;
+    return data.type === 'text' ||
+      data.type === 'image' ||
+      data.type === 'send_message'
       ? data.type
       : data.type === 'video' ||
         data.type === 'audio' ||

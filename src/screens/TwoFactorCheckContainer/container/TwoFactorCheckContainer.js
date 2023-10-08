@@ -11,11 +11,16 @@ import {
   twoFactorCode,
   verifyTFAOTP,
   fetchUserPreference,
+  fetchAccounts,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {strings} from '../../../locales/i18n';
 import {LOCAL_STORAGE} from '../../../constants/storage';
 import AsyncStorage from '@react-native-community/async-storage';
+import {
+  getItemFromStorage,
+  setItemToStorage,
+} from '../../../util/DeviceStorageOperations';
 
 class TwoFactorCheckContainer extends Component {
   constructor(props) {
@@ -84,11 +89,38 @@ class TwoFactorCheckContainer extends Component {
           JSON.stringify(res),
         );
         AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, 'true');
-        navigateAndSimpleReset('MainNavigator');
+
+        this.cllFetchAccounts()
+          .then(data => {
+            navigateAndSimpleReset('MainNavigator');
+          })
+          .catch(() => {
+            console.log('Something went wrong');
+          });
       },
       FailureCallback: res => {
         handleFailureCallback(res);
       },
+    });
+  };
+
+  cllFetchAccounts = () => {
+    return new Promise((resolve, reject) => {
+      this.props.fetchAccounts({
+        SuccessCallback: async res => {
+          await setItemToStorage(
+            LOCAL_STORAGE?.AGENT_ACCOUNT_LIST,
+            res?.account_info,
+          );
+          resolve(
+            getItemFromStorage(LOCAL_STORAGE?.AGENT_ACCOUNT_LIST) ?? undefined,
+          );
+        },
+        FailureCallback: res => {
+          handleFailureCallback(res, false, false, false);
+          reject(res);
+        },
+      });
     });
   };
 
@@ -115,7 +147,12 @@ class TwoFactorCheckContainer extends Component {
   }
 }
 
-const mapActionCreators = {twoFactorCode, verifyTFAOTP, fetchUserPreference};
+const mapActionCreators = {
+  twoFactorCode,
+  verifyTFAOTP,
+  fetchUserPreference,
+  fetchAccounts,
+};
 const mapStateToProps = state => {
   return {
     isLoading: state.global.loading,

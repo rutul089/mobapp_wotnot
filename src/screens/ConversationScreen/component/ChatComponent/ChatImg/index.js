@@ -90,7 +90,6 @@ function ChatImgComponent(props) {
   }
 
   function onImagePress() {
-    console.log(';123123');
     onToggleImageModal(imgSrc);
   }
 

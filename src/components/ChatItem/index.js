@@ -4,6 +4,7 @@ import {
   PixelRatio,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
@@ -42,6 +43,8 @@ const ChatItem = ({
   itemData,
   isLoading,
   typingData,
+  hideGlobalChannelIcon,
+  channelIcon
 }) => {
   const radius = PixelRatio.roundToNearestPixel(6);
   const STROKE_WIDTH = 0;
@@ -119,12 +122,26 @@ const ChatItem = ({
     return (
       <View style={{flex: 1, flexDirection: 'row'}}>
         <View style={{flex: 1, alignSelf: 'center'}}>
-          <Text
-            type={'body2'}
-            weight={theme.typography.fontWeights.medium}
-            numberOfLines={1}>
-            {name}
-          </Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              type={'body2'}
+              weight={theme.typography.fontWeights.medium}
+              numberOfLines={1}>
+              {name}
+            </Text>
+            {!hideGlobalChannelIcon ? (
+              <Image
+                source={channelIcon}
+                resizeMode="contain"
+                style={{
+                  marginLeft: 4,
+                  height: theme.sizes.icons.xs,
+                  width: theme.sizes.icons.xs,
+                }}
+              />
+            ) : null}
+          </View>
+
           <Text
             type={'caption12'}
             style={{color: colors.brandColor.silver}}
@@ -185,8 +202,8 @@ const ChatItem = ({
   };
 
   return (
-    <TouchableHighlight
-      activeOpacity={0.9}
+    <TouchableOpacity
+      activeOpacity={0.7}
       underlayColor="#DDDDDD"
       style={{
         flex: 1,
@@ -224,7 +241,7 @@ const ChatItem = ({
         ) : null}
         <View style={{flex: 1, flexDirection: 'row'}}>
           {renderAvatarView()}
-          <Spacing direction="y" size="xs" />
+          {/* <Spacing direction="y" size="xs" /> */}
           {renderBodyView()}
         </View>
 
@@ -237,7 +254,7 @@ const ChatItem = ({
             }}>
             <View style={{flex: 1, justifyContent: 'center'}}>
               <Text type={'caption12'} size={10} numberOfLines={1}>
-                {isTyping ? 'typing...' : subTittle}
+                {isTyping ? 'typing...' : subTittle?.replace(/\n/g, '')}
               </Text>
             </View>
             {!hideRating ? (
@@ -265,7 +282,7 @@ const ChatItem = ({
           </View>
         ) : null}
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 };
 

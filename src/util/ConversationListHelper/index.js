@@ -1,4 +1,5 @@
-import {isValidJSON} from '../JSONOperations';
+import images from '../../assets/images';
+import {findIndex, isValidJSON} from '../JSONOperations';
 import {
   CONVERSATION_CONSTANT,
   VALIDATION_REGEX as REGEX_PATTERNS,
@@ -192,6 +193,7 @@ export const messageParser = msg => {
       ? CONVERSATION_CONSTANT.VIDEO_FILE
       : CONVERSATION_CONSTANT.IFRAME_CONTENT;
   }
+
   return unEscape(msg);
 };
 
@@ -356,4 +358,84 @@ export const statusChangeText = (data, assignee_id) => {
     }
   }
   return changeStatusText;
+};
+
+export const addNewMessage = (msg, conversation_list, customerProfile) => {
+  let newData = [...conversation_list];
+  let msgCounts = 0;
+  let assignee = msg.assignee ? msg.assignee : msg.agent ? msg.agent : msg.bot;
+  if (!msg.is_new_conversation) {
+    const index = findIndex(
+      conversation_list,
+      'thread_key',
+      msg.conversation_key,
+    );
+    if (index !== -1) {
+      assignee = conversation_list[index].assignee;
+      msgCounts =
+        conversation_list[index].unread_messages_count < 0
+          ? 0
+          : conversation_list[index].unread_messages_count;
+      newData.splice(index, 1);
+    }
+  }
+  let newMsg = {
+    bot_id: msg.bot_id,
+    assignee: assignee,
+    title:
+      customerProfile &&
+      customerProfile.unique_user_key === msg.unique_user_key &&
+      customerProfile.title &&
+      customerProfile.title !== ''
+        ? customerProfile.title
+        : msg.conversation_title,
+    thread_key: msg.conversation_key,
+    message: msg.user
+      ? msg.user.message
+      : msg.agent
+      ? msg.agent.message
+      : msg.bot.message,
+    last_message_at: msg.user
+      ? msg.user.timestamp
+      : msg.agent
+      ? msg.agent.timestamp
+      : msg.bot.timestamp,
+    conversation_mode: msg.assignee
+      ? msg.assignee.user_type
+      : msg.agent
+      ? 'LIVE_CHAT'
+      : 'BOT',
+    unread_messages_count: msgCounts + 1,
+    timestamp: 'now',
+    status_id: 1,
+    unique_user_key: msg.unique_user_key,
+  };
+  return {newMsg: newMsg, conversationData: newData};
+};
+
+export const getGlobalChannelIcon = (channelName, browser) => {
+  switch (channelName) {
+    case 'Web':
+      if (browser.toLocaleLowerCase()?.includes('chrome')) {
+        return images.global_channel_name.ic_chrome;
+      } else if (browser.toLocaleLowerCase()?.includes('edge')) {
+        return images.global_channel_name.ic_edge;
+      } else if (browser.toLocaleLowerCase()?.includes('safari')) {
+        return images.global_channel_name.ic_safari;
+      } else if (
+        browser.toLocaleLowerCase()?.includes('firefox') ||
+        browser.toLocaleLowerCase()?.includes('mozilla')
+      ) {
+        return images.global_channel_name.ic_firefox;
+      }
+      break;
+    case 'SMS':
+      return images.global_channel_name.ic_sms;
+    case 'Messenger':
+      return images.global_channel_name.ic_facebook;
+    case 'WhatsApp':
+      return images.global_channel_name.ic_whatsapp;
+    default:
+      return null;
+  }
 };

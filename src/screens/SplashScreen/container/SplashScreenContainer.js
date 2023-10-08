@@ -43,6 +43,7 @@ class SplashScreenContainer extends Component {
   callFetchUserPreference = async () => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: res => {
+        console.log("------->callFetchUserPreference",JSON.stringify(res))
         setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE,res);
         navigateAndSimpleReset('MainNavigator');
       },

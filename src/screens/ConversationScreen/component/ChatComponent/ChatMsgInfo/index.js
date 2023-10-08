@@ -27,94 +27,9 @@ const ChatMsgInfo = props => {
       {timeStampRight ? (
         <>
           <TickerTimeStamp time={time} style={styles.timeStampRight} />
-          {/* Code for user image icon for right side */}
-          {/* {userData.user ? (
-            userData.user.image_url ? (
-              <Image
-                resizeMode="contain"
-                style={styles.msgAvatar}
-                source={{uri: userData.user.image_url}}
-              />
-            ) : chatUserName ? (
-              <View
-                style={[
-                  styles.msgAvatar,
-                  styles.acronymAvatar,
-                  {
-                    backgroundColor:
-                      AVATAR_COLORS[
-                        getAcronym(userData.user, 'user').charAt(0)
-                      ],
-                  },
-                ]}>
-                <Text style={styles.acronymText}>
-                  {getAcronym(userData.user, 'user')}
-                </Text>
-              </View>
-            ) : (
-              <Image
-                resizeMode="contain"
-                style={styles.msgAvatar}
-                source={images.ic_userprofile}
-              />
-            )
-          ) : userData.agent && userData.agent.image_url ? (
-            <Image
-              resizeMode="contain"
-              style={styles.msgAvatar}
-              source={{uri: userData.agent.image_url}}
-            />
-          ) : userData.agent && userData.agent.user_type === 'bot' ? (
-            <Image
-              resizeMode="contain"
-              style={styles.msgAvatar}
-              source={images.ic_bot}
-            />
-          ) : (
-            <View
-              style={[
-                styles.msgAvatar,
-                styles.acronymAvatar,
-                {
-                  backgroundColor:
-                    AVATAR_COLORS[getAcronym(userData.agent).charAt(0)],
-                },
-              ]}>
-              <Text style={styles.acronymText}>
-                {getAcronym(userData.agent)}
-              </Text>
-            </View>
-          )} */}
         </>
       ) : (
         <>
-          {/* {userData.user.image_url ? (
-            <Image
-              resizeMode="contain"
-              style={styles.msgAvatar}
-              source={{uri: userData.user.image_url}}
-            />
-          ) : chatUserName ? (
-            <View
-              style={[
-                styles.msgAvatar,
-                styles.acronymAvatar,
-                {
-                  backgroundColor:
-                    AVATAR_COLORS[getAcronym(userData.user, 'user').charAt(0)],
-                },
-              ]}>
-              <Text style={styles.acronymText}>
-                {getAcronym(userData.user, 'user')}
-              </Text>
-            </View>
-          ) : (
-            <Image
-              resizeMode="contain"
-              style={styles.msgAvatar}
-              source={images.ic_userprofile}
-            />
-          )} */}
           <TickerTimeStamp time={time} style={styles.timeStampRight} />
         </>
       )}

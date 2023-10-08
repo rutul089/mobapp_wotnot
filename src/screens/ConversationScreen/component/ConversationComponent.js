@@ -47,9 +47,13 @@ import ChatOptionsButton from './ChatComponent/ChatOptionsButton';
 import ChatCalendar from './ChatComponent/ChatCalendar';
 import ChatForm from './ChatComponent/ChatForm';
 import ChatCardView from './ChatComponent/ChatCardView';
+import ChatListView from './ChatComponent/ChatListView';
+import ChatAppointmentBooking from './ChatComponent/ChatAppointmentBooking';
+import ChatVideoView from './ChatComponent/ChatVideoView';
 import AutoGrowTextInputManager from '../../../util/AutoGrowTextInputManager';
 import ChatTyping from './ChatComponent/ChatTyping';
 import {registerVisitorTypingHandler} from '../../../websocket';
+import {bytesToSize} from '../../../util/helper';
 
 const ConversationComponent = ({
   joinConversation,
@@ -103,6 +107,8 @@ const ConversationComponent = ({
   onSaveReplyClick,
   handleLoadMore,
   isLoadMore,
+  mediaData,
+  onMediaPreviewCancel,
 }) => {
   const [typingData, setTypingData] = React.useState();
   const [imageModalShow, setImageModalShow] = React.useState(false);
@@ -125,7 +131,6 @@ const ConversationComponent = ({
   });
 
   function onToggleImageModal(img) {
-    console.log('-------onToggleImageModal------');
     setImageModalShow(true);
     setImageModalUrl(img);
   }
@@ -258,11 +263,11 @@ const ConversationComponent = ({
     );
   };
   const _renderInputTextView = () => {
+    // mediaData
     return (
       <View
         style={{
           backgroundColor: '#FEFEFE',
-          flexDirection: 'row',
           padding: 8,
           shadowColor: '#000',
           shadowOffset: {
@@ -276,67 +281,110 @@ const ConversationComponent = ({
           // borderTopWidth: 1,
           // borderTopColor: theme.colors.typography.silver,
         }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            backgroundColor: '#f0f2f5',
-            borderRadius: 12,
-            paddingHorizontal: 10,
-          }}>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={showMenuOptions}
+        {mediaData ? (
+          <View
             style={{
-              justifyContent: 'flex-end',
-              bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
+              backgroundColor: '#f0f2f5',
+              marginBottom: 5,
+              borderRadius: 8,
+              padding: 10,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
             }}>
-            <Image
-              source={images.ic_hamburger}
-              resizeMode="contain"
-              style={styles.sendMessageContainer.attachmentButton}
-            />
-          </TouchableOpacity>
-          <AutoGrowTextInputManager
+            <View style={{flex: 0.8}}>
+              <Text numberOfLines={1} type={'body2'}>
+                {mediaData?.name}
+              </Text>
+              <Text type={'caption12'}>{bytesToSize(mediaData?.size)} </Text>
+            </View>
+            <View
+              style={{
+                flex: 0.1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                onPress={onMediaPreviewCancel}
+                style={{
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                }}>
+                <Image
+                  resizeMode="contain"
+                  source={images.ic_cross}
+                  style={{
+                    tintColor: theme.colors.brandColor.silver,
+                    height: theme.sizes.icons.xs,
+                    width: theme.sizes.icons.xs,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : null}
+        <View style={{flexDirection: 'row'}}>
+          <View
             style={{
-              paddingHorizontal: theme.normalize(10),
-              paddingVertical: theme.normalize(5),
-              fontSize: 16,
+              flexDirection: 'row',
               flex: 1,
-              // backgroundColor: '#f0f2f5',
-              // borderRadius: 12,
-              textAlignVertical: 'top',
-              justifyContent: 'center',
-              fontFamily: theme.typography.fonts.circularStdBook,
-            }}
-            placeholder={'Send Message'}
-            placeholderTextColor={theme.colors.typography.silver}
-            maxHeight={100}
-            minHeight={40}
-            enableScrollToCaret
-            numberOfLines={1}
-            onChangeText={updateMessageValue}
-            value={messageToSend}
-          />
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={onSendPress}
-            style={{
-              justifyContent: 'flex-end',
-              bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
+              backgroundColor: '#f0f2f5',
+              borderRadius: 12,
+              paddingHorizontal: 10,
             }}>
-            <Image
-              source={images.ic_send}
-              resizeMode="contain"
-              style={styles.sendMessageContainer.attachmentButton}
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={showMenuOptions}
+              style={{
+                justifyContent: 'flex-end',
+                bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
+              }}>
+              <Image
+                source={images.ic_hamburger}
+                resizeMode="contain"
+                style={styles.sendMessageContainer.attachmentButton}
+              />
+            </TouchableOpacity>
+            <AutoGrowTextInputManager
+              style={{
+                paddingHorizontal: theme.normalize(10),
+                paddingVertical: theme.normalize(5),
+                fontSize: 16,
+                flex: 1,
+                // backgroundColor: '#f0f2f5',
+                // borderRadius: 12,
+                textAlignVertical: 'top',
+                justifyContent: 'center',
+                fontFamily: theme.typography.fonts.circularStdBook,
+              }}
+              placeholder={'Send Message'}
+              placeholderTextColor={theme.colors.typography.silver}
+              maxHeight={100}
+              minHeight={40}
+              enableScrollToCaret
+              numberOfLines={1}
+              onChangeText={updateMessageValue}
+              value={messageToSend}
             />
-          </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={onSendPress}
+              style={{
+                justifyContent: 'flex-end',
+                bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
+              }}>
+              <Image
+                source={images.ic_send}
+                resizeMode="contain"
+                style={styles.sendMessageContainer.attachmentButton}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
   };
   const renderItem = (item, msgType, itemWithAccountDetails, formResponse) => {
-    // console.log('msgType==========>', msgType);
+    console.log('msgType', msgType);
     switch (msgType) {
       case 'file.response': {
         let files = userFileResponseElement(itemWithAccountDetails);
@@ -375,6 +423,7 @@ const ConversationComponent = ({
           />
         );
       }
+      case 'phone':
       case 'text': {
         return (
           <ChatText
@@ -392,19 +441,15 @@ const ConversationComponent = ({
       case 'image': {
         return (
           <ChatImg
-            // pos={
-            //   itemWithAccountDetails.pos
-            //     ? itemWithAccountDetails.pos
-            //     : 'relative'
-            // }
             chatItem={itemWithAccountDetails}
             onToggleImageModal={onToggleImageModal}
             onToggleImageModal123={e => console.log('00000')}
           />
         );
       }
+      case 'document':
+      case 'audio':
       case 'file': {
-        // will show link at agent side instead of preview box
         return (
           <ChatText
             pos={
@@ -452,6 +497,19 @@ const ConversationComponent = ({
                 : 'relative'
             }
             chatItem={itemWithAccountDetails}
+          />
+        );
+      }
+      case 'list': {
+        return (
+          <ChatListView
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            // retainButtonListUponSelection={retainButtonListUponSelection}
           />
         );
       }
@@ -507,6 +565,32 @@ const ConversationComponent = ({
             slides={JSON.parse(itemWithAccountDetails.agent.message.text).items}
             avatar={itemWithAccountDetails.agent.avatar}
             onToggleImageModal={onToggleImageModal}
+          />
+        );
+      }
+      case 'appointment_booking': {
+        return (
+          <ChatAppointmentBooking
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
+            avatar={itemWithAccountDetails.agent.avatar}
+            onToggleImageModal={onToggleImageModal}
+          />
+        );
+      }
+      case 'video': {
+        return (
+          <ChatVideoView
+            pos={
+              itemWithAccountDetails.pos
+                ? itemWithAccountDetails.pos
+                : 'relative'
+            }
+            chatItem={itemWithAccountDetails}
           />
         );
       }
@@ -660,8 +744,8 @@ const ConversationComponent = ({
           : isClosed
           ? null
           : joinButton
-          ? _renderInputTextView()
-          : _renderJoinConversationView()}
+          ? _renderJoinConversationView()
+          : _renderInputTextView()}
       </View>
 
       <BottomSheet

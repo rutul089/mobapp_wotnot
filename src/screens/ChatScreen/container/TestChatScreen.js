@@ -13,6 +13,7 @@ import {
   setConversations,
   fetchAccounts,
   fetchUserList,
+  setNotificationToken,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {getAssigneeId} from '../../../util/helper';
@@ -20,7 +21,10 @@ import {navigate} from '../../../navigator/NavigationUtils';
 import theme from '../../../util/theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LOCAL_STORAGE} from '../../../constants/storage';
-import {getAgentPayload} from '../../../common/common';
+import {
+  getAgentPayload,
+  getMessageFromEventPayload,
+} from '../../../common/common';
 import {
   emitVisitorTyping,
   initSocket,
@@ -30,20 +34,26 @@ import {
   registerStatusChangedHandler,
   registerUserStatus,
   reconnect,
+  registerMessageHandler,
+  registerMessageRead,
 } from '../../../websocket';
 import {emitAgentJoin} from '../../../websocket';
 import {
   assigneeChangeText,
   statusChangeText,
+  addNewMessage,
 } from '../../../util/ConversationListHelper';
 import {findIndex} from '../../../util/JSONOperations';
-import {setItemToStorage} from '../../../util/DeviceStorageOperations';
+import {
+  getItemFromStorage,
+  setItemToStorage,
+} from '../../../util/DeviceStorageOperations';
 
 class TestChatScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentTab: CONVERSATION.ASSIGNED,
+      currentTab: CONVERSATION.YOU,
       conversations: [],
       isLoading: false,
       search_after: '',
@@ -66,7 +76,10 @@ class TestChatScreen extends Component {
     this.callSummary();
     this.callFetchTeamData();
     this.callFetchTeammateData();
-    this.cllFetchAccounts();
+    this.callSetNotificationToken();
+    if (!getItemFromStorage(LOCAL_STORAGE?.AGENT_ACCOUNT_LIST)) {
+      this.cllFetchAccounts();
+    }
     this.callFetchConversation(this.state.currentTab, false, true);
     this.callFetchUserList();
     this.props.navigation.addListener('focus', () => {
@@ -74,19 +87,15 @@ class TestChatScreen extends Component {
       registerAssigneeChangedHandler(this.onAssigneeChange);
       registerConversationCreateHandler(this.onConvCreateReceived);
       registerStatusChangedHandler(this.msgStatusChange);
+      registerMessageHandler(this.messageHandler);
+      registerMessageRead(this.readMessage);
     });
-    initSocket()
+    initSocket();
     emitAgentJoin();
     reconnect();
     // registerVisitorTypingHandler(this.visitorTypingStatus);
   }
 
-  // visitorTypingStatus = status => {
-  //   console.log('visitorTypingStatus',status)
-  //   this.setState({
-  //     typingData:status
-  //   })
-  // };
   callSummary = () => {
     this.props.fetchConversationSummary(
       this.props?.userPreference?.account_id,
@@ -119,7 +128,7 @@ class TestChatScreen extends Component {
     this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
       SuccessCallback: res => {},
       FailureCallback: res => {
-        handleFailureCallback(res, true, false, false);
+        handleFailureCallback(res, true, true, false);
       },
     });
   };
@@ -130,7 +139,7 @@ class TestChatScreen extends Component {
         setItemToStorage(LOCAL_STORAGE.USER_LIST, res);
       },
       FailureCallback: res => {
-        handleFailureCallback(res, true, false, false);
+        handleFailureCallback(res, true, true, false);
       },
     });
   };
@@ -143,7 +152,7 @@ class TestChatScreen extends Component {
       {
         SuccessCallback: res => {},
         FailureCallback: res => {
-          handleFailureCallback(res, true, false, false);
+          handleFailureCallback(res, true, true, false);
         },
       },
     );
@@ -173,7 +182,7 @@ class TestChatScreen extends Component {
         break;
     }
 
-    let url = `status_ids=${statusId}&is_order_by_asc=false&limit=35&offset=1${assignee}${offset}`;
+    let url = `status_ids=${statusId}&is_order_by_asc=false&limit=25&offset=1${assignee}${offset}`;
 
     this.props.fetchConversationBySearch(
       userPreference?.account_id,
@@ -244,9 +253,10 @@ class TestChatScreen extends Component {
   };
 
   loadMoreData = distanceFromEnd => {
-    if (!distanceFromEnd >= 1) {
-      return;
-    }
+    console.log('distanceFromEnd', distanceFromEnd);
+    // if (!distanceFromEnd >= 1) {
+    //   return;
+    // }
     this.setState(
       {
         moreLoading: true,
@@ -271,9 +281,17 @@ class TestChatScreen extends Component {
 
   onConvCreateReceived = data => {
     console.log('onConvCreateReceived------------>', JSON.stringify(data));
+    if (
+      !this.state.isLoading &&
+      !this.state.isRefreshing &&
+      !this.state.moreLoading &&
+      data
+    ) {
+      // this.callFetchConversation(this.state.currentTab, false, false);
+    }
     // alert(data)
     // this.setTimeout(() => {
-    this.callFetchConversation(this.state.currentTab, false, false);
+    // this.callFetchConversation(this.state.currentTab, false, false);
     // });
   };
 
@@ -375,6 +393,91 @@ class TestChatScreen extends Component {
     }
   };
 
+  messageHandler = msg => {
+    let {userPreference} = this.props;
+    if (
+      !this.state.isLoading &&
+      !this.state.isRefreshing &&
+      !this.state.moreLoading &&
+      msg
+    ) {
+      let convertedMessage = getMessageFromEventPayload(
+        msg,
+        this.props.conversations,
+      );
+      if (convertedMessage && 'assignee' in convertedMessage) {
+        !convertedMessage.assignee
+          ? (convertedMessage['assignee'] = convertedMessage.agent)
+          : null;
+        if (convertedMessage.assignee) {
+          if (convertedMessage && typeof convertedMessage === 'object') {
+            if (
+              convertedMessage.is_new_conversation ||
+              findIndex(
+                this.props.conversations,
+                'thread_key',
+                convertedMessage.conversation_key,
+              ) === -1
+            ) {
+            }
+          }
+          let newObj = addNewMessage(
+            convertedMessage,
+            this.props.conversations,
+            'conversationTitle',
+          );
+          this.props.setConversations([
+            newObj?.newMsg,
+            ...newObj?.conversationData,
+          ]);
+        }
+      }
+    }
+  };
+
+  readMessage = readMsg => {
+    if (
+      !this.state.isLoading &&
+      !this.state.isRefreshing &&
+      !this.state.moreLoading &&
+      readMsg
+    ) {
+      let {conversations} = this.props;
+      let index = findIndex(
+        conversations,
+        'thread_key',
+        readMsg.conversation_key,
+      );
+      if (index !== -1 && conversations[index].unread_messages_count > 0) {
+        let newData = [...conversations];
+        newData[index] = {
+          ...newData[index],
+          unread_messages_count: 0,
+          timestamp: null,
+        };
+        this.props.setConversations(newData);
+      }
+    }
+  };
+
+  callSetNotificationToken = async () => {
+    let pushToken = await AsyncStorage.getItem(
+      LOCAL_STORAGE.NOTIFICATION_TOKEN,
+      '',
+    );
+    let param = {
+      token: pushToken,
+    };
+    this.props.setNotificationToken(param, false, {
+      SuccessCallback: res => {
+        console.log('SuccessCallback', res);
+      },
+      FailureCallback: res => {
+        console.log('FailureCallback', res);
+      },
+    });
+  };
+
   render() {
     return (
       <>
@@ -409,6 +512,7 @@ const mapActionCreators = {
   setConversations,
   fetchAccounts,
   fetchUserList,
+  setNotificationToken,
 };
 const mapStateToProps = state => {
   return {

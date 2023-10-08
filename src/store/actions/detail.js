@@ -60,7 +60,7 @@ export const saveLabel = (
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
-    dispatch(loadingSet());
+    // dispatch(loadingSet());
     API.getInstance().Fetch(
       endPoints.saveLabel(conversation_key),
       defaultHeaders,
@@ -85,7 +85,7 @@ export const deleteLabel = (
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
-    dispatch(loadingSet());
+    // dispatch(loadingSet());
     API.getInstance().Fetch(
       endPoints.deleteLabel(conversation_key, label_id),
       defaultHeaders,

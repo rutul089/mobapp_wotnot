@@ -5,7 +5,13 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack';
 import React, {Component} from 'react';
-import {AppState, Keyboard, View} from 'react-native';
+import {
+  AppState,
+  Keyboard,
+  View,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 import {
   ConversationScreen,
   ForgotPasswordScreen,
@@ -20,11 +26,26 @@ import {
   HelpDeskScreen,
   NotificationScreen,
 } from '../screens';
+
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
 import OfflineNotice from '../components/OfflineNotice/index';
 import {reconnect} from '../websocket';
 const Stack = createStackNavigator();
+import AsyncStorage from '@react-native-community/async-storage';
+import messaging from '@react-native-firebase/messaging';
+
+import {
+  request,
+  PERMISSIONS,
+  RESULTS,
+  check,
+  openSettings,
+  checkNotifications,
+} from 'react-native-permissions';
+import {setItemToStorage} from '../util/DeviceStorageOperations';
+import {LOCAL_STORAGE} from '../constants/storage';
+import VideoPlayer from '../screens/ConversationScreen/component/ChatComponent/ChatVideoView/VideoPlayer';
 
 export default class RootContainer extends Component {
   constructor(props) {
@@ -38,12 +59,63 @@ export default class RootContainer extends Component {
     this.appStateRef = null;
   }
 
-  componentDidMount() {
+  async requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const deviceRemote = await messaging().registerDeviceForRemoteMessages();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    console.log('Authorization enabled:', enabled);
+
+    if (enabled) {
+      this.getFcmToken();
+    }
+  }
+
+  async getFcmToken() {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      console.log('FCM Token:', fcmToken);
+      AsyncStorage.setItem(LOCAL_STORAGE.NOTIFICATION_TOKEN, fcmToken);
+    } else {
+      // helperLog('Failed', 'No token received');
+    }
+  }
+
+  async componentDidMount() {
     this.unsubscribe = NetInfo?.addEventListener(state => {
       this.internetChecker(state?.isConnected);
     });
+    // this.checkNotificationPermission();
+    this.requestUserPermission();
     this.registerAppStateEvent();
   }
+
+  checkNotificationPermission = async () => {
+    checkNotifications().then(({status, settings}) => {
+      if (status === 'blocked' || status === 'denied') {
+        this.requestPermission(status);
+      } else {
+        return true;
+      }
+      console.log('status', status);
+      console.log('settings', settings);
+    });
+  };
+
+  requestPermission = async status => {
+    request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then(result => {});
+    // let checkPermission = await checkNotificationPermission();
+    // console.log('checkPermission123211', await checkNotificationPermission());
+    // if (checkPermission !== RESULTS.GRANTED) {
+    //   console.log('checkPermission');
+    //   const request = await requestNotificationPermission();
+    //   if (request !== RESULTS.GRANTED) {
+    //     console.log('checkPermission1');
+    //     // permission not granted
+    //   }
+    // }
+  };
 
   componentWillUnmount() {
     this.unregisterAppStateEvent();
@@ -177,6 +249,11 @@ export default class RootContainer extends Component {
             <Stack.Screen
               name={'NotificationScreen'}
               component={NotificationScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name={'VideoPlayer'}
+              component={VideoPlayer}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

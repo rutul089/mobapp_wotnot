@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     flex: 0.45,
     flexDirection: 'row',
     alignItems: 'center',
+    marginEnd:10
   },
   iconStyle: {
     height: theme.sizes.image.sm,
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
     flex: 0.5,
     // alignItems: 'center',
     alignContent: 'center',
+    marginStart:10
   },
   btnStyle: {
     backgroundColor: theme.colors.brandColor.blue,
@@ -36,6 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
+    maxHeight:90
   },
 });
 

@@ -158,6 +158,10 @@ export const endPoints = {
       method: Method.GET,
     };
   },
+  uploadAttachment: {
+    endpoint: '/v1/livechat-file-attachment',
+    method: Method.POST,
+  },
 };
 
 // export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD

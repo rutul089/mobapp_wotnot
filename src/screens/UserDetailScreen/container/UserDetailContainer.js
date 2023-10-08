@@ -83,6 +83,8 @@ class UserDetailContainer extends Component {
     this.setState(
       {
         labels: newArray,
+        isLoading:false,
+        isRefreshing:false
       },
       () => {
         this.allLabelModalRef?.current?.close();
@@ -148,14 +150,13 @@ class UserDetailContainer extends Component {
   };
 
   deleteLabel = (label_id, index) => {
+    const newArray = [...this.state.labels];
+    newArray.splice(index, 1);
+    this.setState({
+      labels: newArray,
+    });
     this.props.deleteLabel(this.state.threadKey, label_id, {
-      SuccessCallback: res => {
-        const newArray = [...this.state.labels];
-        newArray.splice(index, 1);
-        this.setState({
-          labels: newArray,
-        });
-      },
+      SuccessCallback: res => {},
       FailureCallback: res => {
         handleFailureCallback(res);
       },

@@ -33,6 +33,8 @@ import {
   getMessage,
   messageParser,
   convertTextMessage,
+  unEscape,
+  getGlobalChannelIcon
 } from '../../../util/ConversationListHelper';
 import {Box} from 'native-base';
 import {registerVisitorTypingHandler} from '../../../websocket';
@@ -157,7 +159,7 @@ const ChatScreenComponent = ({
             renderItem={({item, index}) => (
               <ChatItem
                 key={item?.assignee?.id}
-                name={item?.title}
+                name={item?.title + index}
                 email={`${
                   item?.assignee?.name ? item?.assignee?.name + ' | ' : ''
                 }${item?.city_name},${item?.country_name}`}
@@ -168,12 +170,18 @@ const ChatScreenComponent = ({
                 unreadCount={item?.unread_messages_count}
                 lastMessageDay={getDayDifference(item?.last_message_at)}
                 // subTittle={`${item?.message} `}
-                subTittle={`${getMessage(item)}`}
+                subTittle={
+                  item?.message === '' ? unEscape(item?.note) : `${getMessage(item)}`
+                }
                 onPress={() => onConversationClick(item)}
                 item={item}
                 isClosedMode={item?.status_id === 2}
                 rating={item?.rating}
-                hideRating={currentTab !== CONVERSATION.CLOSE}
+                hideRating={
+                  currentTab !== CONVERSATION.CLOSE ||
+                  item?.global_channel_name !== 'Web' ||
+                  item?.rating === 0
+                }
                 hideUnreadCount={
                   currentTab === CONVERSATION.CLOSE ||
                   item?.unread_messages_count == 0
@@ -187,6 +195,7 @@ const ChatScreenComponent = ({
                 borderBottomWidth={1}
                 isLoading={isLoading}
                 typingData={typingData}
+                channelIcon={getGlobalChannelIcon(item?.global_channel_name,item?.browser)}
               />
             )}
             keyExtractor={(_it, index) => `${_it?.thread_key} ${index}`}

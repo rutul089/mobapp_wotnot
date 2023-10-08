@@ -17,12 +17,12 @@ export function handleFailureCallback(
   response,
   value = true,
   isNotCheckForCode = false,
-  showToast = true,
+  isShowToast = true,
 ) {
   if (!isNotCheckForCode) {
     checkForCode(response.status != null && response.status);
   }
-  if (!showToast) return;
+  if (!isShowToast) return;
   if (response.data) {
     if (response.data) {
       if (value) {

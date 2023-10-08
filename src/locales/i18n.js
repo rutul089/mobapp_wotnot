@@ -1,5 +1,6 @@
 import * as RNLocalize from 'react-native-localize';
 import I18n from 'react-native-i18n';
+import ReactNative from 'react-native';
 
 import en from '../locales/languages/en.json';
 
@@ -10,6 +11,8 @@ if (Array.isArray(locales)) {
 }
 
 I18n.fallbacks = true;
+ReactNative.I18nManager.allowRTL(false);
+
 
 I18n.translations = {
   default: en,

@@ -6,6 +6,8 @@ import {strings} from '../../../locales/i18n';
 import {goBack, navigate} from '../../../navigator/NavigationUtils';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import ConversationComponent from '../component/ConversationComponent';
+import RNFetchBlob from 'rn-fetch-blob';
+
 import {
   fetchTeamData,
   fetchTeammateData,
@@ -14,6 +16,7 @@ import {
   fetchConversationHistory,
   setConversationsHistory,
   fetchSavedReply,
+  uploadFileAttachment,
 } from '../../../store/actions';
 import {
   CONVERSATION_STATUS_NAME,
@@ -30,6 +33,18 @@ import {
 } from '../../../websocket';
 import {getMessageFromEventPayload} from '../../../common/common';
 import {isValidJSON, stringToObj} from '../../../util/JSONOperations';
+import * as ImagePicker from 'react-native-image-picker';
+import {requestDocument, openImagePicker} from '../../../util/MediaHelper';
+import {getChatMsgCountWithoutStatusMsg} from '../../../util/ChatHistoryHelper';
+import axios from 'axios';
+let options = {
+  mediaType: 'photo',
+  quality: 1.0,
+  storageOptions: {
+    skipBackup: true,
+  },
+  json: true,
+};
 
 class ConversationContainer extends Component {
   constructor(props) {
@@ -53,6 +68,10 @@ class ConversationContainer extends Component {
       typingMsg: '',
       conversationStatus: 0,
       search_after: '',
+      isJoinButtonVisible: false,
+      readMessageCount: 0,
+      mediaData: null,
+      mediaDataUrl: '',
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -75,16 +94,19 @@ class ConversationContainer extends Component {
     this.setState({
       conversationJoined: true,
       conversationStatus: itemData?.status_id,
+      // isJoinButtonVisible:
+      //   itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE,
     });
     this.props?.setConversationsHistory([]);
     this.callFetchTeamData();
     this.callFetchTeammateData();
     this.callFetchConversationHistory(true);
+    this.setIsJoinButton();
     this.props.navigation.addListener('focus', () => {
       registerMessageHandler(this.onMessageReceived);
-      registerAssigneeChangedHandler(this.changeAssigneeHandler);
       registerStatusChangedHandler(this.changeConversationStatus);
       registerVisitorTypingHandler(e => console.log(e));
+      registerAssigneeChangedHandler(this.assigneeChange);
     });
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
@@ -195,7 +217,10 @@ class ConversationContainer extends Component {
   };
 
   onSendPress = () => {
-    if (this.state.messageToSend === '' && inputText.trim() === '') {
+    if (
+      this.state.messageToSend === '' &&
+      this.state.messageToSend?.trim() === ''
+    ) {
       return;
     }
     const {
@@ -219,9 +244,12 @@ class ConversationContainer extends Component {
 
   onSavedReplyPress = () => {
     this.attachmentBottomSheetRef?.current?.close();
-    this.setState({
-      showSavedReply: true,
-    });
+    setTimeout(() => {
+      this.setState({
+        showSavedReply: true,
+      });
+    }, 200);
+
     this._callSaveReply();
   };
   onCalendarPress = () => {
@@ -229,8 +257,17 @@ class ConversationContainer extends Component {
     this.attachmentBottomSheetRef?.current?.close();
   };
   onAttachmentsPress = () => {
-    Alert.alert('TBD');
     this.attachmentBottomSheetRef?.current?.close();
+    setTimeout(async () => {
+      requestDocument(async (response, type) => {
+        this.setState(
+          {
+            mediaData: response,
+          },
+          () => this.uploadMedia(response),
+        );
+      });
+    }, 200);
   };
 
   onChangeAssigneeModalClose = () => {
@@ -316,7 +353,7 @@ class ConversationContainer extends Component {
         },
         FailureCallback: res => {
           this.setLoading(false);
-          handleFailureCallback(res, true, true);
+          handleFailureCallback(res, true, true, false);
         },
       },
     );
@@ -384,13 +421,11 @@ class ConversationContainer extends Component {
         },
       },
     };
-
+    this.setState({
+      isJoinButtonVisible: false,
+    });
     this.setLoading(true);
-    this.callSetIncomingEvent(
-      param,
-      true,
-      'You assigned this conversation to yourself.',
-    );
+    this.callSetIncomingEvent(param, false, '');
     this.setState(prev => ({...prev, conversationJoined: true}));
   };
 
@@ -412,7 +447,6 @@ class ConversationContainer extends Component {
       {
         SuccessCallback: res => {
           if (res?.ok) {
-            console.log("res?.search_after",res?.search_after)
             this.setState(
               {
                 messageList: offset
@@ -421,11 +455,7 @@ class ConversationContainer extends Component {
                 search_after: res?.search_after,
                 isLoadMore: false,
               },
-              () =>
-                this.onEmitReadMsg(
-                  res?.messages_list,
-                  this.state.conversationStatus,
-                ),
+              () => this.onEmitReadMsg(res?.messages_list),
             );
           }
         },
@@ -494,9 +524,6 @@ class ConversationContainer extends Component {
         item?.reply?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
         item?.title?.toLowerCase()?.includes(searchText?.toLowerCase()),
     );
-
-    console.log('filterSaveReply', JSON.stringify(filterSaveReply));
-
     this.setState({
       filterSaveReplyData: filterSaveReply,
     });
@@ -592,7 +619,7 @@ class ConversationContainer extends Component {
             timestamp: '0', // 0 is set so the ticker will be start from now and increament by 1,2,3 ... and forth
           };
         }
-
+        this.callReadMessageEvent(Number(this.state.readMessageCount) + 1);
         this.setState({
           messageList: [newMsg, ...this.state.messageList],
         });
@@ -621,23 +648,8 @@ class ConversationContainer extends Component {
     }
   };
 
-  onEmitReadMsg = async (data, conversationStatusId) => {
-    // if (
-    //   (conversationStatusId === CONVERSATION_STATUS.OPEN ||
-    //     route.params.conversationStatusId === CONVERSATION_STATUS.OPEN) &&
-    //   (!route.params.unreadMessagesCount ||
-    //     route.params.unreadMessagesCount > 0)
-    // ) {
-    //   let readMsgCounts = getChatMsgCountWithoutStatusMsg(data);
-    //   // triggerMsgReadEvent(readMsgCounts);
-    // }
-  };
-
-  changeAssigneeHandler = data => {
-    console.log('changeAssigneeHandler------->', data);
-  };
-
   changeConversationStatus = data => {
+    console.log('------>changeConversationStatus', data);
     const {
       route: {
         params: {itemData},
@@ -653,23 +665,162 @@ class ConversationContainer extends Component {
           conversationStatus: newStatus,
         },
         () => {
+          console.log(
+            '------messageList',
+            JSON.stringify(this.state.messageList),
+          );
           setTimeout(() => {
             this.callFetchConversationHistory(false);
-          }, 500);
+          }, 1000);
         },
       );
     }
   };
 
   handleLoadMore = e => {
-    console.log('e=======?', this.state.search_after + "123");
     // if (this.state.search_after?.length > 0) {
-      this.setState({isLoadMore: true});
-      this.callFetchConversationHistory(false, true);
-      console.log('----<', this.state.search_after?.toString());
-    // } 
+    this.setState({isLoadMore: true});
+    this.callFetchConversationHistory(false, true);
+    // }
     this.setState({isLoadMore: false});
+  };
 
+  assigneeChange = msgAssigneeChange => {
+    const {
+      route: {
+        params: {itemData},
+      },
+      userPreference,
+    } = this.props;
+    if (msgAssigneeChange) {
+      if (itemData?.thread_key === msgAssigneeChange.conversation_key) {
+        msgAssigneeChange.event_payload.assigned.from.user_type === 'bot'
+          ? this.props.navigation.setParams({
+              assignee: msgAssigneeChange.event_payload.assigned.to,
+            })
+          : null;
+        let assignedTo = msgAssigneeChange.event_payload.assigned.to;
+        (assignedTo.user_type === 'user' || assignedTo.user_type === null) &&
+        this.state.isJoinButtonVisible
+          ? this.setState({isJoinButtonVisible: false})
+          : null;
+        let msgAssignee = {
+          agent: {
+            assigned: {
+              timestamp: 'now',
+              by: {created_by: msgAssigneeChange.event_payload.assigned.by.id},
+              to: {created_by: msgAssigneeChange.event_payload.assigned.to.id},
+            },
+          },
+        };
+        this.setState({
+          messageList: [msgAssignee, ...this.state.messageList],
+        });
+      }
+    }
+  };
+
+  setIsJoinButton = () => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    if (itemData?.status_id !== CONVERSATION_STATUS.CLOSED) {
+      if (
+        itemData?.assignee &&
+        itemData?.assignee?.name?.toLowerCase() === 'bot' &&
+        itemData?.assignee?.type_id === 2
+      ) {
+        this.setState({
+          isJoinButtonVisible: true,
+        });
+      } else {
+        if (itemData?.conversation_mode === CONVERSATION.CONVERSATION_MODE) {
+          this.setState({
+            isJoinButtonVisible: true,
+          });
+        }
+      }
+    }
+  };
+  onEmitReadMsg = data => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+
+    if (
+      itemData?.status_id === CONVERSATION_STATUS.OPEN &&
+      itemData?.unread_messages_count > 0
+    ) {
+      let readMsgCounts = getChatMsgCountWithoutStatusMsg(data);
+      this.callReadMessageEvent(readMsgCounts);
+    }
+  };
+
+  callReadMessageEvent = msgCount => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    let payload = {
+      conversation_key: itemData?.thread_key,
+      type: 'message_read',
+      payload: {
+        read_messages_count: msgCount,
+      },
+    };
+    this.callSetIncomingEvent(payload, false, '');
+    this.setState({readMessageCount: msgCount});
+  };
+
+  uploadMedia = fileData => {
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    const { fs} = RNFetchBlob;
+    var data = new FormData();
+    data.append('file', fs.readStream(fileData.uri));
+    data.append('bot_lead_id', itemData?.bot_id);
+
+    var config = {
+      method: 'post',
+      url: 'https://app.wotnot.io/v1/livechat-file-attachment',
+      data: data,
+      onUploadProgress: (progress) => {
+        console.log('0------',progress)
+      }
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(JSON.stringify(error));
+      });
+    return;
+    this.props.uploadFileAttachment(data, false, {
+      SuccessCallback: res => {
+        console.log('SuccessCallback', JSON.stringify(res));
+      },
+      FailureCallback: res => {
+        console.log('FailureCallback', JSON.stringify(res));
+        handleFailureCallback(res, false, false, false);
+      },
+    });
+  };
+
+  onMediaPreviewCancel = () => {
+    this.setState({
+      mediaDataUrl: '',
+      mediaData: null,
+    });
   };
 
   render() {
@@ -702,9 +853,7 @@ class ConversationContainer extends Component {
           joinConversation={strings('chat.join_conversation_message')}
           joinConversationBtn={strings('button.join_conversation')}
           joinConversationPress={this.joinConversationPress}
-          joinButton={
-            itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE
-          }
+          joinButton={this.state.isJoinButtonVisible}
           scrollViewRef={this.scrollViewRef}
           keyboardHeight={this.state.keyboardHeight}
           inputHeight={this.state.inputHeight}
@@ -717,7 +866,7 @@ class ConversationContainer extends Component {
           attachmentBottomSheetRef={this.attachmentBottomSheetRef}
           onSavedReplyPress={this.onSavedReplyPress}
           onCalendarPress={this.onCalendarPress}
-          pnAttachmentsPress={this.onAttachmentsPress}
+          onAttachmentsPress={this.onAttachmentsPress}
           messageList={this.state.messageList}
           showChangeAssignee={this.state.showChangeAssignee}
           onChangeAssigneeModalClose={this.onChangeAssigneeModalClose}
@@ -761,6 +910,8 @@ class ConversationContainer extends Component {
           conversationStatus={this.state?.conversationStatus}
           handleLoadMore={this.handleLoadMore}
           isLoadMore={this.state.isLoadMore}
+          mediaData={this.state.mediaData}
+          onMediaPreviewCancel={this.onMediaPreviewCancel}
         />
       </>
     );
@@ -775,6 +926,7 @@ const mapActionCreators = {
   fetchConversationHistory,
   setConversationsHistory,
   fetchSavedReply,
+  uploadFileAttachment,
 };
 const mapStateToProps = state => {
   return {

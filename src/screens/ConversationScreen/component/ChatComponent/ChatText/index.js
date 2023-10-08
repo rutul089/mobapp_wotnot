@@ -103,20 +103,6 @@ function ChatText(props) {
               msg={data.text.replace(REGEX_PATTERNS.HTML_TAGS, '')}
               isUser
             />
-            //   <Row style={{position: pos, flex: 1}}>
-            //   <Col style={msgContainer(true)}>
-            //     <View >
-            //       <Text style={{...sendMsg, ...msg}}>
-            //         {data.text.replace(REGEX_PATTERNS.HTML_TAGS, '')}
-            //       </Text>
-            //     </View>
-            //     <ChatMsgInfo
-            //       timeStampRight
-            //       time={getTimeStamp(chatItem.agent.timestamp).timestamp}
-            //       userData={chatItem}
-            //     />
-            //   </Col>
-            // </Row>
           );
         } else {
           let fileItem = data.video
@@ -208,10 +194,7 @@ function ChatText(props) {
         return typeof stringToObj(chatItem.user.message.text) === 'object' &&
           !props.textMsg ? (
           <View />
-        ) : //   <ChatImg
-        //     chatItem={chatItem}
-        //     onToggleImageModal={onToggleImageModal}
-        //   />
+        ) : 
         convertTextMessage(chatItem.user.message.text) ? (
           <View style={{flex: 1}}>
             <View style={{...receiveMsgBorder}}>
@@ -249,10 +232,6 @@ function ChatText(props) {
                 />
               )}
             </View>
-            {/* <ChatMsgInfo
-              time={getTimeStamp(chatItem.user.timestamp).timestamp}
-              userData={chatItem}
-            /> */}
           </View>
         ) : null;
       }

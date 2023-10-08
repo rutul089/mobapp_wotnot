@@ -10,21 +10,28 @@ const FileItemRow = ({
   onFileClick = () => {},
   tintColor = 'white',
   iconTintColor = 'white',
+  style,
+  numberOfLines
 }) => (
-  <TouchableOpacity
-    style={{flexDirection: 'row'}}
-    activeOpacity={0.7}
-    onPress={onFileClick}>
-    <IconAnt
-      size={20}
-      name={ext}
-      color={iconTintColor}
-      style={{paddingLeft: 5, padding: 10, paddingRight: 0}}
-    />
-    <Text type={'body2'} style={chatBubbleStyle.textStyle} color={tintColor}>
-      {fileName}
-    </Text>
-  </TouchableOpacity>
+
+    <TouchableOpacity
+      style={{flexDirection: 'row', ...style}}
+      activeOpacity={0.7}
+      onPress={onFileClick}>
+      <IconAnt
+        size={20}
+        name={ext}
+        color={iconTintColor}
+        style={{paddingLeft: 5, padding: 10, paddingRight: 0}}
+      />
+      <Text
+        type={'body2'}
+        numberOfLines={numberOfLines}
+        style={[chatBubbleStyle.textStyle, {flex: 0}]} // flex:1
+        color={tintColor}>
+        {fileName}
+      </Text>
+    </TouchableOpacity>
 );
 
 export default FileItemRow;

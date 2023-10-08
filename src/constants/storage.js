@@ -13,7 +13,7 @@ export const LOCAL_STORAGE = {
   USER_PREFERENCE: `${prefix}user_preference`,
   AGENT_ACCOUNT_LIST: `${prefix}AGENT_ACCOUNT_LIST`,
   USER_LIST: `${prefix}USER_LIST`,
-  
+  NOTIFICATION_TOKEN:`${prefix}NOTIFICATION_TOKEN`,
 };
 
 export const STATIC_USER_ID = '47734';

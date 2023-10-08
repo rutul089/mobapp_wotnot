@@ -105,7 +105,7 @@ class ChatScreenContainer extends Component {
           open_status={conversation_summary?.open_status}
           onSearchClick={this.onSearchClick}
           navigation={this.props.navigation}
-          onSelectedTab={(e) => alert('test')}
+          onSelectedTab={(e) => {}}
           onTabPress={e => console.log('12313123')}
         />
       </>

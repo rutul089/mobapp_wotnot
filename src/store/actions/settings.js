@@ -9,6 +9,10 @@ import {
 const defaultHeaders = {
   'Content-Type': 'application/json',
 };
+const defaultHeaders2 = {
+  'accept': 'application/json', 
+  'Content-Type': 'multipart/form-data', 
+};
 
 export const fetchAccounts = ({SuccessCallback, FailureCallback}) => {
   return dispatch => {
@@ -121,5 +125,25 @@ export const setNotificationPreference = (
         },
       },
     );
+  };
+};
+
+export const uploadFileAttachment = (
+  param,
+  showLoader,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    showLoader ? dispatch(loadingSet()) : null;
+    API.getInstance().Fetch(endPoints.uploadAttachment, defaultHeaders2, param, {
+      SuccessCallback: response => {
+        dispatch(loadingUnset());
+        SuccessCallback(response);
+      },
+      FailureCallback: response => {
+        dispatch(loadingUnset());
+        FailureCallback(response);
+      },
+    });
   };
 };

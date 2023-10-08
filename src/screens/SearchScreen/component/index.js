@@ -25,7 +25,10 @@ import {goBack, navigate} from '../../../navigator/NavigationUtils';
 import {getDayDifference, hp} from '../../../util/helper';
 import theme from '../../../util/theme';
 import styles from '../Style';
-import {getMessage} from '../../../util/ConversationListHelper';
+import {
+  getGlobalChannelIcon,
+  getMessage,
+} from '../../../util/ConversationListHelper';
 
 const renderItem = ({item, index}) => {
   return (
@@ -50,6 +53,10 @@ const renderItem = ({item, index}) => {
       paddingHorizontal={theme.sizes.spacing.ph}
       borderBottomWidth={0.5}
       itemData={item}
+      channelIcon={getGlobalChannelIcon(
+        item?.global_channel_name,
+        item?.browser,
+      )}
     />
     // <ChatItem
     //   key={item?.assignee?.id}
@@ -112,7 +119,7 @@ const SearchComponent = ({
           flexGrow: 1,
           // paddingHorizontal: theme.sizes.spacing.ph,
         }}
-        keyExtractor={(_it,index) => ` ${index} `}
+        keyExtractor={(_it, index) => ` ${index} `}
         ListEmptyComponent={
           !isLoading && (
             <View

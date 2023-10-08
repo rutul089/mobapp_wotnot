@@ -17,7 +17,7 @@ export const styles = {
   textStyle: {
     paddingVertical: 10,
     paddingHorizontal: 10,
-    // maxWidth: '80%', // Change this style to all of bubble add maxWidth to container
+    maxWidth: '80%', // Change this style to all of bubble add maxWidth to container
     minWidth: 35,
   },
   bubbleContainerVisitor: {

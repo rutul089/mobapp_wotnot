@@ -55,7 +55,6 @@ class SignInScreenContainer extends Component {
 
   onSubmit = () => {
     let state = this.state;
-
     if (this.isValidEmail() && this.isValidPassword()) {
       this.setState({
         emailErrMsg: strings('error.errEmail'),
@@ -133,17 +132,7 @@ class SignInScreenContainer extends Component {
   callFetchUserPreference = async () => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: async res => {
-        console.log(
-          'type of res-------------------------------->',
-          typeof res,
-          res,
-        );
-
         setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE, res);
-        // AsyncStorage.setItem(
-        //   LOCAL_STORAGE?.USER_PREFERENCE,
-        //   JSON.stringify(res),
-        // );
         this.cllFetchAccounts()
           .then(data => {
             if (data) {

@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   RefreshControl,
+  Linking,
 } from 'react-native';
 import {
   Header,
@@ -18,12 +19,11 @@ import {
 } from '../../../components/';
 import theme from '../../../util/theme';
 import styles from '../Style';
-import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import {strings} from '../../../locales/i18n';
 import images from '../../../assets/images';
-import {Actionsheet, useDisclose} from 'native-base';
+import {isValidEmail} from '../../../util/ChatHistoryHelper';
 
-const renderQualificationRow = (icon, label, value, is_hidden) => {
+const renderQualificationRow = (icon, label, value, is_hidden, isLink) => {
   if (is_hidden) {
     return null;
   }
@@ -35,16 +35,40 @@ const renderQualificationRow = (icon, label, value, is_hidden) => {
             source={icon}
             resizeMode={'contain'}
             style={styles.iconStyle}
+            tintColor={theme.colors.typography.silver}
           />
           <Spacing direction="y" size="xs" />
-          <Text type={'body2'} color={theme.colors.typography.silver}>
+          <Text
+            type={'body2'}
+            color={theme.colors.typography.silver}
+           >
             {label}
           </Text>
         </View>
+        <Spacing direction="x" />
         <View style={styles.valueStyle}>
-          <Text type={'body2'} numberOfLines={1}>
-            {value}
-          </Text>
+          {isLink ? (
+            <Text
+              onPress={() =>
+                isValidEmail(value)
+                  ? Linking.openURL(`mailto:${value}`)
+                  : Linking.openURL(value)
+              }
+              type={'body2'}
+              color={theme.colors.typography.link}
+              style={
+                {
+                  // borderBottomWidth: 0.5,
+                  // borderBottomColor: theme.colors.typography.link
+                }
+              }>
+              {value}
+            </Text>
+          ) : (
+            <Text type={'body2'} >
+              {value}
+            </Text>
+          )}
         </View>
       </View>
       <Spacing />
@@ -68,8 +92,6 @@ const UserDetailComponent = ({
   onRefresh,
   isLoading,
 }) => {
-  const {isOpen, onOpen} = useDisclose();
-  console.log('qualifications', JSON.stringify(qualifications));
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header
@@ -99,6 +121,7 @@ const UserDetailComponent = ({
                   item?.label,
                   item?.value,
                   item?.is_hidden,
+                  true,
                 );
               case '¿·$user.info.phone·?':
                 return renderQualificationRow(
@@ -113,6 +136,7 @@ const UserDetailComponent = ({
                   item?.label,
                   item?.value,
                   item?.is_hidden,
+                  true,
                 );
               case 'state_name':
                 return renderQualificationRow(
@@ -138,6 +162,55 @@ const UserDetailComponent = ({
               case 'country_code':
                 return renderQualificationRow(
                   images.ic_country,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
+              case 'bot_name':
+                return renderQualificationRow(
+                  images.ic_bot_icon,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
+              case 'global_channel_name':
+                return renderQualificationRow(
+                  images.ic_channel,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
+              case 'ip_address':
+                return renderQualificationRow(
+                  images.ic_ip_address,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
+              case 'timezone':
+                return renderQualificationRow(
+                  images.ic_timezone,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
+              case 'browser':
+                return renderQualificationRow(
+                  images.ic_browser,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
+              case 'browser_language':
+                return renderQualificationRow(
+                  images.ic_browser_language,
+                  item?.label,
+                  item?.value,
+                  item?.is_hidden,
+                );
+              case 'os':
+                return renderQualificationRow(
+                  images.ic_os,
                   item?.label,
                   item?.value,
                   item?.is_hidden,
