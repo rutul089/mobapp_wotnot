@@ -46,6 +46,7 @@ export function disconnect() {
 
 export async function emitAgentJoin() {
   let agentpayload = await getAgentPayload();
+  console.log("agentpayload",agentpayload)
   agentpayload['user_status'] = 'online';
   socket.emit(SOCKET_EVENTS.AGENT_JOIN, agentpayload);
 }

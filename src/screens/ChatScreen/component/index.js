@@ -90,6 +90,7 @@ const ChatScreenComponent = ({
 
   React.useEffect(() => {
     registerVisitorTypingHandler(e => {
+      console.log("----->",e)
       setTypingData(e);
     });
   });
@@ -159,7 +160,7 @@ const ChatScreenComponent = ({
             renderItem={({item, index}) => (
               <ChatItem
                 key={item?.assignee?.id}
-                name={item?.title + index}
+                name={item?.title}
                 email={`${
                   item?.assignee?.name ? item?.assignee?.name + ' | ' : ''
                 }${item?.city_name},${item?.country_name}`}
@@ -243,7 +244,7 @@ const renderFooter = moreLoading => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
+        height: 50,
       }}>
       <ActivityIndicator color={theme.colors.brandColor.blue} />
     </View>

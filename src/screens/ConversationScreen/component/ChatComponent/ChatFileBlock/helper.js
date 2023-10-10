@@ -1,13 +1,13 @@
 import RNFetchBlob from 'rn-fetch-blob';
 
-export const downloadFile = async (url,filename) => {
+export const downloadFile = async (url,filename,ext) => {
   // Get the app's cache directory
   const {config, fs} = RNFetchBlob;
   const cacheDir = fs.dirs.DownloadDir;
 
   // Generate a unique filename for the downloaded image
 //   const filename = url.split('/').pop();
-  const filePath = `${cacheDir}/${filename}`;
+  const filePath = `${cacheDir}/${filename}.${ext}`;
 
   try {
     // Download the file and save it to the cache directory

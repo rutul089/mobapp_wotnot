@@ -384,7 +384,6 @@ const ConversationComponent = ({
     );
   };
   const renderItem = (item, msgType, itemWithAccountDetails, formResponse) => {
-    console.log('msgType', msgType);
     switch (msgType) {
       case 'file.response': {
         let files = userFileResponseElement(itemWithAccountDetails);

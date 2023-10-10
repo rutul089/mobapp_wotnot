@@ -226,6 +226,8 @@ export const getMessage = item => {
     if (messageItem) {
       if (messageItem.type === 'text') {
         message = messageItem.text;
+      } else if (messageItem.type === 'info') {
+        message = messageItem?.info?.title ?? 'info';
       } else {
         let fileItem = messageItem.video
           ? messageItem.video

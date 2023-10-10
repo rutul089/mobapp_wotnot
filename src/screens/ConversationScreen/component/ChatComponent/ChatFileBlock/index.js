@@ -1,7 +1,4 @@
-//  Lib
 import React, {useMemo} from 'react';
-// import * as FileSystem from 'expo-file-system';
-// import * as Linking from 'expo-linking';
 import FileViewer from 'react-native-file-viewer';
 
 import {View, Linking, Platform} from 'react-native';
@@ -18,7 +15,6 @@ import FileItemRow from '../FileItemRow';
 import {chatFileStyles} from './ChatFileBlock.style';
 import {getDownloadPermissionAndroid} from '../../../../../util/NotificationHelper';
 import {downloadFile} from './helper';
-import {IntentLauncher} from '@yz1311/react-native-intent-launcher';
 
 function ChatFileBlock(props) {
   const {chatItem, pos, chatUserName} = props;
@@ -37,34 +33,13 @@ function ChatFileBlock(props) {
           supported ? Linking.openURL(cUri) : null;
         })
       : callDownloadFile();
-    // FileSystem.downloadAsync(
-    //   link,
-    //   FileSystem.documentDirectory + fileName,
-    // ).then(({uri}) => {
-    //   FileSystem.getContentUriAsync(uri).then(cUri => {
-    //     IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
-    //       data: cUri,
-    //       flags: 1,
-    //     });
-    //   });
-    // });
   };
 
   const callDownloadFile = () => {
     getDownloadPermissionAndroid().then(granted => {
       if (granted) {
-        downloadFile(cUri, fileName).then(res => {
-          console.log('res', JSON.stringify(res));
-          // FileViewer.open(res?.data, {showOpenWithDialog: true}) // absolute-path-to-my-local-file.
-          //   .then(() => {
-          //     // success
-          //   })
-          //   .catch(error => {
-          //     // error
-          //   });
-          // Linking.openURL(
-          //   '/storage/emulated/0/Download/outbound_Catalya_One-off_-_HB_2023-09-28T175707',
-          // );
+        downloadFile(cUri, fileName, ext).then(res => {
+          FileViewer.open(res?.data);
         });
       }
     });

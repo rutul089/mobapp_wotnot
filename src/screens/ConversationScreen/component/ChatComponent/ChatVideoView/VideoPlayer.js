@@ -2,13 +2,22 @@
 import React, {useState, useRef} from 'react';
 
 // import all the components we are going to use
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 //Import React Native Video to play video
 import Video from 'react-native-video';
 
 //Media Controls to control Play/Pause/Seek and full screen
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
+import images from '../../../../../assets/images';
+import {goBack} from '../../../../../navigator/NavigationUtils';
 
 const VideoPlayer = props => {
   const videoPlayer = useRef(null);
@@ -114,6 +123,34 @@ const VideoPlayer = props => {
         progress={currentTime}
         toolbar={renderToolbar()}
       />
+      <View
+        style={{
+          top: 20,
+          left: 20,
+          bottom: 20,
+          right: 20,
+          zIndex: 0,
+          opacity: 0.9,
+        }}>
+        <Pressable
+          onPress={() => goBack()}
+          style={{
+            height: 30,
+            width: 30,
+            borderRadius: 15,
+            backgroundColor: 'black',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderColor: 'white',
+            borderWidth: 1,
+          }}>
+          <Image
+            source={images.ic_cross}
+            style={{height: 15, width: 15}}
+            tintColor={'white'}
+          />
+        </Pressable>
+      </View>
     </View>
   );
 };

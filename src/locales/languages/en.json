@@ -41,7 +41,7 @@
     "closed": "Closed"
   },
   "chat": {
-    "join_conversation_message": "This conversation is not assigned to you. In order to write a message, click 'Join Conversation'",
+    "join_conversation_message": "This conversation is not assigned to you.\nTo send a message, click the button below and send your message.",
     "saved_reply": "Saved Reply",
     "calendar": "Calendar",
     "attachment": "Attachment",

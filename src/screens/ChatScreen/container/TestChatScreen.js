@@ -285,7 +285,7 @@ class TestChatScreen extends Component {
       !this.state.moreLoading &&
       data
     ) {
-      // this.callFetchConversation(this.state.currentTab, false, false);
+      this.callFetchConversation(this.state.currentTab, false, false);
     }
     // alert(data)
     // this.setTimeout(() => {
@@ -392,6 +392,7 @@ class TestChatScreen extends Component {
   };
 
   messageHandler = msg => {
+    console.log("------>")
     let {userPreference} = this.props;
     if (
       !this.state.isLoading &&
@@ -494,6 +495,7 @@ class TestChatScreen extends Component {
           onSearchClick={this.onSearchClick}
           onEndReach={this.loadMoreData}
           typingData={this.state.typingData}
+          moreLoading={this.state.moreLoading}
         />
       </>
     );
