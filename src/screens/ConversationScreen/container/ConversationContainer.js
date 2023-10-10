@@ -102,7 +102,7 @@ class ConversationContainer extends Component {
     this.callFetchTeammateData();
     this.callFetchConversationHistory(true);
     this.setIsJoinButton();
-    this.props.navigation.addListener('focus', () => {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
       registerMessageHandler(this.onMessageReceived);
       registerStatusChangedHandler(this.changeConversationStatus);
       registerVisitorTypingHandler(e => console.log(e));
@@ -111,6 +111,10 @@ class ConversationContainer extends Component {
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+  };
+
+  componentWillUnmount = () => {
+    this._unsubscribe();
   };
 
   onPressMore = () => {
@@ -430,6 +434,7 @@ class ConversationContainer extends Component {
   };
 
   callFetchConversationHistory = (showLoader, isLoadMore = false) => {
+    this.setLoading(true);
     let offset = isLoadMore
       ? this.state.search_after
         ? `&search_after=${this.state.search_after?.toString()}`
@@ -458,8 +463,10 @@ class ConversationContainer extends Component {
               () => this.onEmitReadMsg(res?.messages_list),
             );
           }
+          this.setLoading(false);
         },
         FailureCallback: res => {
+          this.setLoading(false);
           handleFailureCallback(res, false);
         },
       },
@@ -888,7 +895,7 @@ class ConversationContainer extends Component {
           itemData={itemData}
           userID={userPreference?.logged_in_user_id}
           onTeamItemPress={this.onTeamItemPress}
-          isLoading={this.props.isLoading || this.state.isLoading}
+          isLoading={ this.state.isLoading}
           searchValue={this.state.search_text}
           onChangeText={this.onSearchText}
           // messageHistory={messageHistory}
