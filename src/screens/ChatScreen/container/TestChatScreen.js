@@ -48,6 +48,13 @@ import {
   getItemFromStorage,
   setItemToStorage,
 } from '../../../util/DeviceStorageOperations';
+import {
+  PERMISSIONS,
+  RESULTS,
+  check,
+  request,
+  openSettings,
+} from 'react-native-permissions';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -61,6 +68,7 @@ class TestChatScreen extends Component {
       isRefreshing: false,
       typingData: null,
       appState: AppState.currentState,
+      moreLoading: false,
     };
     this.onSelectTab = this.onSelectTab.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
@@ -75,7 +83,7 @@ class TestChatScreen extends Component {
     this.callSummary();
     this.callFetchTeamData();
     this.callFetchTeammateData();
-    this.callSetNotificationToken();
+    this.requestPermission();
     if (!getItemFromStorage(LOCAL_STORAGE?.AGENT_ACCOUNT_LIST)) {
       this.cllFetchAccounts();
     }
@@ -110,18 +118,6 @@ class TestChatScreen extends Component {
   onSearchClick = () => {
     navigate('SearchScreen');
   };
-
-  // callFetchConversation = () => {
-  //   let {userPreference, statusId} = this.props;
-  //   this.props.fetchConversation(userPreference?.account_id, 2, 5, {
-  //     SuccessCallback: res => {
-  //       this.props.setClosedConversationCount(res?.total_conversations);
-  //     },
-  //     FailureCallback: res => {
-  //       handleFailureCallback(res, true);
-  //     },
-  //   });
-  // };
 
   callFetchTeamData = () => {
     this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
@@ -251,10 +247,9 @@ class TestChatScreen extends Component {
   };
 
   loadMoreData = distanceFromEnd => {
-    console.log('distanceFromEnd', distanceFromEnd);
-    // if (!distanceFromEnd >= 1) {
-    //   return;
-    // }
+    if (!distanceFromEnd >= 1) {
+      return;
+    }
     this.setState(
       {
         moreLoading: true,
@@ -287,10 +282,6 @@ class TestChatScreen extends Component {
     ) {
       this.callFetchConversation(this.state.currentTab, false, false);
     }
-    // alert(data)
-    // this.setTimeout(() => {
-    // this.callFetchConversation(this.state.currentTab, false, false);
-    // });
   };
 
   registerAppStateEvent() {
@@ -306,7 +297,8 @@ class TestChatScreen extends Component {
       nextAppState === 'active'
     ) {
       // API call
-      console.log('nextAppState---------1', nextAppState);
+      this.callFetchConversation(this.state.currentTab, false, false);
+
     } else {
     }
     this.setState({appState: nextAppState});
@@ -392,8 +384,6 @@ class TestChatScreen extends Component {
   };
 
   messageHandler = msg => {
-    console.log("------>")
-    let {userPreference} = this.props;
     if (
       !this.state.isLoading &&
       !this.state.isRefreshing &&
@@ -477,6 +467,18 @@ class TestChatScreen extends Component {
     });
   };
 
+  requestPermission = async () => {
+    const checkPermission = await this.checkNotificationPermission();
+    if (checkPermission !== RESULTS.GRANTED) {
+      const request = await this.requestNotificationPermission();
+      if (request === RESULTS.GRANTED) {
+        this.callSetNotificationToken();
+      }
+    } else if (checkPermission === RESULTS.GRANTED) {
+      this.callSetNotificationToken();
+    }
+  };
+
   render() {
     return (
       <>
@@ -500,6 +502,16 @@ class TestChatScreen extends Component {
       </>
     );
   }
+
+  requestNotificationPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
+  };
+
+  checkNotificationPermission = async () => {
+    const result = await check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
+  };
 }
 
 const mapActionCreators = {
