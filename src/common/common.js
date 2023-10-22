@@ -31,6 +31,15 @@ export async function prepareAgentPayload(userPref, agent_account_list) {
 }
 
 export const getMessageFromEventPayload = (object, receivedConvCreate) => {
+  // console.log('object', object);
+  // console.log(
+  //   'object------>',
+  //   object['message_by'] === 'agent'
+  //     ? object?.agent?.id
+  //     : object['message_by'] === 'visitor'
+  //     ? object?.bot_id
+  //     : '',
+  // );
   // this method will convert the socket events payload to the API payload
   // so the data is consistent through out the App
 
@@ -269,6 +278,7 @@ export const getMessageFromEventPayload = (object, receivedConvCreate) => {
             : obj['thread_key'];
         return conversationKey === object['conversation_key'];
       });
+      // console.log('result------>', result);
       if (result) {
         let assignee;
         if ('assignee' in result && result['assignee']) {
@@ -287,9 +297,20 @@ export const getMessageFromEventPayload = (object, receivedConvCreate) => {
           result['conversation_title'] || result['title'];
         returnObj['conversation_key'] =
           result['conversation_key'] || result['thread_key'];
-        returnObj['global_channel_name'] = result['global_channel_name'];
+        returnObj['global_channel_name'] = object?.['global_channel_name'];
         returnObj['unique_user_key'] =
           result['visitor_key'] || result['unique_user_key'];
+        returnObj['last_message_by'] =
+          object['message_by'] === 'agent'
+            ? object?.agent?.id
+            : object['message_by'] === 'visitor'
+            ? object?.bot_id
+            : '';
+        returnObj['browser'] = object?.browser
+          ? object?.browser
+          : object?.visitor?.browser
+          ? object?.visitor?.browser
+          : '';
       }
     }
     return returnObj;

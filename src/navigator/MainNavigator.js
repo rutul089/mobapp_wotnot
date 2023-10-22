@@ -30,9 +30,9 @@ const MainNavigator = ({badgeValue}) => {
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, color, size}) => {
             let iconName;
-            if (route.name === 'Chat') {
+            if (route.name === strings('tab.LIVE_CHAT_MENU')) {
               iconName = images.ic_chat;
-            } else if (route.name === 'Settings') {
+            } else if (route.name === strings('tab.SETTINGS_MENU')) {
               iconName = images.ic_settings;
             }
             return renderIcon(iconName, focused);
@@ -47,7 +47,7 @@ const MainNavigator = ({badgeValue}) => {
           headerShown: false,
         })}>
         <Tab.Screen
-          name={strings('tab.chat')}
+          name={strings('tab.LIVE_CHAT_MENU')}
           component={ChatScreen}
           options={
             {
@@ -58,7 +58,7 @@ const MainNavigator = ({badgeValue}) => {
           }
         />
         <Tab.Screen
-          name={strings('tab.setting')}
+          name={strings('tab.SETTINGS_MENU')}
           component={SettingScreen}
           options={
             {

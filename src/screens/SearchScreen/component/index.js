@@ -26,55 +26,64 @@ import {getDayDifference, hp} from '../../../util/helper';
 import theme from '../../../util/theme';
 import styles from '../Style';
 import {
+  getAssigneeName,
   getGlobalChannelIcon,
   getMessage,
+  unEscape,
 } from '../../../util/ConversationListHelper';
+import {strings} from '../../../locales/i18n';
 
-const renderItem = ({item, index}) => {
-  return (
-    <ChatItem
-      key={item?.assignee?.id}
-      name={item?.title + ' ' + index}
-      email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
-        item?.city_name
-      },${item?.country_name}`}
-      uri={item?.assignee?.image_url}
-      isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
-      unreadCount={item?.unread_messages_count}
-      lastMessageDay={getDayDifference(item?.last_message_at)}
-      subTittle={`${getMessage(item)}`}
-      onPress={() => navigate('ConversationScreen', {itemData: item})}
-      item={item}
-      rating={item?.rating}
-      hideRating={item?.status_id === CONVERSATION.OPEN_MESSAGE_TYPE}
-      hideUnreadCount={true}
-      hideAnimation={true}
-      hideStatusIcon={item?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE}
-      paddingHorizontal={theme.sizes.spacing.ph}
-      borderBottomWidth={0.5}
-      itemData={item}
-      channelIcon={getGlobalChannelIcon(
-        item?.global_channel_name,
-        item?.browser,
-      )}
-    />
-    // <ChatItem
-    //   key={item?.assignee?.id}
-    //   name={item?.title ?? 'Unknown'}
-    //   email={`${item?.assignee?.name} | ${item?.city_name},${item?.country_name}`}
-    //   uri={item?.assignee?.image_url}
-    //   isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
-    //   unreadCount={item?.unread_messages_count}
-    //   lastMessageDay={getDayDifference(item?.last_message_at)}
-    //   subTittle={`${item?.message} `}
-    //   onPress={() => {
-    //     navigate('ConversationScreen', {itemData: item});
-    //   }}
-    //   item={item}
-    //   isClosedMode={true}
-    // />
-  );
-};
+// const getFullMessage = item => {
+//   return item?.message === ''
+//     ? unEscape(item?.note)
+//     : ` ${getAssigneeName(users, item?.last_message_by)}${getMessage(item)}`;
+// };
+// const renderItem = ({item, index}) => {
+//   return (
+//     <ChatItem
+//       key={item?.assignee?.id}
+//       name={item?.title + ' ' + index}
+//       email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
+//         item?.city_name
+//       },${item?.country_name}`}
+//       uri={item?.assignee?.image_url}
+//       isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
+//       unreadCount={item?.unread_messages_count}
+//       lastMessageDay={getDayDifference(item?.last_message_at)}
+//       subTittle={`${getFullMessage(item)}`}
+//       onPress={() => navigate('ConversationScreen', {itemData: item})}
+//       item={item}
+//       rating={item?.rating}
+//       hideRating={item?.status_id === CONVERSATION.OPEN_MESSAGE_TYPE}
+//       hideUnreadCount={true}
+//       hideAnimation={true}
+//       hideStatusIcon={item?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE}
+//       paddingHorizontal={theme.sizes.spacing.ph}
+//       borderBottomWidth={0.5}
+//       itemData={item}
+//       channelIcon={getGlobalChannelIcon(
+//         item?.global_channel_name,
+//         item?.browser,
+//       )}
+//       hideSlaErr={true}
+//     />
+//     // <ChatItem
+//     //   key={item?.assignee?.id}
+//     //   name={item?.title ?? 'Unknown'}
+//     //   email={`${item?.assignee?.name} | ${item?.city_name},${item?.country_name}`}
+//     //   uri={item?.assignee?.image_url}
+//     //   isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
+//     //   unreadCount={item?.unread_messages_count}
+//     //   lastMessageDay={getDayDifference(item?.last_message_at)}
+//     //   subTittle={`${item?.message} `}
+//     //   onPress={() => {
+//     //     navigate('ConversationScreen', {itemData: item});
+//     //   }}
+//     //   item={item}
+//     //   isClosedMode={true}
+//     // />
+//   );
+// };
 
 const SearchComponent = ({
   onChangeText,
@@ -86,7 +95,59 @@ const SearchComponent = ({
   isMoreLoading,
   loadMoreData = () => {},
   onEndReach,
+  users,
 }) => {
+  const getFullMessage = item => {
+    return item?.message === ''
+      ? unEscape(item?.note)
+      : ` ${getAssigneeName(users, item?.last_message_by)}${getMessage(item)}`;
+  };
+  const renderItem = ({item, index}) => {
+    return (
+      <ChatItem
+        key={item?.assignee?.id}
+        name={item?.title + ' ' + index}
+        email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
+          item?.city_name
+        },${item?.country_name}`}
+        uri={item?.assignee?.image_url}
+        isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
+        unreadCount={item?.unread_messages_count}
+        lastMessageDay={getDayDifference(item?.last_message_at)}
+        subTittle={`${getFullMessage(item)}`}
+        onPress={() => navigate('ConversationScreen', {itemData: item})}
+        item={item}
+        rating={item?.rating}
+        hideRating={item?.status_id === CONVERSATION.OPEN_MESSAGE_TYPE}
+        hideUnreadCount={true}
+        hideAnimation={true}
+        hideStatusIcon={item?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE}
+        paddingHorizontal={theme.sizes.spacing.ph}
+        borderBottomWidth={0.5}
+        itemData={item}
+        channelIcon={getGlobalChannelIcon(
+          item?.global_channel_name,
+          item?.browser,
+        )}
+        hideSlaErr={true}
+      />
+      // <ChatItem
+      //   key={item?.assignee?.id}
+      //   name={item?.title ?? 'Unknown'}
+      //   email={`${item?.assignee?.name} | ${item?.city_name},${item?.country_name}`}
+      //   uri={item?.assignee?.image_url}
+      //   isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
+      //   unreadCount={item?.unread_messages_count}
+      //   lastMessageDay={getDayDifference(item?.last_message_at)}
+      //   subTittle={`${item?.message} `}
+      //   onPress={() => {
+      //     navigate('ConversationScreen', {itemData: item});
+      //   }}
+      //   item={item}
+      //   isClosedMode={true}
+      // />
+    );
+  };
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header isRightIconHidden onPressLeftContent={() => goBack()} />
@@ -102,7 +163,7 @@ const SearchComponent = ({
           height: theme.sizes.icons.md,
           width: theme.sizes.icons.md,
         }}
-        placeholder={'Search'}
+        placeholder={strings('SEARCH_PLACEHOLDER')}
         onChangeText={onChangeText}
         value={searchValue}
         leftIconDisabled
@@ -128,7 +189,7 @@ const SearchComponent = ({
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text>No conversation found</Text>
+              <Text>{strings('No conversation found')}</Text>
             </View>
           )
         }

@@ -128,7 +128,6 @@ class NotificationContainer extends Component {
       },
       () => this.callSetNotificationPreference(),
     );
-    console.log('selectNotificationSound', id);
   };
 
   createLink = value => {

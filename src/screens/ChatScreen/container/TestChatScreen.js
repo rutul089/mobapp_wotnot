@@ -14,9 +14,10 @@ import {
   fetchAccounts,
   fetchUserList,
   setNotificationToken,
+  fetchUserSetting,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import {getAssigneeId} from '../../../util/helper';
+import {getAssigneeId, getMiniFromTime} from '../../../util/helper';
 import {navigate} from '../../../navigator/NavigationUtils';
 import theme from '../../../util/theme';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -55,6 +56,8 @@ import {
   request,
   openSettings,
 } from 'react-native-permissions';
+import moment from 'moment';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -69,6 +72,8 @@ class TestChatScreen extends Component {
       typingData: null,
       appState: AppState.currentState,
       moreLoading: false,
+      isSLAEnable: false,
+      slaTime: 0,
     };
     this.onSelectTab = this.onSelectTab.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
@@ -76,31 +81,42 @@ class TestChatScreen extends Component {
     this.onSearchClick = this.onSearchClick.bind(this);
     this.loadMoreData = this.loadMoreData.bind(this);
     this.appStateRef = null;
+    this.subscribe = null;
   }
 
   async componentDidMount() {
     this.registerAppStateEvent();
-    this.callSummary();
+    // this.callSummary();
     this.callFetchTeamData();
     this.callFetchTeammateData();
     this.requestPermission();
     if (!getItemFromStorage(LOCAL_STORAGE?.AGENT_ACCOUNT_LIST)) {
       this.cllFetchAccounts();
     }
-    this.callFetchConversation(this.state.currentTab, false, true);
+    // this.callFetchConversation(this.state.currentTab, false, true);
     this.callFetchUserList();
-    this.props.navigation.addListener('focus', () => {
-      this.callFetchConversation(this.state.currentTab, false, false);
-      registerAssigneeChangedHandler(this.onAssigneeChange);
-      registerConversationCreateHandler(this.onConvCreateReceived);
-      registerStatusChangedHandler(this.msgStatusChange);
-      registerMessageHandler(this.messageHandler);
-      registerMessageRead(this.readMessage);
+    this.subscribe = this.props.navigation.addListener('focus', () => {
+      this.subscribeListener();
+    });
+    this.props.navigation.addListener('blur', () => {
+      this.appStateRef?.remove();
     });
     initSocket();
     emitAgentJoin();
     reconnect();
     // registerVisitorTypingHandler(this.visitorTypingStatus);
+  }
+
+  subscribeListener() {
+    this.callFetchConversation(this.state.currentTab, false, false);
+    this.callSummary()
+    registerAssigneeChangedHandler(this.onAssigneeChange);
+    registerConversationCreateHandler(this.onConvCreateReceived);
+    registerStatusChangedHandler(this.msgStatusChange);
+    registerMessageHandler(this.messageHandler);
+    registerMessageRead(this.readMessage);
+    this.registerAppStateEvent();
+    this.callSettingsAPI();
   }
 
   callSummary = () => {
@@ -123,7 +139,7 @@ class TestChatScreen extends Component {
     this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
       SuccessCallback: res => {},
       FailureCallback: res => {
-        handleFailureCallback(res, true, true, false);
+        handleFailureCallback(res, false, true, false);
       },
     });
   };
@@ -178,7 +194,6 @@ class TestChatScreen extends Component {
     }
 
     let url = `status_ids=${statusId}&is_order_by_asc=false&limit=25&offset=1${assignee}${offset}`;
-
     this.props.fetchConversationBySearch(
       userPreference?.account_id,
       url,
@@ -221,6 +236,7 @@ class TestChatScreen extends Component {
         setTimeout(() => {
           this.callFetchConversation(tab, false, true);
           this.callSummary();
+          this.callSettingsAPI();
         }, 500);
       },
     );
@@ -274,21 +290,27 @@ class TestChatScreen extends Component {
 
   onConvCreateReceived = data => {
     console.log('onConvCreateReceived------------>', JSON.stringify(data));
-    if (
-      !this.state.isLoading &&
-      !this.state.isRefreshing &&
-      !this.state.moreLoading &&
-      data
-    ) {
-      this.callFetchConversation(this.state.currentTab, false, false);
-    }
+    let obj = data;
+    // this.props.setConversations([obj,...this.props.conversations])
+    // setTimeout(() => {
+    //   this.callFetchConversation(this.state.currentTab, false, false);
+    //   console.log('onConvCreateReceived------------>', 1);
+    // }, 1500);
+    // if (
+    //  true
+    // ) {
+    //   console.log('onConvCreateReceived------------>', 2);
+    //   this.props.setConversations([...data])
+    //   // this.callFetchConversation(this.state.currentTab, false, false);
+    // }
   };
 
-  registerAppStateEvent() {
+  registerAppStateEvent(value) {
     this.appStateRef = AppState.addEventListener(
       'change',
       this._handleAppStateChange,
     );
+    // this.appStateRef?.remove()
   }
 
   _handleAppStateChange = nextAppState => {
@@ -298,7 +320,10 @@ class TestChatScreen extends Component {
     ) {
       // API call
       this.callFetchConversation(this.state.currentTab, false, false);
-
+      this.subscribeListener();
+      initSocket();
+      emitAgentJoin();
+      reconnect();
     } else {
     }
     this.setState({appState: nextAppState});
@@ -340,6 +365,7 @@ class TestChatScreen extends Component {
             }),
           assigneeChangeText: changeAssigneeText,
           assignee: payload.event_payload.assigned.to,
+          conversation_mode: 'ConversationModeValueEnum.BOT',
         };
         this.props.setConversations(newData);
       } else {
@@ -390,10 +416,12 @@ class TestChatScreen extends Component {
       !this.state.moreLoading &&
       msg
     ) {
+      // console.log('msg----->', msg);
       let convertedMessage = getMessageFromEventPayload(
         msg,
         this.props.conversations,
       );
+      // console.log('getMessageFromEventPayload', convertedMessage);
       if (convertedMessage && 'assignee' in convertedMessage) {
         !convertedMessage.assignee
           ? (convertedMessage['assignee'] = convertedMessage.agent)
@@ -420,6 +448,12 @@ class TestChatScreen extends Component {
             ...newObj?.conversationData,
           ]);
         }
+      } else {
+        // this.callFetchConversation(this.state.currentTab, false, false);
+        setTimeout(() => {
+          this.callFetchConversation(this.state.currentTab, false, false);
+          this.callSummary();
+        }, 1600);
       }
     }
   };
@@ -462,7 +496,6 @@ class TestChatScreen extends Component {
         console.log('SuccessCallback', res);
       },
       FailureCallback: res => {
-        console.log('FailureCallback', res);
       },
     });
   };
@@ -479,6 +512,27 @@ class TestChatScreen extends Component {
     }
   };
 
+  componentWillUnmount() {
+    this.subscribe?.();
+    this.registerAppStateEvent(true);
+    this.appStateRef?.remove();
+  }
+
+  callSettingsAPI = () => {
+    this.props.fetchUserSetting(this.props?.userPreference?.account_id, {
+      SuccessCallback: res => {
+        this.setState({
+          isSLAEnable:
+            res?.live_chat_configurations?.sla_settings?.is_enabled?.value,
+          slaTime:
+            res?.live_chat_configurations?.sla_settings?.countdown_timer?.value,
+        });
+      },
+      FailureCallback: res => {},
+    });
+  };
+
+
   render() {
     return (
       <>
@@ -489,7 +543,7 @@ class TestChatScreen extends Component {
           isLoading={
             this.state.isRefreshing || this.state.moreLoading
               ? false
-              : this.props.isLoading || this.state.isLoading
+              : this.state.isLoading
           }
           isRefreshing={this.state.isRefreshing}
           onRefresh={this.onRefresh}
@@ -498,6 +552,9 @@ class TestChatScreen extends Component {
           onEndReach={this.loadMoreData}
           typingData={this.state.typingData}
           moreLoading={this.state.moreLoading}
+          isSLAEnable={this.state.isSLAEnable}
+          slaTime={this.state.slaTime}
+          users={this.props.teamMateData}
         />
       </>
     );
@@ -525,6 +582,7 @@ const mapActionCreators = {
   fetchAccounts,
   fetchUserList,
   setNotificationToken,
+  fetchUserSetting,
 };
 const mapStateToProps = state => {
   return {
@@ -534,6 +592,7 @@ const mapStateToProps = state => {
     userPreference: state.detail?.userPreference,
     teamMateData: state.accountReducer?.teamMateData?.users,
     userList: state.accountReducer?.userList,
+    userSetting: state?.settings?.userSetting,
   };
 };
 export default connect(mapStateToProps, mapActionCreators)(TestChatScreen);

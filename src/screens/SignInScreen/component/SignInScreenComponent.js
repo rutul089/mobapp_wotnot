@@ -61,10 +61,10 @@ const SignInScreenComponent = (
             <View style={{alignItems: 'center'}}>
               <SVG.LoginLogoIcon />
               <Text type={'h3'} style={styles.welcome_message_1}>
-                {strings('login.welcome_message_1')}
+                {strings('login.WELCOME_BACK_MSG')}
               </Text>
               <Text type={'body1'} style={styles.welcome_message_2}>
-                {strings('login.welcome_message_2')}
+                {strings('login.SIGN_IN_WELCOME_SUB_TEXT')}
               </Text>
             </View>
             {/* <Button
@@ -87,7 +87,7 @@ const SignInScreenComponent = (
                 resizeMode={'contain'}
               />
               <Text textAlign={'center'} style={{flex: 1}}>
-                Sign in with Google
+                {strings('button.GOOGLE_SIGN_IN_TEXT')}
               </Text>
             </TouchableOpacity>
             <View style={styles.divider} />
@@ -95,7 +95,7 @@ const SignInScreenComponent = (
               <View style={styles.input_container}>
                 <Input
                   id="email"
-                  label={strings('login.email')}
+                  label={strings('login.EMAIL_LABEL')}
                   placeholder={'abc@abc.com'}
                   isError={!state?.isErrEmail}
                   errorMsg={state.emailErrMsg}
@@ -108,7 +108,7 @@ const SignInScreenComponent = (
                 />
                 <Spacing />
                 <Input
-                  label={strings('login.password')}
+                  label={strings('login.PASSWORD_LABEL')}
                   placeholder={'Password'}
                   isError={!state?.isErrPwd}
                   errorMsg={state?.pwdErrMsg}
@@ -131,7 +131,7 @@ const SignInScreenComponent = (
               </View>
               <Button
                 bg={theme.colors.brandColor.blue}
-                buttonText={strings('button.sign_in')}
+                buttonText={strings('button.EMAIL_SIGN_IN_TEXT')}
                 onPress={onSubmit}
               />
               <TouchableOpacity
@@ -141,7 +141,7 @@ const SignInScreenComponent = (
                   alignSelf: 'flex-start',
                 }}>
                 <Text type={'button2'} style={styles.btn_forgot_password}>
-                  {strings('button.forgot_password')}
+                  {strings('button.FORGOT_PASSWORD_TITLE')}
                 </Text>
               </TouchableOpacity>
             </View>

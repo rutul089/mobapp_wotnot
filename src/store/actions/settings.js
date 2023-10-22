@@ -5,13 +5,14 @@ import {
   loadingUnset,
   setAccountList,
   setNotificationData,
+  setUserSetting,
 } from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 const defaultHeaders2 = {
-  'accept': 'application/json', 
-  'Content-Type': 'multipart/form-data', 
+  accept: 'application/json',
+  'Content-Type': 'multipart/form-data',
 };
 
 export const fetchAccounts = ({SuccessCallback, FailureCallback}) => {
@@ -135,15 +136,66 @@ export const uploadFileAttachment = (
 ) => {
   return dispatch => {
     showLoader ? dispatch(loadingSet()) : null;
-    API.getInstance().Fetch(endPoints.uploadAttachment, defaultHeaders2, param, {
-      SuccessCallback: response => {
-        dispatch(loadingUnset());
-        SuccessCallback(response);
+    API.getInstance().Fetch(
+      endPoints.uploadAttachment,
+      defaultHeaders2,
+      param,
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
       },
-      FailureCallback: response => {
-        dispatch(loadingUnset());
-        FailureCallback(response);
+    );
+  };
+};
+
+export const fetchUserSetting = (
+  accountId,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    // showLoader ? dispatch(loadingSet()) : null;
+    API.getInstance().Fetch(
+      endPoints.userSettings(accountId),
+      defaultHeaders2,
+      '',
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          setUserSetting(response);
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
       },
-    });
+    );
+  };
+};
+
+export const changeUserSetting = (param,{SuccessCallback, FailureCallback}) => {
+  return dispatch => {
+    // showLoader ? dispatch(loadingSet()) : null;
+    API.getInstance().Fetch(
+      endPoints.changeUserSetting,
+      defaultHeaders,
+      param,
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
   };
 };

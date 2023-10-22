@@ -18,7 +18,7 @@ const DashboardTab = () => {
         id: 0,
         statusId: '1',
         conversationType: 'you',
-        title: strings('tab.you'),
+        title: strings('tab.You'),
         count: 0,
       },
       {
@@ -62,7 +62,7 @@ const DashboardTab = () => {
               id: 0,
               statusId: '1',
               conversationType: 'you',
-              title: strings('tab.you'),
+              title: strings('tab.You'),
               count: conversation_summary?.you ?? 0,
             },
             {

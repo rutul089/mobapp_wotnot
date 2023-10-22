@@ -30,7 +30,7 @@ import {
 import MainNavigator from './MainNavigator';
 import {navigationRef} from './NavigationUtils';
 import OfflineNotice from '../components/OfflineNotice/index';
-import {reconnect} from '../websocket';
+import {initSocket, reconnect} from '../websocket';
 const Stack = createStackNavigator();
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
@@ -163,7 +163,8 @@ export default class RootContainer extends Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      reconnect();
+      // reconnect();
+      initSocket()
       console.log('nextAppState---------1', nextAppState);
     } else {
       console.log('nextAppState---------', nextAppState);

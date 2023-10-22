@@ -55,4 +55,5 @@ export default {
   ic_browser: require('./ic_browser.png'),
   ic_timezone: require('./ic_timezone.png'),
   ic_channel: require('./ic_channel.png'),
+  is_sla_err: require('./is_sla_err.png'),
 };

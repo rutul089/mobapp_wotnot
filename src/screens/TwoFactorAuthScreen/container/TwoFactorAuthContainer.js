@@ -41,14 +41,14 @@ class TwoFactorAuthContainer extends Component {
     const {verifyCode} = this.state;
     if (verifyCode === '' || verifyCode === null) {
       this.setState({
-        errOTP: strings('error.errEmpty'),
+        errOTP: strings('error.2FA_SETUP_SCREEN_SETUP_CODE_INPUT_ERROR'),
       });
       return;
     }
 
     if (verifyCode && verifyCode.length < 6) {
       this.setState({
-        errOTP: strings('error.errTwoFACode'),
+        errOTP: strings('error.2FA_SETUP_SCREEN_SETUP_CODE_INPUT_LENGTH_ERROR'),
       });
       return;
     }

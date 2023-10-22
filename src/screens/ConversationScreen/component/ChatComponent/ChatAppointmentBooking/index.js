@@ -35,7 +35,6 @@ function ChatAppointmentBooking(props) {
   };
 
   const renderAvatar = value => {
-    console.log('value', JSON.stringify(value));
     return (
       <View style={{alignSelf: 'center'}}>
         <Image

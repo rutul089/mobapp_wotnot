@@ -108,3 +108,8 @@ export const setUserList = data => ({
   type: types.USER_LIST,
   payload: data,
 });
+
+export const setUserSetting = data => ({
+  type: types.USER_SETTINGS,
+  payload: data,
+});

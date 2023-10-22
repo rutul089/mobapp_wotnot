@@ -14,7 +14,7 @@ import {
   fetchAccounts,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import {strings} from '../../../locales/i18n';
+import {setLocale, strings} from '../../../locales/i18n';
 import {VALIDATION_REGEX} from '../../../util/helper';
 import {LOCAL_STORAGE} from '../../../constants/storage';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -50,7 +50,7 @@ class RecoveryCodeContainer extends Component {
     const {verifyCode} = this.state;
     if (!VALIDATION_REGEX.RECOVERY_CODE.test(verifyCode)) {
       this.setState({
-        errOTP: strings('error.errValidRecoveryCode'),
+        errOTP: strings('error.RECOVERY_SCREEN_RECOVERY_CODE_ERROR_TEXT'),
       });
       return;
     }
@@ -78,7 +78,7 @@ class RecoveryCodeContainer extends Component {
           JSON.stringify(res),
         );
         AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, 'true');
-
+        setLocale(res?.language?.code)
         this.cllFetchAccounts()
           .then(data => {
             navigateAndSimpleReset('MainNavigator');
@@ -124,13 +124,14 @@ class RecoveryCodeContainer extends Component {
           state={state}
           onSubmit={this.onVerifyCodePress}
           recoveryCodeBtnPress={this.recoveryCodeBtnPress}
-          tittle={strings('login.recover_2fa_code')}
-          tittle2={strings('login.recover_2fa_code_note')}
-          inputLabel={strings('login.enter_recovery_code')}
-          btnLabel={strings('button.verify_code')}
+          tittle={strings('login.RECOVERY_SCREEN_HEADER_TEXT')}
+          tittle2={strings('login.RECOVERY_SCREEN_SUBHEADER_TEXT')}
+          inputLabel={strings('login.RECOVERY_SCREEN_RECOVERY_CODE_INPUT_LABEL')}
+          btnLabel={strings('button.RECOVERY_SCREEN_VERIFY_BTN_TEXT')}
           isLoading={this.props.isLoading}
           maxLength={11}
           placeholder={'XXXXX-XXXXX'}
+          keyboardType={'default'}
         />
       </>
     );

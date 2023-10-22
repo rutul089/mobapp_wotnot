@@ -22,7 +22,7 @@ const ForgotPasswordComponent = ({
   onEmailChange,
   state,
   onSubmit,
-  isLoading
+  isLoading,
 }) => (
   <FlexContainer>
     <Header
@@ -35,15 +35,17 @@ const ForgotPasswordComponent = ({
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <SVG.LoginLogoIcon />
         <Spacing size="xl" />
-        <Text type={'h3'}>{strings('login.forgotPWd')}</Text>
+        <Text type={'h3'}>{strings('login.FORGOT_PASSWORD_LABEL')}</Text>
         <Spacing size="xs" />
         <Text type={'body1'} textAlign={'center'}>
-          {strings('login.forgotPWdNote')}
+          {strings('login.FORGOT_PASSWORD_DESCRIPTION', {
+            ORGANISATION_NAME: 'WotNot',
+          })}
         </Text>
       </View>
       <Spacing size="xl2" />
       <Input
-        label={strings('login.email')}
+        label={strings('login.EMAIL_LABEL')}
         placeholder={'abc@abc.com'}
         isError={!state?.isErrEmail}
         errorMsg={state?.emailErrMsg}
@@ -53,10 +55,10 @@ const ForgotPasswordComponent = ({
         returnKeyType="done"
         onSubmitEditing={onSubmitEditingEmail && onSubmitEditingEmail}
       />
-      <Spacing size='xl'/>
+      <Spacing size="xl" />
       <Button
         bg={theme.colors.brandColor.blue}
-        buttonText={strings('button.send_me_instructions')}
+        buttonText={strings('button.SEND_ME_INSTRUCTIONS_BUTTON')}
         onPress={onSubmit}
       />
     </KeyboardAvoidingScrollView>

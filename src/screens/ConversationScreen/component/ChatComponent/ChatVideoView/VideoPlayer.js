@@ -36,7 +36,6 @@ const VideoPlayer = props => {
       },
     } = props;
     setUri(itemData);
-    console.log('itemData', itemData);
   }, []);
   const onSeek = seek => {
     //Handler for change in seekbar

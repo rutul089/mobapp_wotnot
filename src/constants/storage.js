@@ -14,6 +14,7 @@ export const LOCAL_STORAGE = {
   AGENT_ACCOUNT_LIST: `${prefix}AGENT_ACCOUNT_LIST`,
   USER_LIST: `${prefix}USER_LIST`,
   NOTIFICATION_TOKEN:`${prefix}NOTIFICATION_TOKEN`,
+  LANGUAGE:`${prefix}LANGUAGE`,
 };
 
 export const STATIC_USER_ID = '47734';

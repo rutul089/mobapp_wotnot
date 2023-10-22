@@ -20,8 +20,10 @@ const wotnotColor = {
   silver: '#858585',
   lightGreen: '#13BE66',
   yellow: '#F1B000',
-  borderColor: '#EEEFF3',
+  borderColor: '#DCDCDC',
   lavenderBlue: '#BEDBFC',
+  lightBlue:'#2a7cff29',
+  visitorAvatarColor:'#f5f5f5'
 };
 
 const gray = {
@@ -108,6 +110,7 @@ const colors = {
   dragable_icon_color: '#E4E4E8',
   checkbox_color: '#0766FE',
   yellow: '#faa404',
+
 };
 
 export default colors;

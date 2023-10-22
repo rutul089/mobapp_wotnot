@@ -50,6 +50,7 @@ function ChatForm({chatItem, pos}) {
               }}>
               <Text
                 type={'body2'}
+                numberOfLines={1}
                 key={field.label}
                 color={theme.colors.clear_blue}
                 style={{marginVertical: 5}}>
@@ -58,7 +59,7 @@ function ChatForm({chatItem, pos}) {
               {field.value ? (
                 <Text
                   type={'body2'}
-                  style={{marginVertical: 5}}
+                  style={{marginVertical: 5,flex:1}}
                   color={theme.colors.charcoal_grey}>
                   {field.value}
                 </Text>

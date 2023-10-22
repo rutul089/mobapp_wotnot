@@ -27,17 +27,20 @@ import ConversationListTab from '../container/ConversationListTab';
 import {useSelector} from 'react-redux';
 import styles from '../Style';
 import {CONVERSATION} from '../../../constants/global';
-import {getDayDifference} from '../../../util/helper';
+import {getDayDifference, getMiniFromTime, showSLA} from '../../../util/helper';
 // import {isValidJSON,getMessage} from '../../../util/JSONOperations';
 import {
   getMessage,
   messageParser,
   convertTextMessage,
   unEscape,
-  getGlobalChannelIcon
+  getGlobalChannelIcon,
+  getAssigneeName,
 } from '../../../util/ConversationListHelper';
 import {Box} from 'native-base';
 import {registerVisitorTypingHandler} from '../../../websocket';
+import {contains} from 'react-native-redash';
+import {strings} from '../../../locales/i18n';
 
 const renderTabView = (label, onPress, isSelected, isDisable) => {
   return (
@@ -77,23 +80,161 @@ const ChatScreenComponent = ({
   loadMoreData = () => {},
   onEndReach,
   isTyping,
+  isSLAEnable,
+  slaTime,
+  users,
 }) => {
   const [index, setIndex] = React.useState(0);
   const [typingData, setTypingData] = React.useState();
+  const [percentage, setPercentage] = React.useState();
   const conversation_summary = useSelector(
     state => state.conversationReducer?.conversation_summary?.open_status,
   );
   const close_conversation_count = useSelector(
     state => state.conversationReducer?.closeConversationsCount,
   );
-  const tabLabels = ['You', 'Assigned', 'Unassigned', 'Closed'];
+  const tabLabels = [
+    strings('tab.You'),
+    strings('tab.Assigned'),
+    strings('tab.Unassigned'),
+    strings('tab.Closed'),
+  ];
+  let tickerInterval = null;
 
+  const animationRef = React.createRef();
   React.useEffect(() => {
     registerVisitorTypingHandler(e => {
-      console.log("----->",e)
       setTypingData(e);
     });
   });
+
+  const getSalTime = (itemData, currentTab, slaTime, isSLAEnable) => {
+    // console.log('------', showSLA(itemData?.sla_start_at, slaTime));
+    if (
+      currentTab === CONVERSATION.CLOSE ||
+      !isSLAEnable ||
+      itemData?.sla_start_at === null
+    ) {
+      return true;
+    }
+    return !showSLA(itemData?.sla_start_at, slaTime);
+  };
+
+  const showSlaEnd = (itemData, currentTab, slaTime, isSLAEnable) => {
+    if (
+      currentTab === CONVERSATION.CLOSE ||
+      !isSLAEnable ||
+      itemData?.sla_start_at === null
+    ) {
+      return true;
+    }
+    return showSLA(itemData?.sla_start_at, slaTime);
+  };
+
+  const getPrefillValue = (itemData, slaTime) => {
+    let currentMin = getMiniFromTime(itemData?.sla_start_at);
+    let percentage = (100 * currentMin) / slaTime;
+    setPercentage(percentage);
+    // console.log('percentage', percentage);
+    return percentage;
+  };
+
+  React.useEffect(() => {
+    animationRef?.current?.animate(percentage);
+  }, percentage);
+
+  const getFullMessage = item => {
+    return item?.message === ''
+      ? unEscape(item?.note)
+      : ` ${getAssigneeName(users, item?.last_message_by)}${getMessage(item)}`;
+  };
+
+  const getListItemCustomization = item => {
+    const date = item?.sla_start_at ? new Date(item?.sla_start_at) : new Date();
+    let lastMessageAt = '';
+    const checkLastMessageBy =
+      !item?.last_message_by || checkForUser(item?.last_message_by);
+
+    if (
+      item.status_id !== 2 &&
+      (!item?.assignee || (item?.assignee && item?.assignee?.type_id !== 2)) &&
+      checkLastMessageBy
+    ) {
+      lastMessageAt = date;
+      // console.log('---------<------->', lastMessageAt);
+    }
+    // console.log('checkLastMessageBy', checkLastMessageBy);
+    return {
+      ...item,
+      lastMessageAt,
+    };
+  };
+
+  const checkForUser = id => {
+    let value = '';
+    users?.forEach(element => {
+      // console.log(
+      //   '----',
+      //   element?.id === id ? element?.user_type?.id === 2 : false,
+      // );
+      value = element?.id === id ? element?.user_type?.id === 2 : false;
+    });
+    return value;
+  };
+
+  const renderList = ({item}) => {
+    const customization = getListItemCustomization(item);
+    return (
+      <ChatItem
+        key={item?.assignee?.id}
+        name={item?.title}
+        email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
+          item?.city_name
+        },${item?.country_name}`}
+        uri={item?.assignee?.image_url}
+        isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
+        unreadCount={item?.unread_messages_count}
+        lastMessageDay={getDayDifference(item?.last_message_at)}
+        // subTittle={`${item?.message} `}
+        subTittle={getFullMessage(item)}
+        onPress={() => onConversationClick(item)}
+        item={item}
+        isClosedMode={item?.status_id === 2}
+        rating={item?.rating}
+        hideRating={
+          currentTab !== CONVERSATION.CLOSE ||
+          item?.global_channel_name !== 'Web' ||
+          item?.rating === 0
+        }
+        hideUnreadCount={
+          currentTab === CONVERSATION.CLOSE || item?.unread_messages_count == 0
+        }
+        hideAnimation={
+          percentage >= 100 ||
+          customization?.lastMessageAt == '' ||
+          getSalTime(item, currentTab, slaTime, isSLAEnable)
+        }
+        hideStatusIcon={currentTab === CONVERSATION.CLOSE}
+        paddingHorizontal={theme.sizes.spacing.ph}
+        backgroundColor={'white'}
+        duration={slaTime * 60000}
+        itemData={item}
+        borderBottomWidth={1}
+        isLoading={isLoading}
+        typingData={typingData}
+        channelIcon={getGlobalChannelIcon(
+          item?.global_channel_name,
+          item?.browser,
+        )}
+        hideSlaErr={
+          (customization?.lastMessageAt !== '' && (!(percentage >= 100)) ||
+          showSlaEnd(item, currentTab, slaTime, isSLAEnable))
+        }
+        prefill={getPrefillValue(item, slaTime)}
+        animation={animationRef}
+      />
+    );
+  };
 
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
@@ -157,48 +298,7 @@ const ChatScreenComponent = ({
         ) : (
           <FlatList
             data={conversations}
-            renderItem={({item, index}) => (
-              <ChatItem
-                key={item?.assignee?.id}
-                name={item?.title}
-                email={`${
-                  item?.assignee?.name ? item?.assignee?.name + ' | ' : ''
-                }${item?.city_name},${item?.country_name}`}
-                uri={item?.assignee?.image_url}
-                isOnline={
-                  item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE
-                }
-                unreadCount={item?.unread_messages_count}
-                lastMessageDay={getDayDifference(item?.last_message_at)}
-                // subTittle={`${item?.message} `}
-                subTittle={
-                  item?.message === '' ? unEscape(item?.note) : `${getMessage(item)}`
-                }
-                onPress={() => onConversationClick(item)}
-                item={item}
-                isClosedMode={item?.status_id === 2}
-                rating={item?.rating}
-                hideRating={
-                  currentTab !== CONVERSATION.CLOSE ||
-                  item?.global_channel_name !== 'Web' ||
-                  item?.rating === 0
-                }
-                hideUnreadCount={
-                  currentTab === CONVERSATION.CLOSE ||
-                  item?.unread_messages_count == 0
-                }
-                hideAnimation={currentTab === CONVERSATION.CLOSE}
-                hideStatusIcon={currentTab === CONVERSATION.CLOSE}
-                paddingHorizontal={theme.sizes.spacing.ph}
-                backgroundColor={'white'}
-                duration={80000}
-                itemData={item}
-                borderBottomWidth={1}
-                isLoading={isLoading}
-                typingData={typingData}
-                channelIcon={getGlobalChannelIcon(item?.global_channel_name,item?.browser)}
-              />
-            )}
+            renderItem={renderList}
             keyExtractor={(_it, index) => `${_it?.thread_key} ${index}`}
             contentContainerStyle={{
               flexGrow: 1,
@@ -213,7 +313,7 @@ const ChatScreenComponent = ({
                   alignItems: 'center',
                 }}>
                 <Text color={theme.colors.brandColor.silver}>
-                  No conversation found
+                  {strings('No conversation found')}
                 </Text>
               </View>
             }

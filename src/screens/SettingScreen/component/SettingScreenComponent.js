@@ -114,29 +114,29 @@ const SettingScreenComponent = ({
         </Text>
         <Spacing size="md" />
         <RenderRowItem
-          text={`${strings('settings.account')}  `}
+          text={`${strings('settings.ACCOUNT_MENU')}  `}
           dropdownVale={accountDropdownValue}
           dropDownClick={onPressAccountDropdown}
         />
         <Spacing size="md" />
         <RenderRowItem
-          text={strings('settings.language')}
+          text={strings('settings.CHANGE_LANGUAGE_LABEL')}
           dropdownVale={languageDropdownValue}
           dropDownClick={onPressLanguageDropdown}
         />
         <Spacing size="md" />
         <RenderRowItem
-          text={strings('settings.notifications')}
+          text={strings('settings.NOTIFICATION_HEADER')}
           onPress={onNotificationClick}
         />
         <Spacing size="md" />
         <RenderRowItem
-          text={strings('settings.help_desk')}
+          text={strings('settings.HELP_DESK')}
           onPress={onHelpDeskClick}
         />
         <Spacing size="md" />
         <RenderRowItem
-          text={strings('settings.logout')}
+          text={strings('settings.LOGOUT')}
           color={theme.colors.typography.error}
           onPress={onLogoutClick}
         />

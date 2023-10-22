@@ -1,5 +1,6 @@
 import moment from 'moment';
 import Toast from 'react-native-root-toast';
+import {CONVERSATION} from '../constants/global';
 
 export const LONG_DURATION = Toast.durations.LONG;
 export const MED_DURATION = 3000;
@@ -184,4 +185,32 @@ export const bytesToSize = bytes => {
     }
   }
   return bytes + ' P';
+};
+
+export const getMiniFromTime = endData => {
+  var now = moment(new Date()); //todays date
+  var duration = moment.duration(now.diff(endData));
+  var min = duration.asMinutes();
+  // console.log('getMiniFromTime', min);
+  return min.toFixed(0);
+};
+
+// export const showSLA = (itemData, currentTab, slaTime, isSLAEnable) => {
+//   if (
+//     currentTab === CONVERSATION.CLOSE ||
+//     !isSLAEnable ||
+//     itemData?.sla_start_at === null
+//   ) {
+//     return true;
+//   }
+//   console.log('getMiniFromTime(endData) <= slaTime', getMiniFromTime(itemData?.sla_start_at) <= slaTime);
+
+//   return !getMiniFromTime(itemData?.sla_start_at) <= slaTime;
+
+//   return getMiniFromTime(itemData?.sla_start_at) <= slaTime;
+// };
+export const showSLA = (endData, slaTime) => {
+  // console.log("getMiniFromTime(endData) <= slaTime",getMiniFromTime(endData) <= slaTime)
+  // console.log("getMiniFromTime(endData) <= slaTime",slaTime)
+  return getMiniFromTime(endData) < slaTime;
 };

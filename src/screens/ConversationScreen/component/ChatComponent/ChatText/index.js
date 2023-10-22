@@ -1,6 +1,6 @@
 import {Button, HStack as Row, VStack as Col} from 'native-base';
 import React, {useMemo} from 'react';
-import {Linking, View} from 'react-native';
+import {Linking, Pressable, View} from 'react-native';
 import {chatTextStyles} from './ChatText.style';
 import {
   checkMessageContentType,
@@ -18,6 +18,7 @@ import ChatMsgInfo from '../ChatMsgInfo';
 import ChatBubbleAgent from '../../ChatBubbleAgent';
 import {styles as chatBubbleStyle} from '../ChatStyle/chatBubbleStyle';
 import FileItemRow from '../FileItemRow';
+import HTML from 'react-native-render-html';
 
 function ChatText(props) {
   const {chatItem, pos, onToggleImageModal, chatUserName} = props;
@@ -139,8 +140,7 @@ function ChatText(props) {
             {REGEX_PATTERNS.ANCHER_TAG.test(
               convertTextMessage(chatItem.agent.message),
             ) ? (
-              <Button
-                style={{...linkButton}}
+              <Pressable
                 onPress={() =>
                   Linking.openURL(
                     convertTextMessage(chatItem.agent.message).match(
@@ -148,10 +148,33 @@ function ChatText(props) {
                     )[1],
                   )
                 }>
-                <Text style={{...sendMsg, ...msg, ...clickableMsg}}>
-                  {messageParser(convertTextMessage(chatItem.agent.message))}
-                </Text>
-              </Button>
+                <ChatBubbleAgent
+                  timestamp={
+                    getTimeStamp(
+                      messageParser(
+                        convertTextMessage(chatItem.agent.timestamp),
+                      ),
+                    ).timestamp
+                  }
+                  timeStampRight
+                  chatItem={chatItem}
+                  msg={messageParser(
+                    convertTextMessage(chatItem.agent.message),
+                  )}
+                  isUser
+                  chatUserName={chatUserName}
+                  userFileJSX1={
+                    <HTML
+                      source={{
+                        html: convertTextMessage(chatItem.agent.message),
+                      }}
+                      tagsStyles={{p: {color: 'white'}, a: {color: 'white'}}}
+                      classesStyles={{color: 'white'}}
+                      enableUserAgentStyles
+                    />
+                  }
+                />
+              </Pressable>
             ) : (
               <ChatBubbleAgent
                 timestamp={
@@ -194,15 +217,13 @@ function ChatText(props) {
         return typeof stringToObj(chatItem.user.message.text) === 'object' &&
           !props.textMsg ? (
           <View />
-        ) : 
-        convertTextMessage(chatItem.user.message.text) ? (
+        ) : convertTextMessage(chatItem.user.message.text) ? (
           <View style={{flex: 1}}>
             <View style={{...receiveMsgBorder}}>
               {REGEX_PATTERNS.ANCHER_TAG.test(
                 convertTextMessage(chatItem.user.message.text),
               ) ? (
-                <Button
-                  style={{...linkButton}}
+                <Pressable
                   onPress={() =>
                     Linking.openURL(
                       chatItem.user.message.text.match(
@@ -210,11 +231,36 @@ function ChatText(props) {
                       )[1],
                     )
                   }>
-                  <Text style={{...msg, ...receiveMsg, ...clickableMsg}}>
-                    {chatItem.user.message.text}
-                  </Text>
-                </Button>
+                  <ChatBubbleAgent
+                    timestamp={getTimeStamp(chatItem.user.timestamp).timestamp}
+                    timeStampRight
+                    chatItem={chatItem}
+                    msg={
+                      props.textMsg
+                        ? props.textMsg.text
+                        : typeof stringToObj(chatItem.user.message.text) ===
+                            'object' && isValidJSON(chatItem.user.message.text)
+                        ? stringToObj(chatItem.user.message.text).text
+                        : chatItem.user.message.text
+                    }
+                    isUser={false}
+                    chatUserName={chatUserName}
+                  />
+                </Pressable>
               ) : (
+                // <Button
+                //   style={{...linkButton}}
+                //   onPress={() =>
+                //     Linking.openURL(
+                //       chatItem.user.message.text.match(
+                //         REGEX_PATTERNS.ANCHER_TAG,
+                //       )[1],
+                //     )
+                //   }>
+                //   <Text style={{...msg, ...receiveMsg, ...clickableMsg}}>
+                //     {chatItem.user.message.text}
+                //   </Text>
+                // </Button>
                 <ChatBubbleAgent
                   timestamp={getTimeStamp(chatItem.user.timestamp).timestamp}
                   timeStampRight

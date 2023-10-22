@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, Keyboard} from 'react-native';
+import {Alert, Keyboard, AppState} from 'react-native';
 import {connect} from 'react-redux';
 import {CONVERSATION} from '../../../constants/global';
 import {strings} from '../../../locales/i18n';
@@ -30,6 +30,9 @@ import {
   registerVisitorTypingHandler,
   registerAssigneeChangedHandler,
   registerStatusChangedHandler,
+  reconnect,
+  emitAgentJoin,
+  initSocket,
 } from '../../../websocket';
 import {getMessageFromEventPayload} from '../../../common/common';
 import {isValidJSON, stringToObj} from '../../../util/JSONOperations';
@@ -57,7 +60,7 @@ class ConversationContainer extends Component {
       messageList: [],
       showChangeAssignee: false,
       isTeamSelected: false,
-      isLoading: false,
+      isLoading: true,
       search_text: '',
       filterTeamData: [],
       filterTeamMateData: [],
@@ -72,6 +75,8 @@ class ConversationContainer extends Component {
       readMessageCount: 0,
       mediaData: null,
       mediaDataUrl: '',
+      hideLoader: false,
+      appState: AppState.currentState,
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -83,6 +88,8 @@ class ConversationContainer extends Component {
     this.attachmentBottomSheetRef = React.createRef();
     this.onTeamItemPress = this.onTeamItemPress.bind(this);
     this.onSaveReplyClick = this.onSaveReplyClick.bind(this);
+    this.appStateRef = null;
+    this.replyInputRef = React.createRef();
   }
 
   componentDidMount = () => {
@@ -97,20 +104,18 @@ class ConversationContainer extends Component {
       // isJoinButtonVisible:
       //   itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE,
     });
+    this.registerAppStateEvent();
     this.props?.setConversationsHistory([]);
     this.callFetchTeamData();
     this.callFetchTeammateData();
-    this.callFetchConversationHistory(true);
+    this.callFetchConversationHistory(true, false);
     this.setIsJoinButton();
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      registerMessageHandler(this.onMessageReceived);
-      registerStatusChangedHandler(this.changeConversationStatus);
-      registerVisitorTypingHandler(e => console.log(e));
-      registerAssigneeChangedHandler(this.assigneeChange);
+      this.registerListener();
     });
 
-    Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
-    Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    // Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+    // Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   };
 
   componentWillUnmount = () => {
@@ -364,7 +369,7 @@ class ConversationContainer extends Component {
   };
 
   setLoading = value => {
-    this.setState({isLoading: value});
+    this.setState({isLoading: value, isLoadMore: false});
   };
 
   onSearchText = searchText => {
@@ -425,9 +430,16 @@ class ConversationContainer extends Component {
         },
       },
     };
-    this.setState({
-      isJoinButtonVisible: false,
-    });
+    this.setState(
+      {
+        isJoinButtonVisible: false,
+      },
+      () => {
+        setTimeout(() => {
+          this.replyInputRef?.current?.focus();
+        }, 550);
+      },
+    );
     this.setLoading(true);
     this.callSetIncomingEvent(param, false, '');
     this.setState(prev => ({...prev, conversationJoined: true}));
@@ -449,6 +461,45 @@ class ConversationContainer extends Component {
       itemData?.thread_key,
       `limit=35${offset}`,
       showLoader,
+      {
+        SuccessCallback: res => {
+          if (res?.ok) {
+            this.setState(
+              {
+                messageList: offset
+                  ? [...this.state.messageList, ...res?.messages_list]
+                  : res?.messages_list,
+                search_after: res?.search_after,
+                isLoadMore: false,
+              },
+              () => this.onEmitReadMsg(res?.messages_list),
+            );
+          }
+          this.setLoading(false);
+        },
+        FailureCallback: res => {
+          this.setLoading(false);
+          handleFailureCallback(res, false);
+        },
+      },
+    );
+  };
+
+  callFetchConversationHistorySearchAfter = isLoadMore => {
+    let offset = isLoadMore
+      ? this.state.search_after
+        ? `&search_after=${this.state.search_after?.toString()}`
+        : ''
+      : '';
+    const {
+      route: {
+        params: {itemData},
+      },
+    } = this.props;
+    this.props.fetchConversationHistory(
+      itemData?.thread_key,
+      `limit=35${offset}`,
+      false,
       {
         SuccessCallback: res => {
           if (res?.ok) {
@@ -656,7 +707,7 @@ class ConversationContainer extends Component {
   };
 
   changeConversationStatus = data => {
-    console.log('------>changeConversationStatus', data);
+    // console.log('------>changeConversationStatus', data);
     const {
       route: {
         params: {itemData},
@@ -672,22 +723,30 @@ class ConversationContainer extends Component {
           conversationStatus: newStatus,
         },
         () => {
-          console.log(
-            '------messageList',
-            JSON.stringify(this.state.messageList),
-          );
+          // console.log(
+          //   '------messageList',
+          //   JSON.stringify(this.state.messageList),
+          // );
           setTimeout(() => {
-            this.callFetchConversationHistory(false);
-          }, 1000);
+            this.callFetchConversationHistory(false, false);
+          }, 1500);
         },
       );
     }
   };
 
   handleLoadMore = e => {
+    if (!e?.distanceFromEnd >= 1) {
+      return;
+    }
     // if (this.state.search_after?.length > 0) {
-    this.setState({isLoadMore: true});
-    this.callFetchConversationHistory(false, true);
+    this.setState({isLoadMore: true, hideLoader: true});
+    this.callFetchConversationHistorySearchAfter(true);
+    setTimeout(() => {
+      this.setState({
+        hideLoader: false,
+      });
+    }, 1000);
     // }
     this.setState({isLoadMore: false});
   };
@@ -747,6 +806,10 @@ class ConversationContainer extends Component {
           this.setState({
             isJoinButtonVisible: true,
           });
+        } else {
+          setTimeout(() => {
+            this.replyInputRef?.current?.focus();
+          }, 500);
         }
       }
     }
@@ -790,18 +853,18 @@ class ConversationContainer extends Component {
         params: {itemData},
       },
     } = this.props;
-    const { fs} = RNFetchBlob;
+    const {fs} = RNFetchBlob;
     var data = new FormData();
-    data.append('file', fs.readStream(fileData.uri));
+    data.append('file', fileData.uri);
     data.append('bot_lead_id', itemData?.bot_id);
 
     var config = {
       method: 'post',
       url: 'https://app.wotnot.io/v1/livechat-file-attachment',
       data: data,
-      onUploadProgress: (progress) => {
-        console.log('0------',progress)
-      }
+      onUploadProgress: progress => {
+        // console.log('0------', progress);
+      },
     };
 
     axios(config)
@@ -830,6 +893,35 @@ class ConversationContainer extends Component {
     });
   };
 
+  registerListener = () => {
+    registerMessageHandler(this.onMessageReceived);
+    registerStatusChangedHandler(this.changeConversationStatus);
+    registerVisitorTypingHandler(e => console.log(e));
+    registerAssigneeChangedHandler(this.assigneeChange);
+  };
+
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      initSocket();
+      emitAgentJoin();
+      this.registerListener();
+      reconnect();
+    } else {
+    }
+    this.setState({appState: nextAppState});
+  };
+
+  registerAppStateEvent(value) {
+    this.appStateRef = AppState.addEventListener(
+      'change',
+      this._handleAppStateChange,
+    );
+    // this.appStateRef?.remove()
+  }
+
   render() {
     const {
       teamMateData,
@@ -857,8 +949,8 @@ class ConversationContainer extends Component {
           onChangeAssignee={this.onChangeAssignee}
           onCloseConversation={this.onCloseConversation}
           onPressLeftContent={this.onPressLeftContent}
-          joinConversation={strings('chat.join_conversation_message')}
-          joinConversationBtn={strings('button.join_conversation')}
+          joinConversation={strings('chat.JOIN_CONVERSATION_TEXT')}
+          joinConversationBtn={strings('button.JOIN_CONVERSATION_BUTTON_TEXT')}
           joinConversationPress={this.joinConversationPress}
           joinButton={this.state.isJoinButtonVisible}
           scrollViewRef={this.scrollViewRef}
@@ -895,7 +987,7 @@ class ConversationContainer extends Component {
           itemData={itemData}
           userID={userPreference?.logged_in_user_id}
           onTeamItemPress={this.onTeamItemPress}
-          isLoading={ this.state.isLoading}
+          isLoading={this.state.isLoading && !this.state.hideLoader}
           searchValue={this.state.search_text}
           onChangeText={this.onSearchText}
           // messageHistory={messageHistory}
@@ -919,6 +1011,7 @@ class ConversationContainer extends Component {
           isLoadMore={this.state.isLoadMore}
           mediaData={this.state.mediaData}
           onMediaPreviewCancel={this.onMediaPreviewCancel}
+          replyInputRef={this.replyInputRef}
         />
       </>
     );

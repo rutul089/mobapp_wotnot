@@ -2,7 +2,8 @@ import {types} from '../actions';
 
 const initialState = {
   accounts: [],
-  notification_pref:{}
+  notification_pref: {},
+  userSetting: {},
 };
 
 const global = (state = initialState, action) => {
@@ -13,6 +14,8 @@ const global = (state = initialState, action) => {
       return {...state, notification_pref: action.payload};
     case types.USER_LOGOUT:
       return {...initialState};
+    case types.USER_SETTINGS:
+      return {...state, userSetting: action.payload};
     default:
       return state;
   }

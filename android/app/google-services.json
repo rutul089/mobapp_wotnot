@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1084957270236",
-    "project_id": "wotnot-native-app",
-    "storage_bucket": "wotnot-native-app.appspot.com"
+    "project_number": "386340205536",
+    "project_id": "wotnot-dev",
+    "storage_bucket": "wotnot-dev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1084957270236:android:cf5dd4486069dc57705419",
+        "mobilesdk_app_id": "1:386340205536:android:80225cf184433d19167185",
         "android_client_info": {
           "package_name": "com.wotnot.wotnot"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1084957270236-97j44g66ltp8j8rfd3b7t48jeh5qosmg.apps.googleusercontent.com",
+          "client_id": "386340205536-97h70dpce42jbg0hofb8f13ho6gsfdo3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBgRjNtq2tix1zcDEYU9fMvQEOeNCjXMYo"
+          "current_key": "AIzaSyDaFR3vkZj6612dmFKtHfvE4Tu3iE7s1kM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1084957270236-97j44g66ltp8j8rfd3b7t48jeh5qosmg.apps.googleusercontent.com",
+              "client_id": "386340205536-97h70dpce42jbg0hofb8f13ho6gsfdo3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

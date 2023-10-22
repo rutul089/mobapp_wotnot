@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {API, Headers} from '../../../apiService';
 import {LOCAL_STORAGE} from '../../../constants/storage';
-import {strings} from '../../../locales/i18n';
+import {setLocale, strings} from '../../../locales/i18n';
 import {
   navigate,
   navigateAndSimpleReset,
@@ -19,18 +19,24 @@ import {
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {VALIDATION_REGEX} from '../../../util/helper';
 import SignInScreenComponent from '../component/SignInScreenComponent';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 class SignInScreenContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'it.rutul@gmail.com',
-      password: 'Navkar@2021',
+      email: '',
+      password: '',
       isErrEmail: false,
       isErrPwd: false,
       isPwdVisible: false,
       emailErrMsg: '',
       pwdErrMsg: '',
+      isLoading: false,
     };
     this.emailInputRef = React.createRef();
     this.passWordInputRef = React.createRef();
@@ -38,7 +44,15 @@ class SignInScreenContainer extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    GoogleSignin.configure({
+      webClientId:
+        '386340205536-97h70dpce42jbg0hofb8f13ho6gsfdo3.apps.googleusercontent.com',
+
+      offlineAccess: true,
+      forceCodeForRefreshToken: true,
+    });
+  }
 
   onEmailChange = text => {
     this.setState({email: text, emailErrMsg: ''});
@@ -57,21 +71,21 @@ class SignInScreenContainer extends Component {
     let state = this.state;
     if (this.isValidEmail() && this.isValidPassword()) {
       this.setState({
-        emailErrMsg: strings('error.errEmail'),
-        pwdErrMsg: strings('error.errPwd'),
+        emailErrMsg: strings('error.EMAIL_VALIDATION_MESSAGE'),
+        pwdErrMsg: strings('error.PASSWORD_VALIDATION_MESSAGE'),
       });
       return;
     }
     if (this.isValidEmail()) {
       this.setState({
-        emailErrMsg: strings('error.errEmail'),
+        emailErrMsg: strings('error.EMAIL_VALIDATION_MESSAGE'),
       });
       return;
     }
 
     if (this.isValidPassword()) {
       this.setState({
-        pwdErrMsg: strings('error.errPwd'),
+        pwdErrMsg: strings('error.PASSWORD_VALIDATION_MESSAGE'),
       });
       return;
     }
@@ -79,6 +93,7 @@ class SignInScreenContainer extends Component {
       email: state.email?.toLocaleLowerCase(),
       password: state.password,
     };
+    this.setLoading(true);
     this.props.userLogin(param, {
       SuccessCallback: res => {
         if (res?.ok && res?.two_factor_auth === undefined) {
@@ -92,8 +107,10 @@ class SignInScreenContainer extends Component {
           `Bearer ${res?.access_token}`,
         );
         if (res?.two_factor_auth === 'QR_CODE') {
+          this.setLoading(false);
           return navigate('TwoFactorAuthScreen');
         } else if (res?.two_factor_auth === 'TOTP_VERIFY') {
+          this.setLoading(false);
           return navigate('TwoFactorCheckScreen');
         } else {
           setItemToStorage(LOCAL_STORAGE?.IS_LOGIN, 'true');
@@ -101,6 +118,7 @@ class SignInScreenContainer extends Component {
         }
       },
       FailureCallback: res => {
+        this.setLoading(false);
         handleFailureCallback(res, true, true);
       },
     });
@@ -127,14 +145,32 @@ class SignInScreenContainer extends Component {
     // navigate('TwoFactorAuthScreen')
   };
 
-  _googleSignIn = () => {};
+  _googleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('User cancelled the login flow');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('Signing in');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('Play services not available');
+      } else {
+        console.log('Some other error happened', error.message + ' ' + error.code);
+      }
+    }
+  };
 
   callFetchUserPreference = async () => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: async res => {
         setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE, res);
+        setLocale(res?.language?.code);
         this.cllFetchAccounts()
           .then(data => {
+            this.setLoading(false);
             if (data) {
               navigateAndSimpleReset('MainNavigator');
             } else {
@@ -146,6 +182,7 @@ class SignInScreenContainer extends Component {
           });
       },
       FailureCallback: res => {
+        this.setLoading(false);
         handleFailureCallback(res);
       },
     });
@@ -164,11 +201,16 @@ class SignInScreenContainer extends Component {
           );
         },
         FailureCallback: res => {
+          this.setLoading(false);
           handleFailureCallback(res, false, false, false);
           reject(res);
         },
       });
     });
+  };
+
+  setLoading = value => {
+    this.setState({isLoading: value});
   };
 
   render() {
@@ -189,7 +231,7 @@ class SignInScreenContainer extends Component {
           rightIconClick={this.rightIconClick}
           onSubmit={this.onSubmit}
           scrollViewRef={this.scrollViewRef}
-          isLoading={this.props.isLoading}
+          isLoading={this.state.isLoading}
           onForgotPwdClick={this.onForgotPwdClick}
           _googleSignIn={this._googleSignIn}
         />

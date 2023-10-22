@@ -16,6 +16,7 @@ import {
   changeAccount,
   clearAllData,
   setProfileEvents,
+  changeUserSetting,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {
@@ -25,13 +26,14 @@ import {
   registerUserStatus,
 } from '../../../websocket';
 import {getAgentPayload} from '../../../common/common';
+import {setLocale} from '../../../locales/i18n';
 
 class SettingScreenContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userProfile: {},
-      isActive: false,
+      isActive: true,
       accountStatus: accountList?.[0]?.label,
       selectedLanguage: 'English',
       isOpen: false,
@@ -46,15 +48,22 @@ class SettingScreenContainer extends Component {
   }
 
   async componentDidMount() {
+    const {userPreference} = this.props;
     this.props.navigation.addListener('focus', () => {
       this.cllFetchAccounts();
-      this.callFetchUserPreference();
+      // this.callFetchUserPreference();
       registerUserStatus(this.getUserStatus);
+      this.setSelectedLanguage(userPreference);
     });
   }
+  setSelectedLanguage = data => {
+    this.setState({
+      selectedLanguage: data?.language?.label,
+    });
+  };
 
   getUserStatus = status => {
-    console.log('------->', status);
+    // console.log('------->', status);
     this.setState(
       {
         isActive: status?.user_status === 'online' ? true : false,
@@ -106,13 +115,14 @@ class SettingScreenContainer extends Component {
   };
 
   onLanguageSelected = (item, index) => {
-    //code
     this.setState(
       {
         selectedLanguage: item?.languageName,
       },
-      () => {
+      async () => {
         this.languageModalRef?.current?.close();
+        setLocale(item?.code);
+        this.callSetUserSetting(item);
       },
     );
   };
@@ -162,6 +172,7 @@ class SettingScreenContainer extends Component {
           LOCAL_STORAGE?.USER_PREFERENCE,
           JSON.stringify(res),
         );
+        setLocale(res?.language?.code)
         isReset ? this.changeProfile() : null;
       },
       FailureCallback: res => {
@@ -225,9 +236,27 @@ class SettingScreenContainer extends Component {
     changeUserStatus(payload);
   };
 
+  callSetUserSetting = data => {
+    const {userPreference} = this.props;
+    let param = {
+      first_name: userPreference?.first_name,
+      last_name: userPreference?.last_name,
+      language: data?.languageName,
+    };
+    this.props.changeUserSetting(param, {
+      SuccessCallback: res => {
+        navigateAndSimpleReset('SplashScreen');
+      },
+      FailureCallback: res => {
+        handleFailureCallback(res);
+      },
+    });
+  };
+
   render() {
     let state = this.state;
     const {userPreference, accounts} = this.props;
+    console.log('isActive---------->', state.isActive);
     return (
       <>
         <SettingScreenComponent
@@ -272,6 +301,7 @@ const mapActionCreators = {
   changeAccount,
   clearAllData,
   setProfileEvents,
+  changeUserSetting,
 };
 const mapStateToProps = state => {
   return {

@@ -12,7 +12,7 @@ import {
   fetchUserPreference,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import {strings} from '../../../locales/i18n';
+import {setLocale, strings} from '../../../locales/i18n';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {showToast} from '../../../util/helper';
 import axios from 'axios';
@@ -74,6 +74,7 @@ class SaveRecoveryContainer extends Component {
           LOCAL_STORAGE.USER_PREFERENCE,
           JSON.stringify(res),
         );
+        setLocale(res?.language?.code)
         AsyncStorage.setItem(LOCAL_STORAGE.IS_LOGIN, 'true');
         navigateAndSimpleReset('MainNavigator');
       },

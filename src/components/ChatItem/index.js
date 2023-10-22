@@ -17,6 +17,7 @@ import colors from '../../util/theme/colors';
 import Spacing from '../Spacing';
 import Text from '../Text/index';
 import Ticker from './Ticker';
+import {applyStyleToText} from '../../util/LocaleSupport';
 
 const ChatItem = ({
   name,
@@ -39,18 +40,19 @@ const ChatItem = ({
   paddingHorizontal = 0,
   backgroundColor = 'white',
   borderBottomWidth = 0,
-  borderBottomColor = theme.colors.brandColor.silver,
+  borderBottomColor = theme.colors.brandColor.borderColor,
   itemData,
   isLoading,
   typingData,
   hideGlobalChannelIcon,
-  channelIcon
+  channelIcon,
+  hideSlaErr,
+  prefill,
+  animation,
 }) => {
-  const radius = PixelRatio.roundToNearestPixel(6);
-  const STROKE_WIDTH = 0;
   const [isTyping, setIsTyping] = React.useState(false);
   const [isTypingData, setTypingData] = React.useState(null);
-
+  // console.log('prefill', prefill);
   let typingTimeout = null;
 
   React.useEffect(() => {
@@ -126,6 +128,7 @@ const ChatItem = ({
             <Text
               type={'body2'}
               weight={theme.typography.fontWeights.medium}
+              size={theme.typography.fontSizes.md}
               numberOfLines={1}>
               {name}
             </Text>
@@ -155,7 +158,8 @@ const ChatItem = ({
             <Text
               type={'caption12'}
               weight={theme.typography.fontWeights.bold}
-              style={{color: colors.brandColor.blue}}>
+              size={9}
+              style={{color: colors.brandColor.blue,}}>
               {unreadCount > 99 ? '999+' : unreadCount}
             </Text>
           </View>
@@ -182,10 +186,22 @@ const ChatItem = ({
               size={theme.normalize(13)}
               width={theme.normalize(6)}
               fill={100}
-              tintColor="#13BE66"
-              backgroundColor="white"
+              tintColor="white"
+              backgroundColor="#13BE66"
               padding={0}
               duration={duration}
+              prefill={prefill}
+              ref={animation}
+              style={{transform: [{rotate: '270deg'}]}}
+            />
+          ) : null}
+          {!hideSlaErr ? (
+            <Image
+              source={images.is_sla_err}
+              style={{
+                height: theme.normalize(13),
+                width: theme.normalize(13),
+              }}
             />
           ) : null}
           {/* <View
@@ -254,7 +270,22 @@ const ChatItem = ({
             }}>
             <View style={{flex: 1, justifyContent: 'center'}}>
               <Text type={'caption12'} size={10} numberOfLines={1}>
-                {isTyping ? 'typing...' : subTittle?.replace(/\n/g, '')}
+                {/* {isTyping ? 'typing...' : subTittle?.replace(/\n/g, '')} */}
+                {applyStyleToText(
+                  isTyping ? 'typing...' : subTittle?.replace(/\n/g, ''),
+                  [
+                    {
+                      style: {
+                        color: 'black',
+                      },
+                    },
+                  ],
+                  '<b>',
+                  '</b>',
+                  false,
+                  'caption12',
+                  1
+                )}
               </Text>
             </View>
             {!hideRating ? (
@@ -304,7 +335,8 @@ const styles = StyleSheet.create({
     width: theme.sizes.image.xl4,
     borderRadius: theme.sizes.image.xl4 / 2,
     marginRight: 10,
-    backgroundColor: colors.brandColor.lightestBlue,
+    backgroundColor: theme.colors.brandColor.visitorAvatarColor,
+    
   },
   badgeContainer: {
     height: 10,
@@ -327,11 +359,11 @@ const styles = StyleSheet.create({
     gap: wp(2),
   },
   unreadCountContainer: {
-    height: hp(4.2),
-    width: hp(4.2),
+    height: hp(3.5),
+    width: hp(3.5),
     backgroundColor: colors.brandColor.lavenderBlue,
     padding: 2,
-    borderRadius: hp(4),
+    borderRadius: 3,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',

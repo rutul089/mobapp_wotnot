@@ -21,6 +21,8 @@ function ChatBubbleAgent(props) {
     isUser,
     chatUserName,
     userFileJSX,
+    renderHtml,
+    onPressUser
   } = props;
 
   const getAcronym = (data, type = 'agent') => {
@@ -39,9 +41,13 @@ function ChatBubbleAgent(props) {
         {isUser ? (
           <View style={styles.bubbleWrapper}>
             <View style={styles.bubbleContainer}>
-              <Text type={'body2'} style={styles.textStyle} color={'white'}>
-                {msg}
-              </Text>
+              {userFileJSX ? (
+                userFileJSX
+              ) : (
+                <Text onPress={onPressUser} type={'body2'} style={styles.textStyle} color={'white'}>
+                  {msg}
+                </Text>
+              )}
             </View>
             {!isTimeStampHide ? (
               <ChatMsgInfo
@@ -143,7 +149,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.sizes.image.xl3 / 2,
   },
   acronymAvatar: {
-    backgroundColor: '#F7F7F7',
+    backgroundColor: theme.colors.brandColor.visitorAvatarColor,
     alignItems: 'center',
     justifyContent: 'center',
   },

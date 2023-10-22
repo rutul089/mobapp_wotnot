@@ -19,7 +19,6 @@ class DashboardContainer extends Component {
   callFetchTeamData = () => {
     this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
       SuccessCallback: res => {
-        console.log('callFetchTeamData', JSON.stringify(res));
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -38,7 +37,7 @@ class DashboardContainer extends Component {
       param,
       {
         SuccessCallback: res => {
-          console.log('callFetchTeammateData', JSON.stringify(res));
+
         },
         FailureCallback: res => {
           handleFailureCallback(res);

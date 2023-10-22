@@ -31,7 +31,7 @@ const SaveRecoveryComponent = ({
           <Spacing size="md" />
           <SVG.LoginLogoIcon />
           <Spacing size="xl" />
-          <Text type={'h3'}>{strings('login.twoFacAuthHeader')}</Text>
+          <Text type={'h3'}>{strings('login.2FA_SETUP_SCREEN_SETUP_HEADING')}</Text>
           <Spacing size="md" />
         </View>
         <View style={styles.doneStyleContainer}>
@@ -42,13 +42,13 @@ const SaveRecoveryComponent = ({
             color={'#FFA043'}
             numberOfLines={2}
             style={{flex: 1}}>
-            {strings('login.2fa_enabled_msg')}
+            {strings('login.2FA_SETUP_SCREEN_SETUP_COMPLETION_ALERT')}
           </Text>
         </View>
         <Spacing size="md" />
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text type={'body1'} textAlign={'center'}>
-            {strings('login.recover_code_note')}
+            {strings('login.SETUP_COMPLETION_SUB_HEADING')}
           </Text>
         </View>
         <Spacing size="xl" />
@@ -83,13 +83,13 @@ const SaveRecoveryComponent = ({
             fontFamily: theme.typography.fonts.circularStdMedium,
           }}
           style={{borderColor: theme.colors.brandColor.blue}}>
-          {`  ${strings('button.done')}  `}
+          {`  ${strings('button.2FA_SETUP_SCREEN_SETUP_DONE_BUTTON')}  `}
         </InButton>
         <Spacing direction="x" size="md" />
         <Button
           bg={theme.colors.brandColor.blue}
           style={{flex: 1}}
-          buttonText={strings('button.copy_code')}
+          buttonText={strings('button.RECOVERY_CODES_BUTTON')}
           onPress={onCopyCodeClick}
         />
       </View>

@@ -29,7 +29,7 @@ class ForgotPasswordContainer extends Component {
   onSubmit = () => {
     if (this.isValidEmail()) {
       this.setState({
-        emailErrMsg: strings('error.errEmail'),
+        emailErrMsg: strings('error.EMAIL_VALIDATION_MESSAGE'),
       });
       return;
     }

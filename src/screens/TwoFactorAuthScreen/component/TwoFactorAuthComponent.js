@@ -43,10 +43,10 @@ const TwoFactorAuthComponent = ({
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <SVG.LoginLogoIcon />
           <Spacing size="xl" />
-          <Text type={'h3'}>{strings('login.twoFacAuthHeader')}</Text>
+          <Text type={'h3'}>{strings('login.2FA_SETUP_SCREEN_SETUP_HEADING')}</Text>
           <Spacing size="xs" />
           <Text type={'body1'} textAlign={'center'}>
-            {strings('login.twoFacAuthHeaderNote')}
+            {strings('login.2FA_SETUP_SCREEN_SETUP_SUB_HEADNG')}
           </Text>
           <Spacing size="xl2" />
           {qr_code ? (
@@ -56,7 +56,7 @@ const TwoFactorAuthComponent = ({
           <Spacing size="xl2" />
         </View>
         <Input
-          label={strings('login.enter_the_code')}
+          label={strings('login.2FA_SETUP_SCREEN_SETUP_CODE_INPUT')}
           placeholder={''}
           isError={!state?.isErrOTP}
           errorMsg={state?.errOTP}
@@ -70,7 +70,7 @@ const TwoFactorAuthComponent = ({
         <Spacing size="xl" />
         <Button
           bg={theme.colors.brandColor.blue}
-          buttonText={strings('button.verify_code')}
+          buttonText={strings('button.RECOVERY_SCREEN_VERIFY_BTN_TEXT')}
           onPress={onSubmit}
         />
       </KeyboardAvoidingScrollView>

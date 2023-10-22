@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   RefreshControl,
   Linking,
+  SafeAreaView,
+  Modal,
 } from 'react-native';
 import {
   Header,
@@ -38,10 +40,7 @@ const renderQualificationRow = (icon, label, value, is_hidden, isLink) => {
             tintColor={theme.colors.typography.silver}
           />
           <Spacing direction="y" size="xs" />
-          <Text
-            type={'body2'}
-            color={theme.colors.typography.silver}
-           >
+          <Text type={'body2'} color={theme.colors.typography.silver}>
             {label}
           </Text>
         </View>
@@ -65,9 +64,7 @@ const renderQualificationRow = (icon, label, value, is_hidden, isLink) => {
               {value}
             </Text>
           ) : (
-            <Text type={'body2'} >
-              {value}
-            </Text>
+            <Text type={'body2'}>{value}</Text>
           )}
         </View>
       </View>
@@ -92,6 +89,36 @@ const UserDetailComponent = ({
   onRefresh,
   isLoading,
 }) => {
+  const [isScroll, setIsScroll] = React.useState(true);
+
+  const renderLabelView = () => {
+    return (
+      <Modal
+        animationType="slide"
+        visible={showSavedReply}
+        style={{backgroundColor: 'black'}}
+        statusBarTranslucent={false}>
+        <SafeAreaView
+          style={{
+            flex: 1,
+            backgroundColor: theme.colors.brandColor.FAFAFA,
+          }}>
+          <View style={{overflow: 'hidden', paddingBottom: 1}}>
+            <View style={styles.assigneeHeader}>
+              <TouchableOpacity activeOpacity={0.5} onPress={onCloseSaveReply}>
+                <Image
+                  source={images.ic_cross}
+                  resizeMode="contain"
+                  style={styles.assigneeIcon}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
+      </Modal>
+    );
+  };
+
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header
@@ -99,11 +126,12 @@ const UserDetailComponent = ({
         onPressLeftContent={onPressLeftContent}
       />
       <ScrollView
+        disableScrollViewPanResponder={false}
         contentContainerStyle={styles.container}
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={onRefresh} />
         }>
-        <Text type={'h4'}>{strings('chat.user_info.qualification')}</Text>
+        <Text type={'h4'}>{strings('chat.user_info.CONTACT_LIST_TITLE')}</Text>
         <Spacing />
         {qualifications &&
           qualifications.map((item, index) => {
@@ -232,16 +260,27 @@ const UserDetailComponent = ({
           }}
         />
         <Spacing size="xl" />
-        <Text type={'h4'}>{strings('chat.user_info.system_details')}</Text>
+        <Text type={'h4'}>{strings('chat.user_info.LABELS')}</Text>
         <Spacing size="xs10" />
         <View style={styles.labelContainer}>
-          {chipList.map((item, index) => (
-            <Chip
-              key={index}
-              value={item?.name}
-              onPress={() => removeLabel(item, index)}
-            />
-          ))}
+          <ScrollView
+            key={1}
+            nestedScrollEnabled
+            contentContainerStyle={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              flexGrow: 1,
+              padding: theme.sizes.spacing.xs10,
+            }}>
+            {chipList.map((item, index) => (
+              <Chip
+                key={index}
+                value={item?.name}
+                onPress={() => removeLabel(item, index)}
+              />
+            ))}
+          </ScrollView>
         </View>
         <Spacing size="xs10" />
         <TouchableOpacity
@@ -256,7 +295,11 @@ const UserDetailComponent = ({
       <BottomSheet
         ref={allLabelModalRef}
         height={
-          labelData?.length > 0 ? theme.normalize(220) : theme.normalize(120)
+          labelData?.length > 0
+            ? labelData?.length > 6
+              ? theme.normalize(500)
+              : theme.normalize(220)
+            : theme.normalize(120)
         }
         closeOnDragDown
         customStyles={{
@@ -265,7 +308,9 @@ const UserDetailComponent = ({
             elevation: 100,
           },
         }}>
-        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
+        <ScrollView
+          key={123}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
           {labelData && labelData?.length > 0 ? (
             labelData.map((item, index) => (
               <ActionItem

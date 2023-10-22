@@ -13,6 +13,7 @@ import {
   getItemFromStorage,
   setItemToStorage,
 } from '../../../util/DeviceStorageOperations';
+import { setLocale } from '../../../locales/i18n';
 
 class SplashScreenContainer extends Component {
   constructor(props) {
@@ -43,8 +44,8 @@ class SplashScreenContainer extends Component {
   callFetchUserPreference = async () => {
     this.props.fetchUserPreference(null, {
       SuccessCallback: res => {
-        console.log("------->callFetchUserPreference",JSON.stringify(res))
-        setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE,res);
+        setItemToStorage(LOCAL_STORAGE?.USER_PREFERENCE, res);
+        setLocale(res?.language?.code)
         navigateAndSimpleReset('MainNavigator');
       },
       FailureCallback: res => {

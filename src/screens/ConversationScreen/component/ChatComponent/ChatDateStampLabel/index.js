@@ -41,7 +41,7 @@ function ChatDateStampLabel(props) {
                     ? 'now'
                     : getTimeStamp(chatItem.agent.timestamp).timestamp
                 }
-                style={styles.dateStampLabel}
+                style={[styles.dateStampLabel,{backgroundColor:'#00000000'}]}
               />
             </Text>
           </View>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     lineHeight: 15,
     fontSize: typography.fontSizes.xs2,
-    backgroundColor: theme.colors.brandColor.blue,
-    color: 'white',
+    backgroundColor: theme.colors.brandColor.lightBlue,
+    color: theme.colors.brandColor.blue,
   },
 });

@@ -39,12 +39,14 @@ const TwoFactorCheckComponent = ({
         <Text type={'h3'}>{strings('login.enter_2fa_code')}</Text>
         <Spacing size="xs" />
         <Text type={'body1'} textAlign={'center'}>
-          {strings('login.enter_2fa_code_note')}
+          {strings('login.2FA_TOTP_SCREEN_SUB_HEADING', {
+            ORGANISATION_NAME: 'WotNot',
+          })}
         </Text>
         <Spacing size="xl2" />
       </View>
       <Input
-        label={strings('login.2fa_code')}
+        label={strings('login.2FA_TOTP_SCREEN_CODE_INPUT')}
         placeholder={''}
         isError={!state?.isErrOTP}
         errorMsg={state?.errOTP}
@@ -58,7 +60,7 @@ const TwoFactorCheckComponent = ({
       <Spacing size="xl" />
       <Button
         bg={theme.colors.brandColor.blue}
-        buttonText={strings('button.verify_code')}
+        buttonText={strings('button.RECOVERY_SCREEN_VERIFY_BTN_TEXT')}
         onPress={onSubmit}
       />
       <Spacing size="md" />

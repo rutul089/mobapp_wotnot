@@ -7,7 +7,6 @@ import {
   deleteLabel,
   fetchLabel,
   fetchQualifications,
-  fetchUserPreference,
   saveLabel,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
@@ -40,7 +39,6 @@ class UserDetailContainer extends Component {
         labels: itemData?.labels,
       },
       () => {
-        // this.callFetchUserPreference();
         this.callFetchLabel();
         this.callFetchQualifications();
       },
@@ -96,7 +94,6 @@ class UserDetailContainer extends Component {
   callFetchLabel = () => {
     this.props.fetchLabel(this.props.userPreference?.account_id, {
       SuccessCallback: res => {
-        console.log('SuccessCallback', JSON.stringify(res));
       },
       FailureCallback: res => {
         handleFailureCallback(res);
@@ -106,18 +103,6 @@ class UserDetailContainer extends Component {
 
   checkForDuplicateValue = (arrayList, value) => {
     return _.some(arrayList, o => _.includes(value, o?.name));
-  };
-
-  callFetchUserPreference = () => {
-    let param = {account_key: 'JJsqDeYRudZs101210993250gRK3gAQY'};
-    this.props.fetchUserPreference(param, {
-      SuccessCallback: res => {
-        // console.log('SuccessCallback', JSON.stringify(res));
-      },
-      FailureCallback: res => {
-        handleFailureCallback(res);
-      },
-    });
   };
 
   callFetchQualifications = threadKey => {
@@ -210,7 +195,6 @@ class UserDetailContainer extends Component {
 
 const mapActionCreators = {
   fetchLabel,
-  fetchUserPreference,
   fetchQualifications,
   saveLabel,
   deleteLabel,

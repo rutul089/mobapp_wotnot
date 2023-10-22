@@ -30,7 +30,8 @@ const TwoFactorCheckComponent = ({
   showRecoveryLabel,
   isLoading,
   maxLength=6,
-  placeholder
+  placeholder,
+  keyboardType="number-pad"
 }) => (
   <FlexContainer>
     <Header
@@ -58,7 +59,7 @@ const TwoFactorCheckComponent = ({
         isError={!state?.isErrOTP}
         errorMsg={state?.errOTP}
         value={state?.verifyCode}
-        keyboardType={'number-pad'}
+        keyboardType={keyboardType}
         onChangeText={onVerifyCodeChange && onVerifyCodeChange}
         returnKeyType="done"
         onSubmitEditing={onSubmitVerifyCode && onSubmitVerifyCode}
@@ -76,7 +77,7 @@ const TwoFactorCheckComponent = ({
           style={{alignSelf: 'flex-start'}}
           activeOpacity={0.5}
           onPress={recoveryCodeBtnPress}>
-          <Text type={'link'}>{strings('button.enter_recovery_code')}</Text>
+          <Text type={'link'}>{strings('button.2FA_TOTP_SCREEN_ENTER_RECOVERY_CODE')}</Text>
         </TouchableOpacity>
       ) : null}
     </KeyboardAvoidingScrollView>

@@ -363,6 +363,7 @@ export const statusChangeText = (data, assignee_id) => {
 };
 
 export const addNewMessage = (msg, conversation_list, customerProfile) => {
+  console.log('msg?.message_by', msg);
   let newData = [...conversation_list];
   let msgCounts = 0;
   let assignee = msg.assignee ? msg.assignee : msg.agent ? msg.agent : msg.bot;
@@ -411,13 +412,18 @@ export const addNewMessage = (msg, conversation_list, customerProfile) => {
     timestamp: 'now',
     status_id: 1,
     unique_user_key: msg.unique_user_key,
+    visitor_status: 'online',
+    last_message_by: msg?.last_message_by,
+    global_channel_name: msg?.global_channel_name,
+    browser: msg?.browser,
   };
   return {newMsg: newMsg, conversationData: newData};
 };
 
 export const getGlobalChannelIcon = (channelName, browser) => {
-  switch (channelName) {
-    case 'Web':
+  let channelName1 = channelName?.toLocaleLowerCase();
+  switch (channelName1) {
+    case 'web':
       if (browser.toLocaleLowerCase()?.includes('chrome')) {
         return images.global_channel_name.ic_chrome;
       } else if (browser.toLocaleLowerCase()?.includes('edge')) {
@@ -431,13 +437,23 @@ export const getGlobalChannelIcon = (channelName, browser) => {
         return images.global_channel_name.ic_firefox;
       }
       break;
-    case 'SMS':
+    case 'sms':
       return images.global_channel_name.ic_sms;
-    case 'Messenger':
+    case 'messenger':
       return images.global_channel_name.ic_facebook;
-    case 'WhatsApp':
+    case 'whatsApp':
       return images.global_channel_name.ic_whatsapp;
     default:
       return null;
   }
+};
+
+export const getAssigneeName = (users, last_id) => {
+  let name = '';
+  users?.forEach(element => {
+    if (element?.id === last_id) {
+      name = element?.display_name;
+    }
+  });
+  return name === '' ? '' : `<b>${name}: </b>`;
 };

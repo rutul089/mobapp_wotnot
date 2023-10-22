@@ -14,6 +14,7 @@ import {getDayDifference, hp, wp} from '../../util/helper';
 import colors from '../../util/theme/colors';
 import ChatItem from '../ChatItem';
 import Text from '../Text';
+import { strings } from '../../locales/i18n';
 
 const renderItem = ({item}) => {
   return (
@@ -38,7 +39,7 @@ const renderItem = ({item}) => {
 const EmptyListView = () => {
   return (
     <View style={{}}>
-      <Text>No conversations yet!</Text>
+      <Text>{strings('No conversation found')}</Text>
     </View>
   );
 };

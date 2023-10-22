@@ -162,6 +162,16 @@ export const endPoints = {
     endpoint: '/v1/livechat-file-attachment',
     method: Method.POST,
   },
+  userSettings: account_id => {
+    return {
+      endpoint: `/v1/accounts/${account_id}/settings`,
+      method: Method.GET,
+    };
+  },
+  changeUserSetting: {
+    endpoint: '/v1/user',
+    method: Method.PUT,
+  },
 };
 
 // export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD

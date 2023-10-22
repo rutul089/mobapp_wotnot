@@ -33,6 +33,7 @@ export async function initSocket() {
 }
 
 export function reconnect() {
+  console.log('reconnect')
   socket.on(SOCKET_EVENTS.RECONNECT, () => {
     emitAgentJoin();
   });

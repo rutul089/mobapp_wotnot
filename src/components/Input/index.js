@@ -84,6 +84,7 @@ const Input = ({
     fontWeight: computedFontWeight ?? undefined,
     backgroundColor: computeColor(backgroundColor),
     height: theme.sizes.xl13,
+    paddingHorizontal: 5,
   };
 
   const disableTextStyle = {

@@ -11,6 +11,7 @@ import {
 } from '../../../components';
 import theme from '../../../util/theme';
 import styles from '../style';
+import {strings} from '../../../locales/i18n';
 
 const NotificationComponent = ({
   onPressLeftContent,
@@ -36,7 +37,7 @@ const NotificationComponent = ({
       <ScrollView contentContainerStyle={styles.mainContainer}>
         <View style={{flexDirection: 'row'}}>
           <Text type={'body1'} style={{flex: 1}}>
-            Enable Notifications
+            {strings('NOTIFICATION_SWITCH_LABEL')}
           </Text>
           <SwitchToggle
             switchOn={state.isActive}
@@ -60,21 +61,21 @@ const NotificationComponent = ({
         </View>
         <Spacing size="xl" />
         <CheckBox
-          title={'When a human handover is triggered'}
+          title={strings('IS_HUMAN_HANDOVER_TRIGGER_CHECKBOX')}
           onPress={humanHandoverClick}
           isChecked={state.isHumanHandover}
           disabled={!state.isActive}
         />
         <Spacing size={'xs'} />
         <CheckBox
-          title={'When a new message from a existing chat is received'}
+          title={strings('IS_NEW_MESSAGE_CHECKBOX')}
           onPress={newMessageReceivedClick}
           isChecked={state.isNewMessageReceived}
           disabled={!state.isActive}
         />
         <Spacing size={'xs'} />
         <CheckBox
-          title={'When I receive notification play sound'}
+          title={strings('PLAY_SOUND_FOR_NOTIFICATION')}
           onPress={playNotificationSoundClick}
           isChecked={state.isPlayNotification}
           disabled={!state.isActive}
