@@ -18,4 +18,5 @@ export {default as OfflineNotice} from './OfflineNotice';
 export {default as ImageViewer} from './ImageViewer';
 export {default as CheckBox } from './CheckBox';
 export {default as RadioGroup } from './RadioButton';
+export {default as FullScreenModal } from './FullScreenModal';
 

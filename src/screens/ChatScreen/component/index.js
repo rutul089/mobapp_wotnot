@@ -182,15 +182,43 @@ const ChatScreenComponent = ({
     return value;
   };
 
+  const getAddress = item => {
+    let text = '';
+    if (item?.assignee?.name) {
+      text = item?.assignee?.name;
+    }
+
+    if (
+      item?.assignee?.name &&
+      item?.global_channel_name?.toLowerCase() === 'web'
+    ) {
+      text = text + ' | ';
+    }
+
+    if (item?.city_name) {
+      text = text + item?.city_name;
+    }
+
+    if (item?.country_name && item?.city_name) {
+      return (text = text + ',' + item?.country_name);
+    }
+
+    if (item?.country_name) {
+      return (text = text + item?.country_name);
+    }
+    return text;
+  };
+
   const renderList = ({item}) => {
     const customization = getListItemCustomization(item);
     return (
       <ChatItem
         key={item?.assignee?.id}
         name={item?.title}
-        email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
-          item?.city_name
-        },${item?.country_name}`}
+        // email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
+        //   item?.city_name
+        // },${item?.country_name}`}
+        email={getAddress(item)}
         uri={item?.assignee?.image_url}
         isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
         unreadCount={item?.unread_messages_count}
@@ -227,8 +255,8 @@ const ChatScreenComponent = ({
           item?.browser,
         )}
         hideSlaErr={
-          (customization?.lastMessageAt !== '' && (!(percentage >= 100)) ||
-          showSlaEnd(item, currentTab, slaTime, isSLAEnable))
+          (customization?.lastMessageAt !== '' && !(percentage >= 100)) ||
+          showSlaEnd(item, currentTab, slaTime, isSLAEnable)
         }
         prefill={getPrefillValue(item, slaTime)}
         animation={animationRef}

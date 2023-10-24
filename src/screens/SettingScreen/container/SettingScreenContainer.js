@@ -38,6 +38,12 @@ class SettingScreenContainer extends Component {
       selectedLanguage: 'English',
       isOpen: false,
       isLoading: false,
+      showAccountModal: false,
+      search_text: '',
+      filterAccountData: [],
+      showLanguageModal: false,
+      filerLanguageData: [],
+      searchLanguageValue: '',
     };
     this.onLogoutClick = this.onLogoutClick.bind(this);
     this.onNotificationClick = this.onNotificationClick.bind(this);
@@ -93,10 +99,12 @@ class SettingScreenContainer extends Component {
   };
 
   onPressAccountDropdown = () => {
+    this.setState({showAccountModal: true});
     this.accountModalRef?.current?.open();
   };
 
   onAccountListPress = (item, index) => {
+    this.setState({showAccountModal: false});
     this.accountModalRef?.current?.close();
     this.setLoader(true);
     this.callChangeAccount(item?.key);
@@ -111,7 +119,7 @@ class SettingScreenContainer extends Component {
   };
 
   onPressLanguageDropdown = () => {
-    this.languageModalRef?.current?.open();
+    this.setState({showLanguageModal: true});
   };
 
   onLanguageSelected = (item, index) => {
@@ -120,6 +128,7 @@ class SettingScreenContainer extends Component {
         selectedLanguage: item?.languageName,
       },
       async () => {
+        this.setState({showLanguageModal: false});
         this.languageModalRef?.current?.close();
         setLocale(item?.code);
         this.callSetUserSetting(item);
@@ -172,7 +181,7 @@ class SettingScreenContainer extends Component {
           LOCAL_STORAGE?.USER_PREFERENCE,
           JSON.stringify(res),
         );
-        setLocale(res?.language?.code)
+        setLocale(res?.language?.code);
         isReset ? this.changeProfile() : null;
       },
       FailureCallback: res => {
@@ -253,10 +262,61 @@ class SettingScreenContainer extends Component {
     });
   };
 
+  onSearchText = searchText => {
+    const {accounts} = this.props;
+
+    this.setState({
+      search_text: searchText,
+    });
+
+    if (!searchText || searchText === '') {
+      this.setState({
+        filterAccountData: [],
+      });
+      return;
+    }
+
+    let filterTeamData = accounts.filter(function (item) {
+      return item?.name?.toLowerCase()?.includes(searchText?.toLowerCase());
+    });
+
+    this.setState({
+      filterAccountData: filterTeamData,
+    });
+  };
+
+  onChangeLanguage = searchText => {
+    this.setState({
+      searchLanguageValue: searchText,
+    });
+
+    if (!searchText || searchText === '') {
+      this.setState({
+        filerLanguageData: [],
+      });
+      return;
+    }
+
+    let filterTeamData = languageList.filter(function (item) {
+      return item?.languageName
+        ?.toLowerCase()
+        ?.includes(searchText?.toLowerCase());
+    });
+
+    this.setState({
+      filerLanguageData: filterTeamData,
+    });
+  };
+
+  onHideLanguageModal = () => {
+    this.setState({
+      showLanguageModal: false,
+    });
+  };
+
   render() {
     let state = this.state;
     const {userPreference, accounts} = this.props;
-    console.log('isActive---------->', state.isActive);
     return (
       <>
         <SettingScreenComponent
@@ -271,8 +331,14 @@ class SettingScreenContainer extends Component {
           profilePhoto={userPreference?.image_url?.small}
           onPressAccountDropdown={this.onPressAccountDropdown}
           accountModalRef={this.accountModalRef}
-          accountList={accounts}
-          languageList={languageList}
+          accountList={
+            this.state.search_text ? this.state.filterAccountData : accounts
+          }
+          languageList={
+            this.state.searchLanguageValue
+              ? this.state.filerLanguageData
+              : languageList
+          }
           onAccountListPress={(item, index) =>
             this.onAccountListPress(item, index)
           }
@@ -288,6 +354,14 @@ class SettingScreenContainer extends Component {
           account_id={userPreference?.account_id}
           isLoading={state.isLoading}
           onHelpDeskClick={this.onHelpDeskClick}
+          showAccountModal={this.state.showAccountModal}
+          onHideModal={() => this.setState({showAccountModal: false})}
+          onChangeText={this.onSearchText}
+          searchValue={this.state.search_text}
+          showLanguageModal={this.state.showLanguageModal}
+          searchLanguageValue={this.state.searchLanguageValue}
+          onChangeLanguage={this.onChangeLanguage}
+          onHideLanguageModal={this.onHideLanguageModal}
         />
       </>
     );

@@ -68,6 +68,13 @@ class SignInScreenContainer extends Component {
   };
 
   onSubmit = () => {
+    API.getInstance().setHeaders([
+      {
+        key: 'app_version',
+        value: '1.0.1',
+      },
+    ]);
+
     let state = this.state;
     if (this.isValidEmail() && this.isValidPassword()) {
       this.setState({
@@ -158,7 +165,10 @@ class SignInScreenContainer extends Component {
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         console.log('Play services not available');
       } else {
-        console.log('Some other error happened', error.message + ' ' + error.code);
+        console.log(
+          'Some other error happened',
+          error.message + ' ' + error.code,
+        );
       }
     }
   };

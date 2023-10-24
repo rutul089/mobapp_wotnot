@@ -33,58 +33,6 @@ import {
 } from '../../../util/ConversationListHelper';
 import {strings} from '../../../locales/i18n';
 
-// const getFullMessage = item => {
-//   return item?.message === ''
-//     ? unEscape(item?.note)
-//     : ` ${getAssigneeName(users, item?.last_message_by)}${getMessage(item)}`;
-// };
-// const renderItem = ({item, index}) => {
-//   return (
-//     <ChatItem
-//       key={item?.assignee?.id}
-//       name={item?.title + ' ' + index}
-//       email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
-//         item?.city_name
-//       },${item?.country_name}`}
-//       uri={item?.assignee?.image_url}
-//       isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
-//       unreadCount={item?.unread_messages_count}
-//       lastMessageDay={getDayDifference(item?.last_message_at)}
-//       subTittle={`${getFullMessage(item)}`}
-//       onPress={() => navigate('ConversationScreen', {itemData: item})}
-//       item={item}
-//       rating={item?.rating}
-//       hideRating={item?.status_id === CONVERSATION.OPEN_MESSAGE_TYPE}
-//       hideUnreadCount={true}
-//       hideAnimation={true}
-//       hideStatusIcon={item?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE}
-//       paddingHorizontal={theme.sizes.spacing.ph}
-//       borderBottomWidth={0.5}
-//       itemData={item}
-//       channelIcon={getGlobalChannelIcon(
-//         item?.global_channel_name,
-//         item?.browser,
-//       )}
-//       hideSlaErr={true}
-//     />
-//     // <ChatItem
-//     //   key={item?.assignee?.id}
-//     //   name={item?.title ?? 'Unknown'}
-//     //   email={`${item?.assignee?.name} | ${item?.city_name},${item?.country_name}`}
-//     //   uri={item?.assignee?.image_url}
-//     //   isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
-//     //   unreadCount={item?.unread_messages_count}
-//     //   lastMessageDay={getDayDifference(item?.last_message_at)}
-//     //   subTittle={`${item?.message} `}
-//     //   onPress={() => {
-//     //     navigate('ConversationScreen', {itemData: item});
-//     //   }}
-//     //   item={item}
-//     //   isClosedMode={true}
-//     // />
-//   );
-// };
-
 const SearchComponent = ({
   onChangeText,
   searchValue,
@@ -95,6 +43,7 @@ const SearchComponent = ({
   isMoreLoading,
   loadMoreData = () => {},
   onEndReach,
+  moreLoading,
   users,
 }) => {
   const getFullMessage = item => {
@@ -102,14 +51,38 @@ const SearchComponent = ({
       ? unEscape(item?.note)
       : ` ${getAssigneeName(users, item?.last_message_by)}${getMessage(item)}`;
   };
+  const getAddress = item => {
+    let text = '';
+    if (item?.assignee?.name) {
+      text = item?.assignee?.name;
+    }
+
+    if (
+      item?.assignee?.name &&
+      item?.global_channel_name?.toLowerCase() === 'web'
+    ) {
+      text = text + ' | ';
+    }
+
+    if (item?.city_name) {
+      text = text + item?.city_name;
+    }
+
+    if (item?.country_name && item?.city_name) {
+      return (text = text + ',' + item?.country_name);
+    }
+
+    if (item?.country_name) {
+      return (text = text + item?.country_name);
+    }
+    return text;
+  };
   const renderItem = ({item, index}) => {
     return (
       <ChatItem
         key={item?.assignee?.id}
         name={item?.title + ' ' + index}
-        email={`${item?.assignee?.name ? item?.assignee?.name + ' | ' : ''}${
-          item?.city_name
-        },${item?.country_name}`}
+        email={getAddress(item)}
         uri={item?.assignee?.image_url}
         isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
         unreadCount={item?.unread_messages_count}
@@ -118,7 +91,6 @@ const SearchComponent = ({
         onPress={() => navigate('ConversationScreen', {itemData: item})}
         item={item}
         rating={item?.rating}
-        hideRating={item?.status_id === CONVERSATION.OPEN_MESSAGE_TYPE}
         hideUnreadCount={true}
         hideAnimation={true}
         hideStatusIcon={item?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE}
@@ -130,22 +102,12 @@ const SearchComponent = ({
           item?.browser,
         )}
         hideSlaErr={true}
+        hideRating={
+          item?.status_id === CONVERSATION.OPEN_MESSAGE_TYPE ||
+          item?.global_channel_name !== 'Web' ||
+          item?.rating === 0
+        }
       />
-      // <ChatItem
-      //   key={item?.assignee?.id}
-      //   name={item?.title ?? 'Unknown'}
-      //   email={`${item?.assignee?.name} | ${item?.city_name},${item?.country_name}`}
-      //   uri={item?.assignee?.image_url}
-      //   isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
-      //   unreadCount={item?.unread_messages_count}
-      //   lastMessageDay={getDayDifference(item?.last_message_at)}
-      //   subTittle={`${item?.message} `}
-      //   onPress={() => {
-      //     navigate('ConversationScreen', {itemData: item});
-      //   }}
-      //   item={item}
-      //   isClosedMode={true}
-      // />
     );
   };
   return (
@@ -195,7 +157,7 @@ const SearchComponent = ({
         }
         onEndReached={({distanceFromEnd}) => onEndReach(distanceFromEnd)}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter(isMoreLoading)}
+        ListFooterComponent={ moreLoading ? renderFooter(true) : null}
       />
       <Loader loading={isLoading} />
     </FlexContainer>
@@ -208,7 +170,7 @@ const renderFooter = moreLoading => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
+        height: 90,
       }}>
       <ActivityIndicator color={theme.colors.brandColor.blue} />
     </View>

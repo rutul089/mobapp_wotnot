@@ -32,11 +32,11 @@ export const Headers = {
 
 const defaultHeader = {
   'Content-Type': 'application/json',
-  app_version: '1.0.1',
-  manufacturer: DeviceInfoRN.getManufacturer(),
-  model_name: DeviceInfoRN.getModel(),
-  os_name: DeviceInfoRN.getOsName(),
-  os_version: DeviceInfoRN.getSystemVersion(),
+  // app_version: '1.0.1',
+  // manufacturer: DeviceInfoRN.getManufacturer(),
+  // model_name: DeviceInfoRN.getModel(),
+  // os_name: DeviceInfoRN.getOsName(),
+  // os_version: DeviceInfoRN.getSystemVersion(),
 };
 
 class API {
@@ -73,7 +73,16 @@ class API {
   }
 
   setHeader(key, value) {
+    console.log("key",key)
     axios.defaults.headers.common[key] = value;
+  }
+
+  setHeaders(key) {
+    console.log("key",key)
+    key?.forEach(element => {
+      axios.defaults.headers.common[element?.key] = element?.value
+    });
+    // axios.defaults.headers.common[key] = value;
   }
 
   getDevMode() {
@@ -147,6 +156,7 @@ class API {
             headers: {headers, ...defaultHeader},
           })
           .then(res => {
+            // this.helperLog('Method>>', res);
             if (res.status === 200 || res.success) {
               SuccessCallback(res.data);
             } else {

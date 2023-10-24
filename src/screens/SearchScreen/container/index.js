@@ -96,7 +96,7 @@ class SearchContainer extends Component {
       param,
       {
         SuccessCallback: res => {
-          // this.calConversationAPI(false);
+          this.calConversationAPI(false);
         },
         FailureCallback: res => {
           this.setLoading(false);

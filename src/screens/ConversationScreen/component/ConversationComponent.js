@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Modal,
   SafeAreaView,
   ScrollView,
   Platform,
@@ -54,6 +53,7 @@ import AutoGrowTextInputManager from '../../../util/AutoGrowTextInputManager';
 import ChatTyping from './ChatComponent/ChatTyping';
 import {registerVisitorTypingHandler} from '../../../websocket';
 import {bytesToSize} from '../../../util/helper';
+import Modal from '../../../components/CustomModal/index';
 
 const ConversationComponent = (
   {
@@ -179,7 +179,8 @@ const ConversationComponent = (
       <Modal
         animationType="slide"
         visible={showChangeAssignee}
-        style={{backgroundColor: 'black'}}
+        style={{backgroundColor: 'black', margin: 0}}
+        onBackButtonPress={onChangeAssigneeModalClose}
         statusBarTranslucent={false}>
         <SafeAreaView
           style={{flex: 1, backgroundColor: theme.colors.brandColor.FAFAFA}}>
@@ -694,7 +695,8 @@ const ConversationComponent = (
       <Modal
         animationType="slide"
         visible={showSavedReply}
-        style={{backgroundColor: 'black'}}
+        style={{backgroundColor: 'black', margin: 0}}
+        onBackButtonPress={onCloseSaveReply}
         statusBarTranslucent={false}>
         <SafeAreaView
           style={{flex: 1, backgroundColor: theme.colors.brandColor.FAFAFA}}>

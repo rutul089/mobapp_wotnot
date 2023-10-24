@@ -37,7 +37,7 @@ function ChatForm({chatItem, pos}) {
             chatBubbleStyle.bubbleContainer,
             {marginTop: 10, flex: 0, padding: 10, maxWidth: '85%'},
           ]}>
-          {fields.map((field,index) => (
+          {fields.map((field, index) => (
             <View
               key={index}
               style={{
@@ -53,13 +53,22 @@ function ChatForm({chatItem, pos}) {
                 numberOfLines={1}
                 key={field.label}
                 color={theme.colors.clear_blue}
+                style={{marginVertical: 5, flex: 0.45}}>
+                {field.label}
+              </Text>
+              <Text
+                type={'body2'}
+                numberOfLines={1}
+                key={field.label}
+                color={theme.colors.clear_blue}
                 style={{marginVertical: 5}}>
-                {field.label}{' : '}
+                {' : '}
               </Text>
               {field.value ? (
                 <Text
+                  numberOfLines={1}
                   type={'body2'}
-                  style={{marginVertical: 5,flex:1}}
+                  style={{marginVertical: 5, flex: 1}}
                   color={theme.colors.charcoal_grey}>
                   {field.value}
                 </Text>
