@@ -76,6 +76,7 @@ const Header = ({
               email={userItem?.subTittle}
               isOnline={userItem?.isOnline}
               uri={'https://i.pravatar.cc/512'}
+              hideStatus={userItem?.hideStatus}
             />
           ) : (
             <Image

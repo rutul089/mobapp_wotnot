@@ -77,7 +77,7 @@ const SignInScreenComponent = (
               onPress={this._signIn}
             /> */}
             <Spacing size="xl" />
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={_googleSignIn}
               activeOpacity={0.7}
               style={styles.googleButtonStyle}>
@@ -90,7 +90,7 @@ const SignInScreenComponent = (
                 {strings('button.GOOGLE_SIGN_IN_TEXT')}
               </Text>
             </TouchableOpacity>
-            <View style={styles.divider} />
+            <View style={styles.divider} /> */}
             <View style={styles.input_container_main}>
               <View style={styles.input_container}>
                 <Input

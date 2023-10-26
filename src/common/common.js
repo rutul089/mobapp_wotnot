@@ -31,7 +31,17 @@ export async function prepareAgentPayload(userPref, agent_account_list) {
 }
 
 export const getMessageFromEventPayload = (object, receivedConvCreate) => {
-  // console.log('object', object);
+  console.log('object', object);
+  console.log('getLasMessageId', getLasMessageId(object));
+  console.log(
+    'getLasMessageId------>',
+    object['message_by'] === 'agent'
+      ? object?.agent?.id
+      : object['message_by'] === 'bot'
+      ? getLasMessageId(object)
+      : '1234' + " ------ " + object?.event_payload
+  );
+
   // console.log(
   //   'object------>',
   //   object['message_by'] === 'agent'
@@ -303,16 +313,37 @@ export const getMessageFromEventPayload = (object, receivedConvCreate) => {
         returnObj['last_message_by'] =
           object['message_by'] === 'agent'
             ? object?.agent?.id
-            : object['message_by'] === 'visitor'
-            ? object?.bot_id
+            : object['message_by'] === 'bot'
+            ? getLasMessageId(object)
             : '';
         returnObj['browser'] = object?.browser
           ? object?.browser
           : object?.visitor?.browser
           ? object?.visitor?.browser
           : '';
+        returnObj['city_name'] = object?.browser
+          ? object?.browser
+          : object?.visitor?.city_name
+          ? object?.visitor?.city_name
+          : '';
+        returnObj['country_name'] = object?.browser
+          ? object?.browser
+          : object?.visitor?.country_name
+          ? object?.visitor?.country_name
+          : '';
       }
     }
     return returnObj;
+  }
+};
+
+export const getLasMessageId = object => {
+  let id = '';
+  // if (object?.agent && object?.agent?.user_type_id === 1) {
+  //   return '';
+  // }
+
+  if (object?.agent && object?.agent?.user_type_id === 2) {
+    return object?.agent?.id;
   }
 };

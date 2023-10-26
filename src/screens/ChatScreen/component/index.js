@@ -87,6 +87,7 @@ const ChatScreenComponent = ({
   const [index, setIndex] = React.useState(0);
   const [typingData, setTypingData] = React.useState();
   const [percentage, setPercentage] = React.useState();
+  const [showErr, setErr] = React.useState(false);
   const conversation_summary = useSelector(
     state => state.conversationReducer?.conversation_summary?.open_status,
   );
@@ -128,6 +129,10 @@ const ChatScreenComponent = ({
     ) {
       return true;
     }
+    console.log(
+      'showSLA(itemData?.sla_start_at, slaTime)',
+      showSLA(itemData?.sla_start_at, slaTime),
+    );
     return showSLA(itemData?.sla_start_at, slaTime);
   };
 
@@ -150,6 +155,7 @@ const ChatScreenComponent = ({
   };
 
   const getListItemCustomization = item => {
+    console.log('item------>', item);
     const date = item?.sla_start_at ? new Date(item?.sla_start_at) : new Date();
     let lastMessageAt = '';
     const checkLastMessageBy =
@@ -163,7 +169,7 @@ const ChatScreenComponent = ({
       lastMessageAt = date;
       // console.log('---------<------->', lastMessageAt);
     }
-    // console.log('checkLastMessageBy', checkLastMessageBy);
+    console.log('checkLastMessageBy', lastMessageAt + '');
     return {
       ...item,
       lastMessageAt,
@@ -173,10 +179,10 @@ const ChatScreenComponent = ({
   const checkForUser = id => {
     let value = '';
     users?.forEach(element => {
-      // console.log(
-      //   '----',
-      //   element?.id === id ? element?.user_type?.id === 2 : false,
-      // );
+      console.log(
+        '----',
+        element?.id === id ? element?.user_type?.id === 2 : false,
+      );
       value = element?.id === id ? element?.user_type?.id === 2 : false;
     });
     return value;
@@ -242,7 +248,10 @@ const ChatScreenComponent = ({
           customization?.lastMessageAt == '' ||
           getSalTime(item, currentTab, slaTime, isSLAEnable)
         }
-        hideStatusIcon={currentTab === CONVERSATION.CLOSE}
+        hideStatusIcon={
+          currentTab === CONVERSATION.CLOSE ||
+          item?.global_channel_name?.toLowerCase() !== 'web'
+        }
         paddingHorizontal={theme.sizes.spacing.ph}
         backgroundColor={'white'}
         duration={slaTime * 60000}
@@ -255,11 +264,13 @@ const ChatScreenComponent = ({
           item?.browser,
         )}
         hideSlaErr={
-          (customization?.lastMessageAt !== '' && !(percentage >= 100)) ||
-          showSlaEnd(item, currentTab, slaTime, isSLAEnable)
+          !(percentage >= 100) ||
+          showSlaEnd(item, currentTab, slaTime, isSLAEnable) ||
+          customization?.lastMessageAt === ''
         }
         prefill={getPrefillValue(item, slaTime)}
         animation={animationRef}
+        onAnimationComplete={() => setErr(true)}
       />
     );
   };

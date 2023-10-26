@@ -49,6 +49,7 @@ const ChatItem = ({
   hideSlaErr,
   prefill,
   animation,
+  onAnimationComplete
 }) => {
   const [isTyping, setIsTyping] = React.useState(false);
   const [isTypingData, setTypingData] = React.useState(null);
@@ -193,6 +194,7 @@ const ChatItem = ({
               prefill={prefill}
               ref={animation}
               style={{transform: [{rotate: '270deg'}]}}
+              onAnimationComplete={onAnimationComplete}
             />
           ) : null}
           {!hideSlaErr ? (

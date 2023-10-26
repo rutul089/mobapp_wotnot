@@ -93,7 +93,10 @@ const SearchComponent = ({
         rating={item?.rating}
         hideUnreadCount={true}
         hideAnimation={true}
-        hideStatusIcon={item?.status_id === CONVERSATION.CLOSED_MESSAGE_TYPE}
+        hideStatusIcon={
+          currentTab === CONVERSATION.CLOSE ||
+          item?.global_channel_name?.toLowerCase() !== 'web'
+        }
         paddingHorizontal={theme.sizes.spacing.ph}
         borderBottomWidth={0.5}
         itemData={item}
@@ -157,7 +160,7 @@ const SearchComponent = ({
         }
         onEndReached={({distanceFromEnd}) => onEndReach(distanceFromEnd)}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={ moreLoading ? renderFooter(true) : null}
+        ListFooterComponent={moreLoading ? renderFooter(true) : null}
       />
       <Loader loading={isLoading} />
     </FlexContainer>

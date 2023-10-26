@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react';
+import React, {forwardRef, useEffect} from 'react';
 import {
   FlatList,
   Image,
@@ -9,6 +9,8 @@ import {
   ScrollView,
   Platform,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import images from '../../../assets/images';
 import {
@@ -110,13 +112,41 @@ const ConversationComponent = (
     isLoadMore,
     mediaData,
     onMediaPreviewCancel,
-    replyInputRef,
+    // replyInputRef,
   },
   ref,
 ) => {
   const [typingData, setTypingData] = React.useState();
   const [imageModalShow, setImageModalShow] = React.useState(false);
   const [modalImg, setImageModalUrl] = React.useState();
+  const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
+
+  const replyInputRef = React.useRef();
+
+  React.useEffect(() => {
+    replyInputRef?.current?.focus();
+  }, [joinButton]);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        console.log('keyboardDidShow');
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   React.useEffect(() => {
     registerVisitorTypingHandler(e => {
@@ -369,10 +399,11 @@ const ConversationComponent = (
                   justifyContent: 'center',
                   fontFamily: theme.typography.fonts.circularStdBook,
                   maxHeight: 100,
-                  minHeight: 35,
+                  minHeight: theme.normalize(35),
                   paddingVertical: theme.normalize(6),
                   // padding: theme.normalize(6),
                   lineHeight: theme.typography.lineHeights.md,
+                  top: Platform.OS === 'android' ? 0 : 3,
                   // ...Platform.select({
                   //   ios: {lineHeight: 20, paddingBottom: 2, paddingTop: 13},
                   //   android: {lineHeight: 20},
@@ -479,6 +510,7 @@ const ConversationComponent = (
     );
   };
   const renderItem = (item, msgType, itemWithAccountDetails, formResponse) => {
+    // console.log("msgType----->",msgType)
     switch (msgType) {
       case 'file.response': {
         let files = userFileResponseElement(itemWithAccountDetails);
@@ -777,6 +809,7 @@ const ConversationComponent = (
         onPressInfo={onPressInfo}
         onPressLeftContent={onPressLeftContent}
         userItem={{
+          hideStatus: itemData?.global_channel_name?.toLowerCase() !== 'web',
           name: itemData?.title,
           subTittle: `${itemData?.assignee?.name} | ${itemData?.city_name},${itemData?.country_name}`,
           isOnline:
@@ -785,7 +818,15 @@ const ConversationComponent = (
         isMoreIconHidden={isClosed}
       />
 
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        enabled
+        style={{flex: 1}}
+        keyboardVerticalOffset={
+          Platform.OS === 'android'
+            ? theme.normalize(!isKeyboardVisible ? 30 : -30)
+            : theme.normalize(50)
+        }
+        behavior={Platform.OS === 'android' ? 'height' : 'padding'}>
         <FlatList
           ref={listRef}
           data={messageHistory}
@@ -841,7 +882,7 @@ const ConversationComponent = (
           : joinButton
           ? _renderJoinConversationView()
           : _renderInputTextView()}
-      </View>
+      </KeyboardAvoidingView>
 
       <BottomSheet
         ref={moreInfoModalRef}

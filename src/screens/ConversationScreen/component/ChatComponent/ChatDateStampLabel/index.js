@@ -16,7 +16,7 @@ import typography from '../../../../../util/theme/typography';
 
 function ChatDateStampLabel(props) {
   const {loggedInUserId, chatItem, pos} = props;
-
+  // console.log("chatItem",JSON.stringify(chatItem))
   let msg = chatItem.agent.assigned
     ? getAssigneeChangeMsgText(chatItem, loggedInUserId)
     : chatItem.agent.status

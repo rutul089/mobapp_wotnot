@@ -113,7 +113,6 @@ class ConversationContainer extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.registerListener();
     });
-
     // Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     // Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   };
@@ -459,7 +458,7 @@ class ConversationContainer extends Component {
     } = this.props;
     this.props.fetchConversationHistory(
       itemData?.thread_key,
-      `limit=35${offset}`,
+      `limit=35`,
       showLoader,
       {
         SuccessCallback: res => {
@@ -486,8 +485,9 @@ class ConversationContainer extends Component {
   };
 
   callFetchConversationHistorySearchAfter = isLoadMore => {
+    console.log('00000000');
     let offset = isLoadMore
-      ? this.state.search_after
+      ? this.state.search_after && this.state.search_after.length > 0
         ? `&search_after=${this.state.search_after?.toString()}`
         : ''
       : '';
@@ -600,6 +600,7 @@ class ConversationContainer extends Component {
         params: {itemData},
       },
     } = this.props;
+    console.log('msg------->', msg);
     if (!(this.props.isLoading || this.state.isLoading) && msg) {
       if (itemData?.thread_key === msg?.conversation_key) {
         let convertedMessage = getMessageFromEventPayload(
@@ -707,7 +708,7 @@ class ConversationContainer extends Component {
   };
 
   changeConversationStatus = data => {
-    // console.log('------>changeConversationStatus', data);
+    console.log('------>changeConversationStatus', data);
     const {
       route: {
         params: {itemData},

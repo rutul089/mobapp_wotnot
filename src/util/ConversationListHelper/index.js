@@ -274,7 +274,8 @@ export const getMessage = item => {
   ) {
     message = 'CAROUSEL';
   } else if (data && data?.type === 'calendar' && data?.text) {
-    message = 'Calendar';
+    let validData = JSON.parse(data?.text);
+    message = validData && validData?.title ? validData?.title : 'Calendar';
   } else if (
     data &&
     (data.type === 'form' || data.type === 'file') &&
@@ -416,6 +417,8 @@ export const addNewMessage = (msg, conversation_list, customerProfile) => {
     last_message_by: msg?.last_message_by,
     global_channel_name: msg?.global_channel_name,
     browser: msg?.browser,
+    city_name: msg?.city_name,
+    country_name: msg?.country_name,
   };
   return {newMsg: newMsg, conversationData: newData};
 };

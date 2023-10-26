@@ -421,7 +421,7 @@ class TestChatScreen extends Component {
         msg,
         this.props.conversations,
       );
-      // console.log('getMessageFromEventPayload', convertedMessage);
+      console.log('getMessageFromEventPayload', convertedMessage);
       if (convertedMessage && 'assignee' in convertedMessage) {
         !convertedMessage.assignee
           ? (convertedMessage['assignee'] = convertedMessage.agent)
@@ -443,6 +443,7 @@ class TestChatScreen extends Component {
             this.props.conversations,
             'conversationTitle',
           );
+          // console.log("newObj?.newMsg",newObj?.newMsg)
           this.props.setConversations([
             newObj?.newMsg,
             ...newObj?.conversationData,
