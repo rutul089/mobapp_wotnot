@@ -155,7 +155,6 @@ const ChatScreenComponent = ({
   };
 
   const getListItemCustomization = item => {
-    console.log('item------>', item);
     const date = item?.sla_start_at ? new Date(item?.sla_start_at) : new Date();
     let lastMessageAt = '';
     const checkLastMessageBy =
@@ -169,7 +168,7 @@ const ChatScreenComponent = ({
       lastMessageAt = date;
       // console.log('---------<------->', lastMessageAt);
     }
-    console.log('checkLastMessageBy', lastMessageAt + '');
+    // console.log('checkLastMessageBy', lastMessageAt + '');
     return {
       ...item,
       lastMessageAt,
@@ -179,10 +178,6 @@ const ChatScreenComponent = ({
   const checkForUser = id => {
     let value = '';
     users?.forEach(element => {
-      console.log(
-        '----',
-        element?.id === id ? element?.user_type?.id === 2 : false,
-      );
       value = element?.id === id ? element?.user_type?.id === 2 : false;
     });
     return value;

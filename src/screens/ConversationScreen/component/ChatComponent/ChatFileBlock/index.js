@@ -36,11 +36,15 @@ function ChatFileBlock(props) {
   };
 
   const callDownloadFile = () => {
+    console.log('12312312312312');
+
     getDownloadPermissionAndroid().then(granted => {
       if (granted) {
         downloadFile(cUri, fileName, ext).then(res => {
           FileViewer.open(res?.data);
         });
+      } else {
+        console.log('123-0----');
       }
     });
   };

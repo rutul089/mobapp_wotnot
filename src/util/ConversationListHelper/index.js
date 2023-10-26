@@ -364,7 +364,7 @@ export const statusChangeText = (data, assignee_id) => {
 };
 
 export const addNewMessage = (msg, conversation_list, customerProfile) => {
-  console.log('msg?.message_by', msg);
+  // console.log('msg?.message_by', msg);
   let newData = [...conversation_list];
   let msgCounts = 0;
   let assignee = msg.assignee ? msg.assignee : msg.agent ? msg.agent : msg.bot;

@@ -162,8 +162,8 @@ export function userFileResponseElement(el) {
 }
 
 export function getStatusChangeMsgText(el, assignee_id) {
-  console.log("el------>",el)
-  console.log("assignee_id------>",el)
+  // console.log("el------>",el)
+  // console.log("assignee_id------>",el)
   if (el.agent['name']) {
     var name = el.agent['name'];
     var status = el.agent['status']['name'];

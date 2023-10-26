@@ -1,4 +1,4 @@
-import {Platform, PermissionsAndroid} from 'react-native';
+import {Platform, PermissionsAndroid, Linking} from 'react-native';
 import {
   checkNotifications,
   PERMISSIONS,
@@ -59,7 +59,11 @@ export const getDownloadPermissionAndroid = async () => {
         buttonPositive: 'OK',
       },
     );
+    console.log('granted', granted);
     if (granted === PermissionsAndroid.RESULTS.GRANTED) return true;
+    if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      return true;
+    }
   } catch (err) {
     console.log('err', err);
   }

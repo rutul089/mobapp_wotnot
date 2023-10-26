@@ -31,16 +31,16 @@ export async function prepareAgentPayload(userPref, agent_account_list) {
 }
 
 export const getMessageFromEventPayload = (object, receivedConvCreate) => {
-  console.log('object', object);
-  console.log('getLasMessageId', getLasMessageId(object));
-  console.log(
-    'getLasMessageId------>',
-    object['message_by'] === 'agent'
-      ? object?.agent?.id
-      : object['message_by'] === 'bot'
-      ? getLasMessageId(object)
-      : '1234' + " ------ " + object?.event_payload
-  );
+  // console.log('object', object);
+  // console.log('getLasMessageId', getLasMessageId(object));
+  // console.log(
+  //   'getLasMessageId------>',
+  //   object['message_by'] === 'agent'
+  //     ? object?.agent?.id
+  //     : object['message_by'] === 'bot'
+  //     ? getLasMessageId(object)
+  //     : '1234' + " ------ " + object?.event_payload
+  // );
 
   // console.log(
   //   'object------>',
