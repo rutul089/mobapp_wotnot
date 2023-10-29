@@ -49,7 +49,7 @@ const ChatItem = ({
   hideSlaErr,
   prefill,
   animation,
-  onAnimationComplete
+  onAnimationComplete,
 }) => {
   const [isTyping, setIsTyping] = React.useState(false);
   const [isTypingData, setTypingData] = React.useState(null);
@@ -160,7 +160,7 @@ const ChatItem = ({
               type={'caption12'}
               weight={theme.typography.fontWeights.bold}
               size={9}
-              style={{color: colors.brandColor.blue,}}>
+              style={{color: colors.brandColor.blue}}>
               {unreadCount > 99 ? '999+' : unreadCount}
             </Text>
           </View>
@@ -274,7 +274,11 @@ const ChatItem = ({
               <Text type={'caption12'} size={10} numberOfLines={1}>
                 {/* {isTyping ? 'typing...' : subTittle?.replace(/\n/g, '')} */}
                 {applyStyleToText(
-                  isTyping ? 'typing...' : subTittle?.replace(/\n/g, ''),
+                  isTyping
+                    ? name
+                      ? `${name} is typing`
+                      : 'typing ...'
+                    : subTittle?.replace(/\n/g, ''),
                   [
                     {
                       style: {
@@ -286,7 +290,7 @@ const ChatItem = ({
                   '</b>',
                   false,
                   'caption12',
-                  1
+                  1,
                 )}
               </Text>
             </View>
@@ -338,7 +342,6 @@ const styles = StyleSheet.create({
     borderRadius: theme.sizes.image.xl4 / 2,
     marginRight: 10,
     backgroundColor: theme.colors.brandColor.visitorAvatarColor,
-    
   },
   badgeContainer: {
     height: 10,

@@ -36,9 +36,10 @@ export const endPoints = {
       method: Method.POST,
     };
   },
-  fetchSavedReply: (account_id, from, limit) => {
+  fetchSavedReply: (account_id, from, limit,query) => {
     return {
-      endpoint: `/v1/account/${account_id}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=frequency`,
+      endpoint: `/v1/account/${account_id}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=frequency&query=${query}`,
+      // endpoint: `/v1/account/${account_id}/saved-replies?&sort_type=desc&sort_by=frequency`,
       method: Method.GET,
     };
   },
@@ -121,7 +122,7 @@ export const endPoints = {
     method: Method.GET,
   },
   storeNotificationToken: {
-    endpoint: '/v1/notification-token', // {{param :"token": notificationToken}}
+    endpoint: '/v1/notification-token?type=PWA', // {{param :"token": notificationToken}}
     method: Method.POST,
   },
   removeNotificationToken: {
@@ -172,7 +173,16 @@ export const endPoints = {
     endpoint: '/v1/user',
     method: Method.PUT,
   },
+  fetchSavedReplySearch: (account_id,query) => {
+    return {
+      // endpoint: `/v1/account/${account_id}/saved-replies?&from=${from}&limit=${limit}&sort_type=desc&sort_by=frequency&query=${query}`,
+      endpoint: `/v1/account/${account_id}/saved-replies?query=${query}&sort_type=desc&sort_by=frequency`,
+      method: Method.GET,
+    };
+  },
 };
+
+
 
 // export const WebSocketURL= "ws.wotnot.io/?user_type=agent" // PROD
 // export const WebSocketURL = "ws.test.wotnot.io/?user_type=agent" // TEST

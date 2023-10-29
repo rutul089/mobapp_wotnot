@@ -3,16 +3,23 @@ import React, {useMemo} from 'react';
 import {View} from 'react-native';
 import {Text} from '../../../../../components';
 import ChatMsgInfo from '../ChatMsgInfo';
-import {getTimeStamp} from '../../../../../util/ConversationListHelper';
+import {
+  getTimeStamp,
+  unEscape,
+} from '../../../../../util/ConversationListHelper';
 import {styles as chatBubbleStyle} from '../ChatStyle/chatBubbleStyle';
+import RenderHTML from 'react-native-render-html';
 
 function ChatCalendar(props) {
   return useMemo(
     () => (
       <View style={chatBubbleStyle.bubbleWrapper}>
         <View style={chatBubbleStyle.bubbleContainer}>
-          <Text type={'body2'} style={chatBubbleStyle.textStyle} color={'white'}>
-            {props.textMsg}
+          <Text
+            type={'body2'}
+            style={chatBubbleStyle.textStyle}
+            color={'white'}>
+            {unEscape(props.textMsg)}
           </Text>
         </View>
         <ChatMsgInfo

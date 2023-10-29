@@ -89,6 +89,24 @@ export default class RootContainer extends Component {
     // this.checkNotificationPermission();
     this.requestUserPermission();
     this.registerAppStateEvent();
+    messaging().onMessage(async remoteMessage => {
+      console.log('FCM Message Data:', remoteMessage);
+    });
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        console.log(
+          'Notification caused app to open from quit state:',
+          remoteMessage,
+        );
+      });
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      // Update a users messages list using AsyncStorage
+      // const currentMessages = await AsyncStorage.getItem('messages');
+      // const messageArray = JSON.parse(currentMessages);
+      // messageArray.push(remoteMessage.data);
+      console.log('messageArray', remoteMessage);
+    });
   }
 
   checkNotificationPermission = async () => {
@@ -164,7 +182,7 @@ export default class RootContainer extends Component {
       nextAppState === 'active'
     ) {
       // reconnect();
-      initSocket()
+      initSocket();
       console.log('nextAppState---------1', nextAppState);
     } else {
       console.log('nextAppState---------', nextAppState);

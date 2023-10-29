@@ -112,6 +112,8 @@ const ConversationComponent = (
     isLoadMore,
     mediaData,
     onMediaPreviewCancel,
+    handleLoadMore1,
+    saveReplyLoadMore,
     // replyInputRef,
   },
   ref,
@@ -772,8 +774,13 @@ const ConversationComponent = (
               data={save_reply_list}
               renderItem={({item, index}) => (
                 <ActionItem
-                  label={`${item?.title}`}
+                  label={
+                    item?.title && item?.title.trim().length > 0
+                      ? item?.title
+                      : '-'
+                  }
                   onItemPress={() => onSaveReplyClick && onSaveReplyClick(item)}
+                  key={index}
                 />
               )}
               style={{}}
@@ -790,6 +797,20 @@ const ConversationComponent = (
                     <Text>No saved replies found</Text>
                   </View>
                 )
+              }
+              onEndReached={handleLoadMore1}
+              maxToRenderPerBatch={10}
+              scrollEventThrottle={16}
+              onEndReachedThreshold={0}
+              ListFooterComponent={
+                <View style={{marginVertical: theme.sizes.spacing.pv}}>
+                  {saveReplyLoadMore ? (
+                    <ActivityIndicator
+                      size="large"
+                      color={theme.colors.brandColor.blue}
+                    />
+                  ) : null}
+                </View>
               }
             />
           )}

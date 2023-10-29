@@ -283,6 +283,13 @@ export const getMessage = item => {
   ) {
     let messageItem = JSON.parse(data?.text);
     message = messageItem?.message;
+  } else if (
+    data &&
+    data?.type === 'form.response' &&
+    data?.fields &&
+    data?.fields?.length > 0
+  ) {
+    message = `${data?.fields?.[0]?.label}:${data?.fields?.[0]?.value}`;
   } else {
     message = item.message;
   }

@@ -17,6 +17,8 @@ import {
   setConversationsHistory,
   fetchSavedReply,
   uploadFileAttachment,
+  saveReply,
+  fetchSavedReplySearch,
 } from '../../../store/actions';
 import {
   CONVERSATION_STATUS_NAME,
@@ -77,6 +79,11 @@ class ConversationContainer extends Component {
       mediaDataUrl: '',
       hideLoader: false,
       appState: AppState.currentState,
+      from: 0,
+      total_replies: 0,
+      saveReplyLoadMore: false,
+      savedReplyList: [],
+      isSearching: false,
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -90,6 +97,7 @@ class ConversationContainer extends Component {
     this.onSaveReplyClick = this.onSaveReplyClick.bind(this);
     this.appStateRef = null;
     this.replyInputRef = React.createRef();
+    this.timer = null;
   }
 
   componentDidMount = () => {
@@ -113,11 +121,16 @@ class ConversationContainer extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.registerListener();
     });
+    // this._callSaveReply()
     // Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
     // Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   };
 
   componentWillUnmount = () => {
+    console.log(
+      '---------------->---------------->---------------->---------------->',
+    );
+    this.props.saveReply([]);
     this._unsubscribe();
   };
 
@@ -542,18 +555,52 @@ class ConversationContainer extends Component {
     );
   };
 
-  _callSaveReply = () => {
+  _callSaveReply = (query = '') => {
     this.props.fetchSavedReply(
       this.props?.userPreference?.account_id,
-      0,
-      50,
+      this.state.from,
+      10,
       false,
+      query,
       {
         SuccessCallback: res => {
-          this.setState({saveLoading: false});
+          // let listData = this.props.save_reply_list;
+          console.log('res?.replies', res?.replies);
+          this.setState({
+            saveLoading: false,
+            total_replies: res?.total_replies,
+            saveReplyLoadMore: false,
+            savedReplyList: [...this.state.savedReplyList, ...res?.replies],
+          });
+          // this.props.saveReply([...this.state.savedReplyList, ...res?.replies]);
         },
         FailureCallback: res => {
-          this.setState({saveLoading: false});
+          this.setState({saveLoading: false, saveReplyLoadMore: false});
+          handleFailureCallback(res, false);
+        },
+      },
+    );
+  };
+
+  _callSaveReplySearch = (query = '') => {
+    this.props.fetchSavedReplySearch(
+      this.props?.userPreference?.account_id,
+      false,
+      query,
+      {
+        SuccessCallback: res => {
+          // let listData = this.props.save_reply_list;
+          console.log('res?.replies', res?.replies);
+          this.setState({
+            saveLoading: false,
+            total_replies: res?.total_replies,
+            saveReplyLoadMore: false,
+            savedReplyList: res?.replies,
+          });
+          // this.props.saveReply([...this.state.savedReplyList, ...res?.replies]);
+        },
+        FailureCallback: res => {
+          this.setState({saveLoading: false, saveReplyLoadMore: false});
           handleFailureCallback(res, false);
         },
       },
@@ -563,11 +610,29 @@ class ConversationContainer extends Component {
   onCloseSaveReply = () => {
     this.setState({
       showSavedReply: false,
+      from: 0,
     });
+    this.props.saveReply([]);
+  };
+
+  handleChange = searchText => {
+    clearTimeout(this.timer);
+    this.setState({search_text_save_reply: searchText, saveLoading: true});
+    this.timer = setTimeout(this.triggerChange, 500);
+  };
+
+  triggerChange = () => {
+    this._callSaveReplySearch(this.state.search_text_save_reply);
   };
 
   onSearchSaveReply = searchText => {
+    this.handleChange(searchText);
+    return;
     this.setState({search_text_save_reply: searchText});
+    setTimeout(() => {
+      console.log('------');
+    }, 500);
+    return;
     let {save_reply_list} = this.props;
 
     if (!searchText || searchText === '') {
@@ -923,6 +988,19 @@ class ConversationContainer extends Component {
     // this.appStateRef?.remove()
   }
 
+  loadSaveReply = () => {
+    if (this.state.total_replies <= this.state.savedReplyList?.length) {
+      return;
+    }
+    this.setState(
+      {
+        from: this.state.from + 10,
+        saveReplyLoadMore: true,
+      },
+      () => this._callSaveReply(),
+    );
+  };
+
   render() {
     const {
       teamMateData,
@@ -996,11 +1074,7 @@ class ConversationContainer extends Component {
           users={this.props.conversationHistory?.users}
           isClosed={this.state.conversationStatus === 2}
           showSavedReply={this.state.showSavedReply}
-          save_reply_list={
-            search_text_save_reply !== ''
-              ? filterSaveReplyData
-              : save_reply_list
-          }
+          save_reply_list={this.state.savedReplyList}
           onCloseSaveReply={this.onCloseSaveReply}
           replyLoading={this.state.saveLoading}
           searchSaveReply={this.state.search_text_save_reply}
@@ -1013,6 +1087,8 @@ class ConversationContainer extends Component {
           mediaData={this.state.mediaData}
           onMediaPreviewCancel={this.onMediaPreviewCancel}
           replyInputRef={this.replyInputRef}
+          handleLoadMore1={this.loadSaveReply}
+          saveReplyLoadMore={this.state.saveReplyLoadMore}
         />
       </>
     );
@@ -1028,6 +1104,8 @@ const mapActionCreators = {
   setConversationsHistory,
   fetchSavedReply,
   uploadFileAttachment,
+  saveReply,
+  fetchSavedReplySearch,
 };
 const mapStateToProps = state => {
   return {
@@ -1038,7 +1116,7 @@ const mapStateToProps = state => {
       state.conversationReducer?.conversationHistory?.messages_list,
     isLoading: state.global.loading,
     conversationHistory: state.conversationReducer?.conversationHistory,
-    save_reply_list: state.accountReducer?.savedReply?.replies,
+    save_reply_list: state.accountReducer?.savedReply,
   };
 };
 export default connect(

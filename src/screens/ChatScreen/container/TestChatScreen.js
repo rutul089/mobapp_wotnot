@@ -55,9 +55,11 @@ import {
   check,
   request,
   openSettings,
+  checkNotifications,
 } from 'react-native-permissions';
 import moment from 'moment';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import messaging from '@react-native-firebase/messaging';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -109,7 +111,7 @@ class TestChatScreen extends Component {
 
   subscribeListener() {
     this.callFetchConversation(this.state.currentTab, false, false);
-    this.callSummary()
+    this.callSummary();
     registerAssigneeChangedHandler(this.onAssigneeChange);
     registerConversationCreateHandler(this.onConvCreateReceived);
     registerStatusChangedHandler(this.msgStatusChange);
@@ -496,17 +498,35 @@ class TestChatScreen extends Component {
       SuccessCallback: res => {
         console.log('SuccessCallback', res);
       },
-      FailureCallback: res => {
-      },
+      FailureCallback: res => {},
     });
   };
 
   requestPermission = async () => {
     const checkPermission = await this.checkNotificationPermission();
+    const authStatus = await messaging().requestPermission();
+
+    console.log('checkPermission', checkPermission);
+
+    // checkNotifications().then(({status, settings}) => {
+    //   console.log("sstatusta",status)
+    //   if (status === RESULTS.GRANTED) {
+    //     this.callSetNotificationToken();
+    //   }
+    // });
+
     if (checkPermission !== RESULTS.GRANTED) {
       const request = await this.requestNotificationPermission();
+      console.log('request', request);
       if (request === RESULTS.GRANTED) {
         this.callSetNotificationToken();
+      } else {
+        checkNotifications().then(({status, settings}) => {
+          console.log('sstatusta', status);
+          if (status === RESULTS.GRANTED) {
+            this.callSetNotificationToken();
+          }
+        });
       }
     } else if (checkPermission === RESULTS.GRANTED) {
       this.callSetNotificationToken();
@@ -532,7 +552,6 @@ class TestChatScreen extends Component {
       FailureCallback: res => {},
     });
   };
-
 
   render() {
     return (

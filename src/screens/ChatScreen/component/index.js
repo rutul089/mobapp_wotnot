@@ -129,10 +129,10 @@ const ChatScreenComponent = ({
     ) {
       return true;
     }
-    console.log(
-      'showSLA(itemData?.sla_start_at, slaTime)',
-      showSLA(itemData?.sla_start_at, slaTime),
-    );
+    // console.log(
+    //   'showSLA(itemData?.sla_start_at, slaTime)',
+    //   showSLA(itemData?.sla_start_at, slaTime),
+    // );
     return showSLA(itemData?.sla_start_at, slaTime);
   };
 
@@ -149,9 +149,24 @@ const ChatScreenComponent = ({
   }, percentage);
 
   const getFullMessage = item => {
+    // console.log(
+    //   'getAssigneeName(users, item?.last_message_by)',
+    //   getAssigneeName(users, item?.last_message_by),
+    // );
+    // console.log('getAssigneeName(users, item?.last_message_by)', item);
+    let name = '';
+    if (
+      item?.last_message_by === 0 &&
+      item?.conversation_mode === 'BOT' &&
+      item?.closed_by?.first_name !== 'System'
+    ) {
+      name = '<b>Bot: </b>';
+    }else {
+      name = getAssigneeName(users, item?.last_message_by);
+    }
     return item?.message === ''
       ? unEscape(item?.note)
-      : ` ${getAssigneeName(users, item?.last_message_by)}${getMessage(item)}`;
+      : ` ${name}${getMessage(item)}`;
   };
 
   const getListItemCustomization = item => {

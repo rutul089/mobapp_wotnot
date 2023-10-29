@@ -7,7 +7,7 @@ import {
   setTeammateData,
   saveReply,
   setUserPreference,
-  setUserList
+  setUserList,
 } from './global';
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -72,18 +72,46 @@ export const fetchSavedReply = (
   from,
   limit,
   isLoading,
+  query,
   {SuccessCallback, FailureCallback},
 ) => {
   return dispatch => {
     isLoading ? dispatch(loadingSet()) : null;
     API.getInstance().Fetch(
-      endPoints.fetchSavedReply(account_id, from, limit),
+      endPoints.fetchSavedReply(account_id, from, limit, query),
       defaultHeaders,
       '',
       {
         SuccessCallback: response => {
           dispatch(loadingUnset());
-          dispatch(saveReply(response));
+          // dispatch(saveReply(response));
+          SuccessCallback(response);
+        },
+        FailureCallback: response => {
+          dispatch(loadingUnset());
+          FailureCallback(response);
+        },
+      },
+    );
+  };
+};
+export const fetchSavedReplySearch = (
+  account_id,
+
+  isLoading,
+  query,
+  {SuccessCallback, FailureCallback},
+) => {
+  return dispatch => {
+    isLoading ? dispatch(loadingSet()) : null;
+    API.getInstance().Fetch(
+      endPoints.fetchSavedReplySearch(account_id, query),
+      defaultHeaders,
+      '',
+      {
+        SuccessCallback: response => {
+          dispatch(loadingUnset());
+          // dispatch(saveReply(response));
           SuccessCallback(response);
         },
         FailureCallback: response => {
