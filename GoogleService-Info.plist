@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyCcUh2xRWNEBGPvs4E43OM5NnwJqdOow8w</string>
+	<string>AIzaSyBpii4BYTex32rj3KpzxJ56BLURInuExUQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>386340205536</string>
+	<string>382131013049</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.wotnot.wotnot</string>
 	<key>PROJECT_ID</key>
-	<string>wotnot-dev</string>
+	<string>wotnot-production</string>
 	<key>STORAGE_BUCKET</key>
-	<string>wotnot-dev.appspot.com</string>
+	<string>wotnot-production.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:386340205536:ios:2ff9ba0faac4452c167185</string>
+	<string>1:382131013049:ios:2ac28fc57932ebb2012268</string>
 </dict>
 </plist>

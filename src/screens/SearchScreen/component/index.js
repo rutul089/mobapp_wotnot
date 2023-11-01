@@ -26,6 +26,7 @@ import {getDayDifference, hp} from '../../../util/helper';
 import theme from '../../../util/theme';
 import styles from '../Style';
 import {
+  getAddress,
   getAssigneeName,
   getGlobalChannelIcon,
   getMessage,
@@ -45,38 +46,14 @@ const SearchComponent = ({
   onEndReach,
   moreLoading,
   users,
+  currentTab,
 }) => {
   const getFullMessage = item => {
     return item?.message === ''
       ? unEscape(item?.note)
       : ` ${getAssigneeName(users, item?.last_message_by)}${getMessage(item)}`;
   };
-  const getAddress = item => {
-    let text = '';
-    if (item?.assignee?.name) {
-      text = item?.assignee?.name;
-    }
 
-    if (
-      item?.assignee?.name &&
-      item?.global_channel_name?.toLowerCase() === 'web'
-    ) {
-      text = text + ' | ';
-    }
-
-    if (item?.city_name) {
-      text = text + item?.city_name;
-    }
-
-    if (item?.country_name && item?.city_name) {
-      return (text = text + ',' + item?.country_name);
-    }
-
-    if (item?.country_name) {
-      return (text = text + item?.country_name);
-    }
-    return text;
-  };
   const renderItem = ({item, index}) => {
     return (
       <ChatItem

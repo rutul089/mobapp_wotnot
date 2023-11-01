@@ -467,3 +467,30 @@ export const getAssigneeName = (users, last_id) => {
   });
   return name === '' ? '' : `<b>${name}: </b>`;
 };
+
+export const getAddress = item => {
+  let text = '';
+  if (item?.assignee?.name) {
+    text = item?.assignee?.name;
+  }
+
+  if (
+    item?.assignee?.name &&
+    item?.global_channel_name?.toLowerCase() === 'web'
+  ) {
+    text = text + ' | ';
+  }
+
+  if (item?.city_name) {
+    text = text + item?.city_name;
+  }
+
+  if (item?.country_name && item?.city_name) {
+    return (text = text + ',' + item?.country_name);
+  }
+
+  if (item?.country_name) {
+    return (text = text + item?.country_name);
+  }
+  return text;
+};

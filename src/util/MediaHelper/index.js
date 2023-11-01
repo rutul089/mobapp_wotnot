@@ -1,5 +1,11 @@
 import * as ImagePicker from 'react-native-image-picker';
-import DocumentPicker from 'react-native-document-picker';
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  isCancel,
+  isInProgress,
+  types,
+} from 'react-native-document-picker';
 
 export const openImagePicker = async onResponse => {
   let options = {
@@ -24,6 +30,7 @@ export const openImagePicker = async onResponse => {
 
 export const requestDocument = async onResponse => {
   try {
+    DocumentPicker.isCancel();
     const res = await DocumentPicker.pick({
       type: [
         DocumentPicker.types.doc,
@@ -48,11 +55,41 @@ export const requestDocument = async onResponse => {
     // console.log('requestDocument_', JSON.stringify(response));
     return onResponse(response);
   } catch (err) {
+    console.log('err', err);
+    DocumentPicker.isCancel();
     return onResponse(null);
     if (DocumentPicker.isCancel(err)) {
       return onResponse(null);
     } else {
       throw err;
     }
+  }
+};
+
+export const requestFileOption = async onResponse => {
+  try {
+    const pickerResult = await DocumentPicker.pickSingle({
+      presentationStyle: 'fullScreen',
+      copyTo: 'cachesDirectory',
+    });
+    console.log('pickerResult', pickerResult);
+    let response = {
+      uri: pickerResult['uri'],
+      type: pickerResult['type'],
+      name: pickerResult['name'],
+      size: pickerResult['size'],
+    };
+    return onResponse(response);
+  } catch (err) {
+    if (isCancel(err)) {
+      console.warn('cancelled');
+    } else if (isInProgress(err)) {
+      console.warn(
+        'multiple pickers were opened, only the last will be considered',
+      );
+    } else {
+      throw err;
+    }
+    return onResponse(null);
   }
 };

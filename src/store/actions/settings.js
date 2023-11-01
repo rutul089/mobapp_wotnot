@@ -162,7 +162,7 @@ export const fetchUserSetting = (
     // showLoader ? dispatch(loadingSet()) : null;
     API.getInstance().Fetch(
       endPoints.userSettings(accountId),
-      defaultHeaders2,
+      defaultHeaders,
       '',
       {
         SuccessCallback: response => {

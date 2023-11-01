@@ -9,6 +9,7 @@ const getDeviceId = () => DeviceInfo.getDeviceId();
 const getOsName = () => Platform.OS;
 const getDeviceName = () => DeviceInfo.getDevice();
 const getManufacturer = () => DeviceInfo.getBrand();
+// const getMaxMemory = () => DeviceInfo.getTotalDiskCapacity();
 const getDeviceCountry = () => DeviceInfo.getDeviceCountry();
 const getModel = () => DeviceInfo.getModel();
 const getFreeDiskStorage = () => DeviceInfo.getFreeDiskStorage();
@@ -25,6 +26,7 @@ module.exports = {
   getOsName,
   getDeviceName,
   getManufacturer,
+  // getMaxMemory,
   getDeviceCountry,
   getModel,
   getFreeDiskStorage,

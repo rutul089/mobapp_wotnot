@@ -60,6 +60,7 @@ import {
 import moment from 'moment';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import messaging from '@react-native-firebase/messaging';
+import {API, Headers} from '../../../apiService';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -87,6 +88,13 @@ class TestChatScreen extends Component {
   }
 
   async componentDidMount() {
+    API.getInstance().setHeaders([
+      {
+        key: 'app_version',
+        value: '1.0.3',
+      },
+    ]);
+
     this.registerAppStateEvent();
     // this.callSummary();
     this.callFetchTeamData();

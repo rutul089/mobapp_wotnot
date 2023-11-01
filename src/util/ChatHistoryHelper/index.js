@@ -183,6 +183,8 @@ export function getStatusChangeMsgText(el, assignee_id) {
 }
 
 export function getAssigneeChangeMsgText(el, assignee_id) {
+  // console.log("el----->",JSON.stringify(el))
+  // console.log("assignee_id",assignee_id)
   var assigned = el.agent['assigned'];
 
   if (assigned != null) {
@@ -217,6 +219,8 @@ export function getAssigneeChangeMsgText(el, assignee_id) {
 }
 
 export function getAgentDetails(item, users) {
+  // console.log("item",JSON.stringify(item))
+  // console.log("users",users)
   let agentWithAccountDetails = item;
   let agent_details = users[item['agent']['created_by']]
     ? users[item['agent']['created_by']]

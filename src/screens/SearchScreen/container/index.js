@@ -96,7 +96,7 @@ class SearchContainer extends Component {
       param,
       {
         SuccessCallback: res => {
-          this.calConversationAPI(false);
+          // this.calConversationAPI(false);
         },
         FailureCallback: res => {
           this.setLoading(false);
@@ -156,6 +156,7 @@ class SearchContainer extends Component {
           isMoreLoading={this.state.moreLoading}
           onEndReach={this.loadMoreData}
           users={this.props.teamMateData}
+          currentTab={3}
         />
       </>
     );

@@ -61,18 +61,20 @@ export default class RootContainer extends Component {
 
   async requestUserPermission() {
     const authStatus = await messaging().requestPermission();
-    const deviceRemote = await messaging().registerDeviceForRemoteMessages();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     console.log('Authorization enabled:', enabled);
 
     if (enabled) {
+      console.log('---------->', 1);
+      await messaging().registerDeviceForRemoteMessages();
       this.getFcmToken();
     }
   }
 
   async getFcmToken() {
+    console.log('---------->', 2);
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
       console.log('FCM Token:', fcmToken);
@@ -92,14 +94,6 @@ export default class RootContainer extends Component {
     messaging().onMessage(async remoteMessage => {
       console.log('FCM Message Data:', remoteMessage);
     });
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        console.log(
-          'Notification caused app to open from quit state:',
-          remoteMessage,
-        );
-      });
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       // Update a users messages list using AsyncStorage
       // const currentMessages = await AsyncStorage.getItem('messages');

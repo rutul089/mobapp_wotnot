@@ -32,7 +32,7 @@ export const Headers = {
 
 const defaultHeader = {
   'Content-Type': 'application/json',
-  // app_version: '1.0.1',
+  app_version: '1.0.1',
   // manufacturer: DeviceInfoRN.getManufacturer(),
   // model_name: DeviceInfoRN.getModel(),
   // os_name: DeviceInfoRN.getOsName(),
@@ -73,14 +73,14 @@ class API {
   }
 
   setHeader(key, value) {
-    console.log("key",key)
+    console.log('key', key);
     axios.defaults.headers.common[key] = value;
   }
 
   setHeaders(key) {
-    console.log("key",key)
+    console.log('key', key);
     key?.forEach(element => {
-      axios.defaults.headers.common[element?.key] = element?.value
+      axios.defaults.headers.common[element?.key] = element?.value;
     });
     // axios.defaults.headers.common[key] = value;
   }
@@ -143,6 +143,11 @@ class API {
     params,
     {SuccessCallback, FailureCallback},
   ) {
+    let finalHeader = Object.assign({}, headers);
+    finalHeader['app_version'] = DeviceInfoRN.getVersion();
+    finalHeader['os_name'] = DeviceInfoRN.getOsName();
+    finalHeader['source'] = "react-native-app";
+
     switch (method) {
       case Method.GET:
         this.helperLog('Param>>', params);
@@ -150,13 +155,14 @@ class API {
           headers: defaultHeader,
         });
         this.helperLog('Method>>', 'GET');
+        this.helperLog('Headers>>', finalHeader);
         const param = params ? '?' + params : '';
         axios
           .get(this._baseURL + endPoint + param, {
-            headers: {headers, ...defaultHeader},
+            headers: finalHeader,
           })
           .then(res => {
-            // this.helperLog('Method>>', res);
+            // this.helperLog('SuccessCallback>>', res);
             if (res.status === 200 || res.success) {
               SuccessCallback(res.data);
             } else {
@@ -176,9 +182,10 @@ class API {
         this.helperLog('Param>>', params);
         this.helperLog('URL>>', this._baseURL + endPoint, {defaultHeader});
         this.helperLog('Method>>', 'POST');
+        this.helperLog('Headers>>', finalHeader);
         axios
           .post(this._baseURL + endPoint, params, {
-            headers: {headers, ...defaultHeader},
+            headers: finalHeader,
           })
           .then(res => {
             // this.helperLog('SuccessCallback', res);
@@ -201,9 +208,10 @@ class API {
         this.helperLog('Param>>', params);
         this.helperLog('URL>>', this._baseURL + endPoint, {defaultHeader});
         this.helperLog('Method>>', 'PUT');
+        this.helperLog('Headers>>', headers);
         axios
           .put(this._baseURL + endPoint, params, {
-            headers: {headers, ...defaultHeader},
+            headers: finalHeader,
           })
           .then(res => {
             // this.helperLog('SuccessCallback', res);
@@ -229,7 +237,7 @@ class API {
         this.helperLog('Method>>', 'DELETE');
         axios
           .delete(this._baseURL + endPoint, params, {
-            headers: {headers, ...defaultHeader},
+            headers: finalHeader,
           })
           .then(res => {
             // this.helperLog('SuccessCallback', res);
@@ -253,7 +261,7 @@ class API {
         this.helperLog('Method>>', 'PATCH');
         axios
           .patch(this._baseURL + endPoint, params, {
-            headers: {headers, ...defaultHeader},
+            headers: finalHeader,
           })
           .then(res => {
             // this.helperLog('SuccessCallback', res);
@@ -276,7 +284,7 @@ class API {
         this.helperLog('Method>>', 'GETBODY');
         axios
           .get(this._baseURL + endPoint, params, {
-            headers: {headers, ...defaultHeader},
+            headers: finalHeader,
           })
           .then(res => {
             if (res.status === 200 || res.success) {

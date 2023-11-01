@@ -33,7 +33,7 @@
 		5765A9682AB8F13600CD6F95 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5765A9572AB8F13600CD6F95 /* FontAwesome5_Regular.ttf */; };
 		5765A9692AB8F13600CD6F95 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5765A9582AB8F13600CD6F95 /* FontAwesome5_Solid.ttf */; };
 		5765A96A2AB8F13600CD6F95 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5765A9592AB8F13600CD6F95 /* MaterialIcons.ttf */; };
-		57B7CC282AE866EB00CC1727 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 57B7CC272AE866EB00CC1727 /* GoogleService-Info.plist */; };
+		57B7CC2D2AF0E0FC00CC1727 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 57B7CC2C2AF0E0FC00CC1727 /* GoogleService-Info.plist */; };
 		6A60757987FA48C0AFB9C443 /* CircularStd-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 703882F8649E449AB5485972 /* CircularStd-Book.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8F7957381067423E957E1D29 /* CircularStd-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9480387B30D43A6B0B7B195 /* CircularStd-MediumItalic.ttf */; };
@@ -88,7 +88,8 @@
 		5765A9572AB8F13600CD6F95 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
 		5765A9582AB8F13600CD6F95 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
 		5765A9592AB8F13600CD6F95 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
-		57B7CC272AE866EB00CC1727 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		57B7CC292AEE854A00CC1727 /* mobapp_wotnotRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = mobapp_wotnotRelease.entitlements; path = mobapp_wotnot/mobapp_wotnotRelease.entitlements; sourceTree = "<group>"; };
+		57B7CC2C2AF0E0FC00CC1727 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		703882F8649E449AB5485972 /* CircularStd-Book.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-Book.ttf"; path = "../src/assets/fonts/CircularStd-Book.ttf"; sourceTree = "<group>"; };
 		70F5F6B3BD53075D43553905 /* Pods-mobapp_wotnot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobapp_wotnot.debug.xcconfig"; path = "Target Support Files/Pods-mobapp_wotnot/Pods-mobapp_wotnot.debug.xcconfig"; sourceTree = "<group>"; };
 		77FB50A80FF643CE969D132D /* CircularStd-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CircularStd-Bold.ttf"; path = "../src/assets/fonts/CircularStd-Bold.ttf"; sourceTree = "<group>"; };
@@ -144,6 +145,7 @@
 		13B07FAE1A68108700A75B9A /* mobapp_wotnot */ = {
 			isa = PBXGroup;
 			children = (
+				57B7CC292AEE854A00CC1727 /* mobapp_wotnotRelease.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -174,7 +176,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				57B7CC272AE866EB00CC1727 /* GoogleService-Info.plist */,
+				57B7CC2C2AF0E0FC00CC1727 /* GoogleService-Info.plist */,
 				5765A94D2AB8F13500CD6F95 /* Entypo.ttf */,
 				5765A9542AB8F13600CD6F95 /* EvilIcons.ttf */,
 				5765A9502AB8F13500CD6F95 /* Feather.ttf */,
@@ -353,7 +355,7 @@
 				5765A9632AB8F13600CD6F95 /* Foundation.ttf in Resources */,
 				5765A9642AB8F13600CD6F95 /* SimpleLineIcons.ttf in Resources */,
 				5765A9652AB8F13600CD6F95 /* EvilIcons.ttf in Resources */,
-				57B7CC282AE866EB00CC1727 /* GoogleService-Info.plist in Resources */,
+				57B7CC2D2AF0E0FC00CC1727 /* GoogleService-Info.plist in Resources */,
 				5765A9662AB8F13600CD6F95 /* FontAwesome6_Solid.ttf in Resources */,
 				5765A9672AB8F13600CD6F95 /* MaterialCommunityIcons.ttf in Resources */,
 				5765A9682AB8F13600CD6F95 /* FontAwesome5_Regular.ttf in Resources */,
@@ -625,7 +627,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = G8NNFQCD25;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = mobapp_wotnot/Info.plist;
@@ -657,9 +659,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = mobapp_wotnot/mobapp_wotnotRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = G8NNFQCD25;
 				INFOPLIST_FILE = mobapp_wotnot/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "WotNot\n\nWotNot\n\nWotNot";

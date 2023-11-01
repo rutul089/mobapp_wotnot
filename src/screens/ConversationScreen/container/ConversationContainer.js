@@ -7,7 +7,13 @@ import {goBack, navigate} from '../../../navigator/NavigationUtils';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import ConversationComponent from '../component/ConversationComponent';
 import RNFetchBlob from 'rn-fetch-blob';
-
+import DocumentPicker, {
+  DirectoryPickerResponse,
+  DocumentPickerResponse,
+  isCancel,
+  isInProgress,
+  types,
+} from 'react-native-document-picker';
 import {
   fetchTeamData,
   fetchTeammateData,
@@ -39,9 +45,14 @@ import {
 import {getMessageFromEventPayload} from '../../../common/common';
 import {isValidJSON, stringToObj} from '../../../util/JSONOperations';
 import * as ImagePicker from 'react-native-image-picker';
-import {requestDocument, openImagePicker} from '../../../util/MediaHelper';
+import {
+  requestDocument,
+  openImagePicker,
+  requestFileOption,
+} from '../../../util/MediaHelper';
 import {getChatMsgCountWithoutStatusMsg} from '../../../util/ChatHistoryHelper';
 import axios from 'axios';
+
 let options = {
   mediaType: 'photo',
   quality: 1.0,
@@ -84,6 +95,7 @@ class ConversationContainer extends Component {
       saveReplyLoadMore: false,
       savedReplyList: [],
       isSearching: false,
+      userData: {},
     };
     this.onPressInfo = this.onPressInfo.bind(this);
     this.onPressMore = this.onPressMore.bind(this);
@@ -108,7 +120,7 @@ class ConversationContainer extends Component {
     } = this.props;
     this.setState({
       conversationJoined: true,
-      conversationStatus: itemData?.status_id,
+      conversationStatus: itemData?.status_id ?? 1,
       // isJoinButtonVisible:
       //   itemData?.conversation_mode !== CONVERSATION.CONVERSATION_MODE,
     });
@@ -277,17 +289,27 @@ class ConversationContainer extends Component {
     Alert.alert('TBD');
     this.attachmentBottomSheetRef?.current?.close();
   };
-  onAttachmentsPress = () => {
-    this.attachmentBottomSheetRef?.current?.close();
+  onAttachmentsPress = async () => {
     setTimeout(async () => {
-      requestDocument(async (response, type) => {
+      requestFileOption(async (response, type) => {
         this.setState(
           {
             mediaData: response,
           },
-          () => this.uploadMedia(response),
+          () => {
+            this.attachmentBottomSheetRef?.current?.close(),
+              this.uploadMedia(response);
+          },
         );
       });
+      // requestDocument(async (response, type) => {
+      //   this.setState(
+      //     {
+      //       mediaData: response,
+      //     },
+      //     () => this.uploadMedia(response),
+      //   );
+      // });
     }, 200);
   };
 
@@ -307,7 +329,7 @@ class ConversationContainer extends Component {
     this.props.fetchTeamData(this.props?.userPreference?.account_id, 1, {
       SuccessCallback: res => {},
       FailureCallback: res => {
-        handleFailureCallback(res);
+        handleFailureCallback(res, false, true, false);
       },
     });
   };
@@ -324,7 +346,7 @@ class ConversationContainer extends Component {
       {
         SuccessCallback: res => {},
         FailureCallback: res => {
-          handleFailureCallback(res);
+          handleFailureCallback(res, false, true, false);
         },
       },
     );
@@ -483,22 +505,24 @@ class ConversationContainer extends Component {
                   : res?.messages_list,
                 search_after: res?.search_after,
                 isLoadMore: false,
+                userData: res?.users,
               },
-              () => this.onEmitReadMsg(res?.messages_list),
+              async () => {
+                this.onEmitReadMsg(res?.messages_list);
+              },
             );
           }
           this.setLoading(false);
         },
         FailureCallback: res => {
           this.setLoading(false);
-          handleFailureCallback(res, false);
+          handleFailureCallback(res, false, true, false);
         },
       },
     );
   };
 
   callFetchConversationHistorySearchAfter = isLoadMore => {
-    console.log('00000000');
     let offset = isLoadMore
       ? this.state.search_after && this.state.search_after.length > 0
         ? `&search_after=${this.state.search_after?.toString()}`
@@ -523,6 +547,7 @@ class ConversationContainer extends Component {
                   : res?.messages_list,
                 search_after: res?.search_after,
                 isLoadMore: false,
+                userData: res?.users,
               },
               () => this.onEmitReadMsg(res?.messages_list),
             );
@@ -531,7 +556,7 @@ class ConversationContainer extends Component {
         },
         FailureCallback: res => {
           this.setLoading(false);
-          handleFailureCallback(res, false);
+          handleFailureCallback(res, false, true, false);
         },
       },
     );
@@ -576,7 +601,7 @@ class ConversationContainer extends Component {
         },
         FailureCallback: res => {
           this.setState({saveLoading: false, saveReplyLoadMore: false});
-          handleFailureCallback(res, false);
+          handleFailureCallback(res, false, true, false);
         },
       },
     );
@@ -601,7 +626,7 @@ class ConversationContainer extends Component {
         },
         FailureCallback: res => {
           this.setState({saveLoading: false, saveReplyLoadMore: false});
-          handleFailureCallback(res, false);
+          handleFailureCallback(res, false, true, false);
         },
       },
     );
@@ -914,6 +939,7 @@ class ConversationContainer extends Component {
   };
 
   uploadMedia = fileData => {
+    return;
     const {
       route: {
         params: {itemData},
@@ -1009,16 +1035,9 @@ class ConversationContainer extends Component {
         params: {itemData},
       },
       userPreference,
-      messageHistory,
-      save_reply_list,
     } = this.props;
-    let {
-      filterTeamMateData,
-      filterTeamData,
-      search_text,
-      search_text_save_reply,
-      filterSaveReplyData,
-    } = this.state;
+    let {filterTeamMateData, filterTeamData, search_text} = this.state;
+
     return (
       <>
         <ConversationComponent
@@ -1071,7 +1090,8 @@ class ConversationContainer extends Component {
           onChangeText={this.onSearchText}
           // messageHistory={messageHistory}
           messageHistory={this.state.messageList}
-          users={this.props.conversationHistory?.users}
+          // users={this.props.conversationHistory?.users}
+          users={this.state.userData}
           isClosed={this.state.conversationStatus === 2}
           showSavedReply={this.state.showSavedReply}
           save_reply_list={this.state.savedReplyList}

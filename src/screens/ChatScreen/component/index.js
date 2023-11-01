@@ -36,6 +36,7 @@ import {
   unEscape,
   getGlobalChannelIcon,
   getAssigneeName,
+  getAddress,
 } from '../../../util/ConversationListHelper';
 import {Box} from 'native-base';
 import {registerVisitorTypingHandler} from '../../../websocket';
@@ -149,19 +150,15 @@ const ChatScreenComponent = ({
   }, percentage);
 
   const getFullMessage = item => {
-    // console.log(
-    //   'getAssigneeName(users, item?.last_message_by)',
-    //   getAssigneeName(users, item?.last_message_by),
-    // );
-    // console.log('getAssigneeName(users, item?.last_message_by)', item);
     let name = '';
-    if (
-      item?.last_message_by === 0 &&
+    if (item?.last_message_by === 0) {
+      name = '';
+    } else if (
       item?.conversation_mode === 'BOT' &&
       item?.closed_by?.first_name !== 'System'
     ) {
       name = '<b>Bot: </b>';
-    }else {
+    } else {
       name = getAssigneeName(users, item?.last_message_by);
     }
     return item?.message === ''
@@ -184,9 +181,12 @@ const ChatScreenComponent = ({
       // console.log('---------<------->', lastMessageAt);
     }
     // console.log('checkLastMessageBy', lastMessageAt + '');
+    let fullMEssage = getFullMessage(item);
+
     return {
       ...item,
       lastMessageAt,
+      fullMEssage,
     };
   };
 
@@ -198,35 +198,9 @@ const ChatScreenComponent = ({
     return value;
   };
 
-  const getAddress = item => {
-    let text = '';
-    if (item?.assignee?.name) {
-      text = item?.assignee?.name;
-    }
-
-    if (
-      item?.assignee?.name &&
-      item?.global_channel_name?.toLowerCase() === 'web'
-    ) {
-      text = text + ' | ';
-    }
-
-    if (item?.city_name) {
-      text = text + item?.city_name;
-    }
-
-    if (item?.country_name && item?.city_name) {
-      return (text = text + ',' + item?.country_name);
-    }
-
-    if (item?.country_name) {
-      return (text = text + item?.country_name);
-    }
-    return text;
-  };
-
   const renderList = ({item}) => {
     const customization = getListItemCustomization(item);
+    // console.log('customization', customization);
     return (
       <ChatItem
         key={item?.assignee?.id}

@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Image,
   PixelRatio,
+  Platform,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -159,7 +160,7 @@ const ChatItem = ({
             <Text
               type={'caption12'}
               weight={theme.typography.fontWeights.bold}
-              size={9}
+              size={Platform.OS === 'ios' ? 10 : 9}
               style={{color: colors.brandColor.blue}}>
               {unreadCount > 99 ? '999+' : unreadCount}
             </Text>

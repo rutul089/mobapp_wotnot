@@ -56,6 +56,7 @@ import ChatTyping from './ChatComponent/ChatTyping';
 import {registerVisitorTypingHandler} from '../../../websocket';
 import {bytesToSize} from '../../../util/helper';
 import Modal from '../../../components/CustomModal/index';
+import { getAddress } from '../../../util/ConversationListHelper';
 
 const ConversationComponent = (
   {
@@ -459,53 +460,6 @@ const ConversationComponent = (
                 />
               </TouchableOpacity>
             </View>
-            {/* <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={showMenuOptions}
-              style={{
-                justifyContent: 'flex-end',
-                bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
-              }}>
-              <Image
-                source={images.ic_hamburger}
-                resizeMode="contain"
-                style={styles.sendMessageContainer.attachmentButton}
-              />
-            </TouchableOpacity>
-            <AutoGrowTextInputManager
-              style={{
-                paddingHorizontal: theme.normalize(10),
-                paddingVertical: theme.normalize(5),
-                fontSize: 16,
-                flex: 1,
-                // backgroundColor: '#f0f2f5',
-                // borderRadius: 12,
-                textAlignVertical: 'top',
-                justifyContent: 'center',
-                fontFamily: theme.typography.fonts.circularStdBook,
-              }}
-              placeholder={'Send Message'}
-              placeholderTextColor={theme.colors.typography.silver}
-              maxHeight={100}
-              minHeight={40}
-              enableScrollToCaret
-              numberOfLines={1}
-              onChangeText={updateMessageValue}
-              value={messageToSend}
-            />
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={onSendPress}
-              style={{
-                justifyContent: 'flex-end',
-                bottom: theme.normalize(Platform.OS === 'android' ? 11 : 5),
-              }}>
-              <Image
-                source={images.ic_send}
-                resizeMode="contain"
-                style={styles.sendMessageContainer.attachmentButton}
-              />
-            </TouchableOpacity> */}
           </View>
         </View>
       </View>
@@ -821,6 +775,8 @@ const ConversationComponent = (
     );
   };
 
+
+
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header
@@ -830,9 +786,10 @@ const ConversationComponent = (
         onPressInfo={onPressInfo}
         onPressLeftContent={onPressLeftContent}
         userItem={{
-          hideStatus: itemData?.global_channel_name?.toLowerCase() !== 'web',
+          hideStatus:
+            itemData?.global_channel_name?.toLowerCase() !== 'web' || isClosed,
           name: itemData?.title,
-          subTittle: `${itemData?.assignee?.name} | ${itemData?.city_name},${itemData?.country_name}`,
+          subTittle: getAddress(itemData),
           isOnline:
             itemData?.visitor_status === CONVERSATION.USER_STATUS.ONLINE,
         }}
