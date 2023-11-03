@@ -1,13 +1,13 @@
 {
   "appName": "WotNot",
   "login": {
-    "WELCOME_BACK_MSG": "Ù…Ø±Ø­Ø¨Ù‹Ø§ Ø¨Ø¹ÙˆØ¯ØªÙƒ",
-    "SIGN_IN_WELCOME_SUB_TEXT": "ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ ÙˆØ¨Ù†Ø§Ø¡ Ø¨Ø¹Ø¶ Ø§Ù„Ø±ÙˆØ¨ÙˆØªØ§Øª Ø§Ù„Ø±Ø§Ø¦Ø¹Ø©",
+    "WELCOME_BACK_MSG": "Welcome back",
+    "SIGN_IN_WELCOME_SUB_TEXT": "Sign in and build some cool bots",
     "sign_in_as": "Sign in as %s",
-    "EMAIL_LABEL": "Ø¨Ø±ÙŠØ¯ Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ",
-    "PASSWORD_LABEL": "ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±",
-    "FORGOT_PASSWORD_LABEL": "Ù‡Ù„ Ù†Ø³ÙŠØª ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±ØŸ",
-    "FORGOT_PASSWORD_DESCRIPTION": "Ù„Ø§ ØªÙ‚Ù„Ù‚. Ù…Ù† Ø§Ù„Ø³Ù‡Ù„ Ø¥Ø¹Ø§Ø¯Ø© ØªØ¹ÙŠÙŠÙ† ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ø§Ù„Ø®Ø§ØµØ© Ø¨Ùƒ ØŒ ÙÙ‚Ø· Ø£Ø®Ø¨Ø±Ù†Ø§ Ø¹Ù† Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø§Ù„Ø°ÙŠ Ø³Ø¬Ù„ØªÙ‡",
+    "EMAIL_LABEL": "Email",
+    "PASSWORD_LABEL": "Password",
+    "FORGOT_PASSWORD_LABEL": "Forgot Password?",
+    "FORGOT_PASSWORD_DESCRIPTION": "Don't worry. Resetting your password is easy, just tell us the email address you registered with {{ORGANISATION_NAME}}.",
     "2FA_SETUP_SCREEN_SETUP_HEADING": "Enable 2FA Authentication",
     "2FA_SETUP_SCREEN_SETUP_SUB_HEADNG": "Download a authenticator app on your mobile device, and scan this QR code to set up your account.",
     "2FA_SETUP_SCREEN_SETUP_CODE_INPUT": "Enter the code",
@@ -85,7 +85,7 @@
     "PASSWORD_VALIDATION_MESSAGE": "Password must be greater than 5 characters",
     "2FA_SETUP_SCREEN_SETUP_CODE_INPUT_ERROR": "This field cannot be empty",
     "2FA_SETUP_SCREEN_SETUP_CODE_INPUT_LENGTH_ERROR": "Please enter 6-digit code",
-    "RECOVERY_SCREEN_RECOVERY_CODE_ERROR_TEXT": "Enter valid recovery code"
+    "RECOVERY_SCREEN_RECOVERY_CODE_ERROR_TEXT": "Enter valid recovery code",
   },
   "help_disk": {
     "read_help": "Read Help Articles",
@@ -102,5 +102,7 @@
   "No conversation found": "No conversation found",
   "NO_TEAM_FOUND_MESSAGE": "No teams found",
   "SLACK_LIVE_CHAT_PANEL_NO_TEAMMATES_FOUND": "No teammates found",
-  "SEARCH_PLACEHOLDER": "Search"
+  "SEARCH_PLACEHOLDER": "Search",
+  "PLACEHOLDER_REPLY": "Type your message...",
+  "NO_DATA_FOUND":"No data found"
 }

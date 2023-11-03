@@ -1,5 +1,5 @@
 import {API} from '../../apiService';
-import {endPoints} from '../../constants/urls';
+import {endPoints} from '../../../env';
 import {
   loadingSet,
   loadingUnset,

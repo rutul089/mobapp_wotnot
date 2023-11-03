@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.normalize(10),
   },
   bubbleContainer: {
-    backgroundColor: '#306CFF',
+    backgroundColor: theme.colors.bubbleBackgroundColor,
     borderRadius: 10,
     borderTopRightRadius: 2,
   },

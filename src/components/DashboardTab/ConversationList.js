@@ -157,7 +157,6 @@ const ConversationList = ({
       fetchConversationSummary(userPreference?.account_id, {
         SuccessCallback: response => {},
         FailureCallback: error => {
-          // console.log('FailureCallback------------', JSON.stringify(error));
         },
       }),
     );

@@ -1,7 +1,10 @@
 import {Linking} from 'react-native';
 import {LOCAL_STORAGE} from '../constants/storage';
 import {getItemFromStorage} from './DeviceStorageOperations';
-import {navigate} from '../navigator/NavigationUtils';
+import {
+  navigate,
+  navigateAndSimpleResetWithParam,
+} from '../navigator/NavigationUtils';
 
 const getAccountIdFromBotId = async botId => {
   // get the account id from bot id
@@ -49,24 +52,16 @@ export const urlRedirect = async (url, title) => {
       botId: botId,
       accountId: accountId,
       title: title,
-    });
-
-    navigate('ConversationScreen', {
-      itemData: {
-        conversationKey: conversationKey,
-        botId: botId,
-        accountId: accountId,
-        title: title,
-      },
-      fromNotification: true,
-    });
-    return {
       thread_key: conversationKey,
+      bot_id: botId,
+    });
+    itemData = {
+      conversationKey: conversationKey,
       botId: botId,
       accountId: accountId,
       title: title,
-      fromNotification: true,
-      navigateTo: 'ConversationScreen',
+      thread_key: conversationKey,
+      bot_id: botId,
     };
   } else if (
     path &&
@@ -106,6 +101,17 @@ export const urlRedirect = async (url, title) => {
       };
     }
   }
+  if (itemData?.conversationKey) {
+    navigateAndSimpleResetWithParam('ConversationScreen', 0, {
+      itemData,
+      fromNotification: true,
+    });
+  } else {
+    navigateAndSimpleResetWithParam('MainNavigator', 0, {
+      fromNotification: true,
+    });
+  }
+
   return itemData;
 };
 

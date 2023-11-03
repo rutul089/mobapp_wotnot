@@ -23,6 +23,7 @@ import {
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {emitAgentJoin, initSocket, reconnect} from '../../../websocket';
 import SplashScreenComponent from '../component/SplashScreenComponent';
+import {urlRedirect} from '../../../util/appLinking';
 
 class SplashScreenContainer extends Component {
   constructor(props) {
@@ -38,10 +39,6 @@ class SplashScreenContainer extends Component {
       .getInitialNotification()
       .then(remoteMessage => {
         if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage,
-          );
           this.setState({
             isNotification: true,
             notificationType: remoteMessage?.data,
@@ -50,7 +47,7 @@ class SplashScreenContainer extends Component {
       });
     setTimeout(() => {
       this.setupLocalStorage();
-    }, 1000);
+    }, 1500);
   }
 
   setupLocalStorage = async () => {
@@ -59,6 +56,7 @@ class SplashScreenContainer extends Component {
       LOCAL_STORAGE.USER_PREFERENCE,
     );
     this.props.setUserPreference(JSON.parse(userPreference));
+
     if (isLogin !== null && JSON.parse(isLogin) && !this.state.isNotification) {
       this.callFetchUserPreference(false);
     } else if (
@@ -67,22 +65,16 @@ class SplashScreenContainer extends Component {
       this.state.isNotification
     ) {
       let click_action = this.state.notificationType?.click_action;
-      // urlRedirect(
-      //   this.state.notificationType?.click_action,
-      //   this.state.notificationType?.title,
-      // );
-      this.callFetchUserPreference(false);
+      this.callFetchUserPreference(true);
       this.setState({
         isNotification: false,
       });
-
-      console.log('setNotificationType', this.state.notificationType);
     } else {
       navigateAndSimpleReset('SignInScreen');
     }
     this.setState({
       isNotification: false,
-    })
+    });
   };
 
   callFetchUserPreference = async (fromNotification, data) => {
@@ -112,6 +104,10 @@ class SplashScreenContainer extends Component {
     initSocket();
     emitAgentJoin();
     reconnect();
+    urlRedirect(
+      this.state.notificationType?.click_action,
+      this.state.notificationType?.title,
+    );
   };
 
   callFetchTeamData = () => {

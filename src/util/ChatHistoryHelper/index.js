@@ -288,6 +288,7 @@ export function getChatMsgUserType(item) {
 }
 
 export function getChatMsgType(item) {
+  if (!item) return;
   let chatItem = getChatMsgUserType(item);
   // console.log('chatItem', chatItem);
   // console.log("item",item)
@@ -312,7 +313,7 @@ export function getChatMsgType(item) {
     return data?.type;
   }
 
-  if(msgType === 'options'){
+  if (msgType === 'options') {
     return 'options';
     let data = isValidJSON(chatItem?.message?.text)
       ? JSON.parse(chatItem?.message?.text)

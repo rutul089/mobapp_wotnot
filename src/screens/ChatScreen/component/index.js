@@ -84,6 +84,7 @@ const ChatScreenComponent = ({
   isSLAEnable,
   slaTime,
   users,
+  slaDurationInMs,
 }) => {
   const [index, setIndex] = React.useState(0);
   const [typingData, setTypingData] = React.useState();
@@ -130,10 +131,7 @@ const ChatScreenComponent = ({
     ) {
       return true;
     }
-    // console.log(
-    //   'showSLA(itemData?.sla_start_at, slaTime)',
-    //   showSLA(itemData?.sla_start_at, slaTime),
-    // );
+
     return showSLA(itemData?.sla_start_at, slaTime);
   };
 
@@ -149,23 +147,6 @@ const ChatScreenComponent = ({
     animationRef?.current?.animate(percentage);
   }, percentage);
 
-  const getFullMessage = item => {
-    let name = '';
-    if (item?.last_message_by === 0) {
-      name = '';
-    } else if (
-      item?.conversation_mode === 'BOT' &&
-      item?.closed_by?.first_name !== 'System'
-    ) {
-      name = '<b>Bot: </b>';
-    } else {
-      name = getAssigneeName(users, item?.last_message_by);
-    }
-    return item?.message === ''
-      ? unEscape(item?.note)
-      : ` ${name}${getMessage(item)}`;
-  };
-
   const getListItemCustomization = item => {
     const date = item?.sla_start_at ? new Date(item?.sla_start_at) : new Date();
     let lastMessageAt = '';
@@ -178,15 +159,11 @@ const ChatScreenComponent = ({
       checkLastMessageBy
     ) {
       lastMessageAt = date;
-      // console.log('---------<------->', lastMessageAt);
     }
-    // console.log('checkLastMessageBy', lastMessageAt + '');
-    let fullMEssage = getFullMessage(item);
 
     return {
       ...item,
       lastMessageAt,
-      fullMEssage,
     };
   };
 
@@ -198,9 +175,8 @@ const ChatScreenComponent = ({
     return value;
   };
 
-  const renderList = ({item}) => {
+  const renderList = ({item, index}) => {
     const customization = getListItemCustomization(item);
-    // console.log('customization', customization);
     return (
       <ChatItem
         key={item?.assignee?.id}
@@ -213,8 +189,18 @@ const ChatScreenComponent = ({
         isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
         unreadCount={item?.unread_messages_count}
         lastMessageDay={getDayDifference(item?.last_message_at)}
-        // subTittle={`${item?.message} `}
-        subTittle={getFullMessage(item)}
+        subTittle={
+          item?.message === ''
+            ? unEscape(item?.note)
+            : `${
+                item?.last_message_by === 0
+                  ? ''
+                  : item?.conversation_mode === 'BOT' &&
+                    item?.closed_by?.first_name !== 'System'
+                  ? '<b>Bot: </b>'
+                  : getAssigneeName(users, item?.last_message_by)
+              }${getMessage(item)}`
+        }
         onPress={() => onConversationClick(item)}
         item={item}
         isClosedMode={item?.status_id === 2}
@@ -227,18 +213,13 @@ const ChatScreenComponent = ({
         hideUnreadCount={
           currentTab === CONVERSATION.CLOSE || item?.unread_messages_count == 0
         }
-        hideAnimation={
-          percentage >= 100 ||
-          customization?.lastMessageAt == '' ||
-          getSalTime(item, currentTab, slaTime, isSLAEnable)
-        }
         hideStatusIcon={
           currentTab === CONVERSATION.CLOSE ||
           item?.global_channel_name?.toLowerCase() !== 'web'
         }
         paddingHorizontal={theme.sizes.spacing.ph}
         backgroundColor={'white'}
-        duration={slaTime * 60000}
+        duration={slaTime}
         itemData={item}
         borderBottomWidth={1}
         isLoading={isLoading}
@@ -255,6 +236,13 @@ const ChatScreenComponent = ({
         prefill={getPrefillValue(item, slaTime)}
         animation={animationRef}
         onAnimationComplete={() => setErr(true)}
+        // comparisonTime={customization?.lastMessageAt}
+        comparisonTime={customization?.lastMessageAt}
+        slaDurationInMs={slaDurationInMs}
+        hideAnimation={customization?.lastMessageAt === ''}
+        shouldNotUpdate={
+          getMiniFromTime(customization?.lastMessageAt) > slaDurationInMs
+        }
       />
     );
   };

@@ -3,7 +3,7 @@
  */
 import {AppState, DeviceEventEmitter} from 'react-native';
 import {isEmpty} from 'lodash';
-import {WebSocketURL} from '../constants/urls';
+import {WebSocketURL} from '../../env';
 
 let websocketManager: WebSocketManager = null;
 let socketObj: WebSocket = null;

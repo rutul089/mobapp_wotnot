@@ -4,7 +4,7 @@ import {getEnvironment} from '~/utils/GetEnviroment';
 import {SOCKET_CONFIG} from '../util/helper';
 import {getAgentPayload} from '../common/common';
 import API, {Headers} from '../apiService/APIService';
-import {SOCKET_BASEURL} from '../constants/urls';
+import {SOCKET_BASEURL} from '../../env';
 let {SOCKET_EVENTS} = SOCKET_CONFIG;
 
 export const socket = io(SOCKET_BASEURL?.[API.getInstance().getDevMode()], {
@@ -33,7 +33,7 @@ export async function initSocket() {
 }
 
 export function reconnect() {
-  console.log('reconnect')
+  console.log('reconnect');
   socket.on(SOCKET_EVENTS.RECONNECT, () => {
     emitAgentJoin();
   });
@@ -47,7 +47,7 @@ export function disconnect() {
 
 export async function emitAgentJoin() {
   let agentpayload = await getAgentPayload();
-  console.log("agentpayload",agentpayload)
+  console.log('agentpayload', agentpayload);
   agentpayload['user_status'] = 'online';
   socket.emit(SOCKET_EVENTS.AGENT_JOIN, agentpayload);
 }

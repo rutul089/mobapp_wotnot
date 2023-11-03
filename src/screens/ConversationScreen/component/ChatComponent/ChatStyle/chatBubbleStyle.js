@@ -9,7 +9,7 @@ export const styles = {
     marginBottom: theme.normalize(5),
   },
   bubbleContainer: {
-    backgroundColor: '#306CFF',
+    backgroundColor: theme.colors.bubbleBackgroundColor,
     borderRadius: 10,
     borderTopRightRadius: 2,
     maxWidth: '80%',

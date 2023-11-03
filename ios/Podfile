@@ -53,7 +53,7 @@ target 'mobapp_wotnot' do
 
   # Flags change depending on the env values.
   flags = get_default_flags()
-  use_frameworks! :linkage => :static
+  #use_frameworks! :linkage => :static
 
   use_react_native!(
     :path => config[:reactNativePath],

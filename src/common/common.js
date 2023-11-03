@@ -31,28 +31,6 @@ export async function prepareAgentPayload(userPref, agent_account_list) {
 }
 
 export const getMessageFromEventPayload = (object, receivedConvCreate) => {
-  // console.log('object', object);
-  // console.log('getLasMessageId', getLasMessageId(object));
-  // console.log(
-  //   'getLasMessageId------>',
-  //   object['message_by'] === 'agent'
-  //     ? object?.agent?.id
-  //     : object['message_by'] === 'bot'
-  //     ? getLasMessageId(object)
-  //     : '1234' + " ------ " + object?.event_payload
-  // );
-
-  // console.log(
-  //   'object------>',
-  //   object['message_by'] === 'agent'
-  //     ? object?.agent?.id
-  //     : object['message_by'] === 'visitor'
-  //     ? object?.bot_id
-  //     : '',
-  // );
-  // this method will convert the socket events payload to the API payload
-  // so the data is consistent through out the App
-
   if (object) {
     let parsedMessage = JSON.parse(object['event_payload']['data']);
     let returnObj;
@@ -288,7 +266,6 @@ export const getMessageFromEventPayload = (object, receivedConvCreate) => {
             : obj['thread_key'];
         return conversationKey === object['conversation_key'];
       });
-      // console.log('result------>', result);
       if (result) {
         let assignee;
         if ('assignee' in result && result['assignee']) {

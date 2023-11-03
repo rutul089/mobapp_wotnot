@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 import {alingCenter} from '~/assets/styles/_partials/_flex';
 import {backgroundColor} from '~/assets/styles/_partials/_backgroundColor';
 import {fontColor} from '~/assets/styles/_partials/_fontColor';
+import theme from '../../../../../util/theme';
 
 const chatTextStyles = () =>
   StyleSheet.create({
@@ -22,7 +23,7 @@ const chatTextStyles = () =>
       paddingRight: 0,
     },
     sendMsg: {
-      backgroundColor: '#306CFF',
+      backgroundColor: theme.colors.bubbleBackgroundColor,
       fontColor: 'white',
     },
     clickableMsg: {

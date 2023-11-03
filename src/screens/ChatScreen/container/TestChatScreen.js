@@ -61,6 +61,9 @@ import moment from 'moment';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import messaging from '@react-native-firebase/messaging';
 import {API, Headers} from '../../../apiService';
+import Countdown from 'react-countdown';
+import {Text} from '../../../components';
+import SlaTimer from '../../../components/SlaTimer';
 
 class TestChatScreen extends Component {
   constructor(props) {
@@ -76,7 +79,7 @@ class TestChatScreen extends Component {
       appState: AppState.currentState,
       moreLoading: false,
       isSLAEnable: false,
-      slaTime: 0,
+      slaTime: 1,
     };
     this.onSelectTab = this.onSelectTab.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
@@ -98,7 +101,6 @@ class TestChatScreen extends Component {
     this.registerAppStateEvent();
     // this.callSummary();
     this.callFetchTeamData();
-    this.callFetchTeammateData();
     this.requestPermission();
     if (!getItemFromStorage(LOCAL_STORAGE?.AGENT_ACCOUNT_LIST)) {
       this.cllFetchAccounts();
@@ -120,6 +122,7 @@ class TestChatScreen extends Component {
   subscribeListener() {
     this.callFetchConversation(this.state.currentTab, false, false);
     this.callSummary();
+    this.callFetchTeammateData();
     registerAssigneeChangedHandler(this.onAssigneeChange);
     registerConversationCreateHandler(this.onConvCreateReceived);
     registerStatusChangedHandler(this.msgStatusChange);
@@ -299,7 +302,6 @@ class TestChatScreen extends Component {
   };
 
   onConvCreateReceived = data => {
-    console.log('onConvCreateReceived------------>', JSON.stringify(data));
     let obj = data;
     // this.props.setConversations([obj,...this.props.conversations])
     // setTimeout(() => {
@@ -431,7 +433,7 @@ class TestChatScreen extends Component {
         msg,
         this.props.conversations,
       );
-      console.log('getMessageFromEventPayload', convertedMessage);
+      // console.log('getMessageFromEventPayload', convertedMessage);
       if (convertedMessage && 'assignee' in convertedMessage) {
         !convertedMessage.assignee
           ? (convertedMessage['assignee'] = convertedMessage.agent)
@@ -543,13 +545,13 @@ class TestChatScreen extends Component {
 
   componentWillUnmount() {
     this.subscribe?.();
-    this.registerAppStateEvent(true);
     this.appStateRef?.remove();
   }
 
   callSettingsAPI = () => {
     this.props.fetchUserSetting(this.props?.userPreference?.account_id, {
       SuccessCallback: res => {
+        console.log("res",JSON.stringify(res?.live_chat_configurations?.sla_settings?.countdown_timer?.value))
         this.setState({
           isSLAEnable:
             res?.live_chat_configurations?.sla_settings?.is_enabled?.value,
@@ -583,6 +585,7 @@ class TestChatScreen extends Component {
           isSLAEnable={this.state.isSLAEnable}
           slaTime={this.state.slaTime}
           users={this.props.teamMateData}
+          slaDurationInMs={this.state.slaTime}
         />
       </>
     );

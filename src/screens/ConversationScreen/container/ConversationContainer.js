@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
-import {Alert, Keyboard, AppState} from 'react-native';
+import {Alert, Keyboard, AppState,BackHandler} from 'react-native';
 import {connect} from 'react-redux';
 import {CONVERSATION} from '../../../constants/global';
 import {strings} from '../../../locales/i18n';
-import {goBack, navigate} from '../../../navigator/NavigationUtils';
+import {
+  goBack,
+  navigate,
+  navigateAndSimpleReset,
+} from '../../../navigator/NavigationUtils';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import ConversationComponent from '../component/ConversationComponent';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -52,6 +56,7 @@ import {
 } from '../../../util/MediaHelper';
 import {getChatMsgCountWithoutStatusMsg} from '../../../util/ChatHistoryHelper';
 import axios from 'axios';
+import {Text, View} from 'native-base';
 
 let options = {
   mediaType: 'photo',
@@ -110,14 +115,16 @@ class ConversationContainer extends Component {
     this.appStateRef = null;
     this.replyInputRef = React.createRef();
     this.timer = null;
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
   }
 
   componentDidMount = () => {
     const {
       route: {
-        params: {itemData},
+        params: {itemData, fromNotification},
       },
     } = this.props;
+
     this.setState({
       conversationJoined: true,
       conversationStatus: itemData?.status_id ?? 1,
@@ -133,17 +140,16 @@ class ConversationContainer extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.registerListener();
     });
-    // this._callSaveReply()
-    // Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
-    // Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    this._callSaveReply();
+    Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+    Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
   };
 
   componentWillUnmount = () => {
-    console.log(
-      '---------------->---------------->---------------->---------------->',
-    );
     this.props.saveReply([]);
     this._unsubscribe();
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
   };
 
   onPressMore = () => {
@@ -205,6 +211,16 @@ class ConversationContainer extends Component {
   };
 
   onPressLeftContent = () => {
+    const {
+      route: {
+        params: {itemData, fromNotification},
+      },
+      userPreference,
+    } = this.props;
+    if (fromNotification) {
+      navigateAndSimpleReset('MainNavigator');
+      return;
+    }
     goBack();
   };
 
@@ -590,7 +606,6 @@ class ConversationContainer extends Component {
       {
         SuccessCallback: res => {
           // let listData = this.props.save_reply_list;
-          console.log('res?.replies', res?.replies);
           this.setState({
             saveLoading: false,
             total_replies: res?.total_replies,
@@ -615,7 +630,6 @@ class ConversationContainer extends Component {
       {
         SuccessCallback: res => {
           // let listData = this.props.save_reply_list;
-          console.log('res?.replies', res?.replies);
           this.setState({
             saveLoading: false,
             total_replies: res?.total_replies,
@@ -690,7 +704,6 @@ class ConversationContainer extends Component {
         params: {itemData},
       },
     } = this.props;
-    console.log('msg------->', msg);
     if (!(this.props.isLoading || this.state.isLoading) && msg) {
       if (itemData?.thread_key === msg?.conversation_key) {
         let convertedMessage = getMessageFromEventPayload(
@@ -798,7 +811,6 @@ class ConversationContainer extends Component {
   };
 
   changeConversationStatus = data => {
-    console.log('------>changeConversationStatus', data);
     const {
       route: {
         params: {itemData},
@@ -1026,6 +1038,11 @@ class ConversationContainer extends Component {
       () => this._callSaveReply(),
     );
   };
+  
+  handleBackButtonClick() {
+    this.onPressLeftContent()
+    return true;
+}
 
   render() {
     const {
@@ -1037,7 +1054,23 @@ class ConversationContainer extends Component {
       userPreference,
     } = this.props;
     let {filterTeamMateData, filterTeamData, search_text} = this.state;
-
+    let finalTeamMate =
+      search_text !== ''
+        ? filterTeamMateData
+        : teamMateData
+        ? [
+            {
+              id: null,
+              display_name: 'none',
+            },
+            ...teamMateData,
+          ]
+        : [
+            {
+              id: null,
+              display_name: 'none',
+            },
+          ];
     return (
       <>
         <ConversationComponent
@@ -1070,17 +1103,18 @@ class ConversationContainer extends Component {
           onTeamClick={this.onTeamClick}
           onTeamMateClick={this.onTeamMateClick}
           isTeamSelected={this.state.isTeamSelected}
-          teamMateData={
-            search_text !== ''
-              ? filterTeamMateData
-              : [
-                  {
-                    id: null,
-                    display_name: 'none',
-                  },
-                  ...teamMateData,
-                ]
-          }
+          teamMateData={finalTeamMate}
+          // teamMateData={
+          //   search_text !== ''
+          //     ? filterTeamMateData
+          //     : [
+          //         // {
+          //         //   id: null,
+          //         //   display_name: 'none',
+          //         // },
+          //         ...teamMateData,
+          //       ]
+          // }
           teamData={search_text !== '' ? filterTeamData : teamData}
           itemData={itemData}
           userID={userPreference?.logged_in_user_id}
@@ -1129,14 +1163,14 @@ const mapActionCreators = {
 };
 const mapStateToProps = state => {
   return {
-    teamData: state.accountReducer?.teamData?.teams,
-    teamMateData: state.accountReducer?.teamMateData?.users,
-    userPreference: state.detail?.userPreference,
+    teamData: state?.accountReducer?.teamData?.teams,
+    teamMateData: state?.accountReducer?.teamMateData?.users,
+    userPreference: state?.detail?.userPreference,
     messageHistory:
-      state.conversationReducer?.conversationHistory?.messages_list,
-    isLoading: state.global.loading,
-    conversationHistory: state.conversationReducer?.conversationHistory,
-    save_reply_list: state.accountReducer?.savedReply,
+      state?.conversationReducer?.conversationHistory?.messages_list,
+    isLoading: state?.global.loading,
+    conversationHistory: state?.conversationReducer?.conversationHistory,
+    save_reply_list: state?.accountReducer?.savedReply,
   };
 };
 export default connect(

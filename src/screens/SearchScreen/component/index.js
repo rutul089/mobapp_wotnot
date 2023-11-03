@@ -64,7 +64,18 @@ const SearchComponent = ({
         isOnline={item?.visitor_status === CONVERSATION.USER_STATUS.ONLINE}
         unreadCount={item?.unread_messages_count}
         lastMessageDay={getDayDifference(item?.last_message_at)}
-        subTittle={`${getFullMessage(item)}`}
+        subTittle={
+          item?.message === ''
+            ? unEscape(item?.note)
+            : `${
+                item?.last_message_by === 0
+                  ? ''
+                  : item?.conversation_mode === 'BOT' &&
+                    item?.closed_by?.first_name !== 'System'
+                  ? '<b>Bot: </b>'
+                  : getAssigneeName(users, item?.last_message_by)
+              }${getMessage(item)}`
+        }
         onPress={() => navigate('ConversationScreen', {itemData: item})}
         item={item}
         rating={item?.rating}

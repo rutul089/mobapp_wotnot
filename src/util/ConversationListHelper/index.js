@@ -458,13 +458,21 @@ export const getGlobalChannelIcon = (channelName, browser) => {
   }
 };
 
+// export const getAssigneeName = (users, last_id) => {
+//   console.log('users', users);
+//   let name = '';
+//   users?.forEach(element => {
+//     if (element?.id === last_id) {
+//       name = element?.display_name;
+//       return;
+//     }
+//   });
+//   console.log('------->', name);
+//   return name === '' ? '' : `<b>${name}: </b>`;
+// };
+
 export const getAssigneeName = (users, last_id) => {
-  let name = '';
-  users?.forEach(element => {
-    if (element?.id === last_id) {
-      name = element?.display_name;
-    }
-  });
+  let name = users?.find(element => element?.id === last_id)?.display_name ?? "Bot";
   return name === '' ? '' : `<b>${name}: </b>`;
 };
 

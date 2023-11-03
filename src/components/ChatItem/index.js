@@ -19,6 +19,7 @@ import Spacing from '../Spacing';
 import Text from '../Text/index';
 import Ticker from './Ticker';
 import {applyStyleToText} from '../../util/LocaleSupport';
+import SlaTimer from '../SlaTimer';
 
 const ChatItem = ({
   name,
@@ -31,7 +32,7 @@ const ChatItem = ({
   onPress,
   isClosedMode,
   isAvatar,
-  duration = 1,
+  duration,
   rating = 0,
   hideRating,
   hideUnreadCount,
@@ -51,6 +52,9 @@ const ChatItem = ({
   prefill,
   animation,
   onAnimationComplete,
+  comparisonTime,
+  slaDurationInMs,
+  shouldNotUpdate,
 }) => {
   const [isTyping, setIsTyping] = React.useState(false);
   const [isTypingData, setTypingData] = React.useState(null);
@@ -180,10 +184,14 @@ const ChatItem = ({
               currentTime={getTimeStamp(itemData.last_message_at).timestamp}
             />
           ) : null}
-          {/* <Text type={'caption12'} style={{color: colors.brandColor.silver}}>
-            {lastMessageDay}
-          </Text> */}
           {!hideAnimation ? (
+            <SlaTimer
+              slaDurationInMs={slaDurationInMs * 60000}
+              comparisonTime={comparisonTime}
+              shouldNotUpdate={shouldNotUpdate}
+            />
+          ) : null}
+          {/* {!hideAnimation ? (
             <AnimatedCircularProgress
               size={theme.normalize(13)}
               width={theme.normalize(6)}
@@ -206,7 +214,7 @@ const ChatItem = ({
                 width: theme.normalize(13),
               }}
             />
-          ) : null}
+          ) : null} */}
           {/* <View
             style={{
               height: theme.normalize(12),
@@ -260,7 +268,7 @@ const ChatItem = ({
         ) : null}
         <View style={{flex: 1, flexDirection: 'row'}}>
           {renderAvatarView()}
-          {/* <Spacing direction="y" size="xs" /> */}
+          <Spacing direction="y" size="xs" />
           {renderBodyView()}
         </View>
 

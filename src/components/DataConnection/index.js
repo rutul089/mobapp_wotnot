@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import colors from '../../util/theme/colors';
 import Text from '../Text';
+import OfflineNotice from '../OfflineNotice';
 
 export const NoNetworkView = () => {
   return (

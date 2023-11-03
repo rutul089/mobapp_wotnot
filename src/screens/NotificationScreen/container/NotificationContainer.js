@@ -7,7 +7,6 @@ import {
   setNotificationPreference,
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
-import {apiConfig} from '../../../apiService';
 import {goBack} from '../../../navigator/NavigationUtils';
 
 class NotificationContainer extends Component {

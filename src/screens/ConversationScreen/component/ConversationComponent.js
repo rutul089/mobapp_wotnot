@@ -56,7 +56,7 @@ import ChatTyping from './ChatComponent/ChatTyping';
 import {registerVisitorTypingHandler} from '../../../websocket';
 import {bytesToSize} from '../../../util/helper';
 import Modal from '../../../components/CustomModal/index';
-import { getAddress } from '../../../util/ConversationListHelper';
+import {getAddress} from '../../../util/ConversationListHelper';
 
 const ConversationComponent = (
   {
@@ -775,8 +775,6 @@ const ConversationComponent = (
     );
   };
 
-
-
   return (
     <FlexContainer statusBarColor={theme.colors.brandColor.FAFAFA}>
       <Header
@@ -897,7 +895,7 @@ const ConversationComponent = (
               />
             }
           />
-          <ActionItem
+          {/* <ActionItem
             label={strings('chat.calendar')}
             onItemPress={onCalendarPress}
             leftIcon={
@@ -907,7 +905,7 @@ const ConversationComponent = (
                 style={styles.bottomSheetContainer.actionItemIcon}
               />
             }
-          />
+          /> */}
           <ActionItem
             label={strings('chat.attachment')}
             onItemPress={onAttachmentsPress}
