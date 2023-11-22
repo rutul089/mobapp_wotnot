@@ -3,8 +3,8 @@ import {Method} from './src/apiService';
 
 export const apiConfig = {
   productionBaseURL: 'https://app.wotnot.io' /*release build*/,
-  testingBaseURL: 'https://app.wotnot.io' /*inteneal testing*/,
-  developmentBaseURL: 'https://app.wotnot.io' /*for client test*/,
+  testingBaseURL: 'https://app.test.wotnot.io' /*inteneal testing*/,
+  developmentBaseURL: 'https://app.dev.wotnot.io' /*for client test*/,
   alphaBaseURL: 'https://app.wotnot.io',
 };
 
@@ -198,7 +198,7 @@ export const WebSocketURL =
 
 export const SOCKET_BASEURL = {
   PRODUCTION: 'https://ws.wotnot.io/?user_type=agent' /*release build*/,
-  TESTING: 'https://ws.test.wotnot.io/?user_type=agent' /*inteneal testing*/,
-  DEVELOPMENT: 'https://ws.wotnot.io/?user_type=agent' /*for client test*/,
+  TESTING: 'https://ws.test.wotnot.io/?user_type=agent'/*inteneal testing*/,
+  DEVELOPMENT: 'https://ws.dev.wotnot.io/?user_type=agent' /*for client test*/,
   ALPHA: 'https://ws.test.wotnot.io/?user_type=agent',
 };

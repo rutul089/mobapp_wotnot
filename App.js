@@ -10,7 +10,7 @@ import RootContainer from './src/navigator/RootContainer';
 import {configureStore} from './src/store';
 import {initSocket} from './src/websocket';
 LogBox.ignoreAllLogs(true);
-API.getInstance().build(DevelopmentMode.DEVELOPMENT, apiConfig);
+API.getInstance().build(DevelopmentMode.PRODUCTION, apiConfig);
 const store = configureStore();
 
 const App = () => {
