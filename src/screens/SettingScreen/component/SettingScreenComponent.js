@@ -144,11 +144,11 @@ const SettingScreenComponent = ({
           text={strings('settings.NOTIFICATION_HEADER')}
           onPress={onNotificationClick}
         />
-        <Spacing size="md" />
+        {/* <Spacing size="md" />
         <RenderRowItem
           text={strings('settings.HELP_DESK')}
           onPress={onHelpDeskClick}
-        />
+        /> */}
         <Spacing size="md" />
         <RenderRowItem
           text={strings('settings.LOGOUT')}
@@ -288,9 +288,9 @@ const SettingScreenComponent = ({
         onClose={onClose}>
         <AlertDialog.Content>
           <AlertDialog.CloseButton />
-          <AlertDialog.Header>WotNot</AlertDialog.Header>
+          <AlertDialog.Header>{strings('orgName')}</AlertDialog.Header>
           <AlertDialog.Body>
-            Are you sure, you want to logout from the WotNot app?
+            {`Are you sure, you want to logout from the ${strings('orgName')} app?`}
           </AlertDialog.Body>
           <AlertDialog.Footer>
             <Button.Group space={2}>

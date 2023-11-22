@@ -12,7 +12,6 @@ const purplePayBlue = {
 
 const wotnotColor = {
   blue: '#2A7CFF',
-  blue: '#2A7CFF',
   darkestBlue: '#1a5064',
   lightestBlue: '#cbe8f2',
   skyBlue: '#76BED8',

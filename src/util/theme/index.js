@@ -1,6 +1,6 @@
-import colors from '../../../theme/colors';
-import sizes from '../../../theme/sizes';
-import typography from '../../../theme/typography';
+import colors from './colors';
+import sizes from './sizes';
+import typography from './typography';
 import {Dimensions, Platform} from 'react-native';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
