@@ -89,7 +89,8 @@ const Header = ({
       ) : null}
       <View
         style={{
-          flex: isRightIconHidden ? 1 : 1.5,
+          flex: 1,
+          // flex: isRightIconHidden ? 1 : 1.5,
           paddingHorizontal: 5,
         }}>
         {!isRightIconHidden ? (

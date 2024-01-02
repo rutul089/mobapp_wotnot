@@ -103,25 +103,27 @@ function ChatAppointmentBooking(props) {
               }}>
               {chatData?.title}
             </Text>
-            <View>
-              {renderAppointmentDetail(
-                `${getDateValue(
-                  chatData?.variables?.['¿·$user.info.date_var·?']?.value,
-                )} ${
-                  chatData?.variables?.['¿·gcal_selected_slot_time·?']?.value
-                }`,
-                images.ic_calendar,
-              )}
-              {renderAppointmentDetail(
-                chatData?.['visitor_timezone'],
-                images.ic_qualification_temp,
-              )}
+            {chatData?.is_booking_confirmed ? (
+              <View>
+                {renderAppointmentDetail(
+                  `${getDateValue(
+                    chatData?.variables?.['¿·$user.info.date_var·?']?.value,
+                  )} ${
+                    chatData?.variables?.['¿·gcal_selected_slot_time·?']?.value
+                  }`,
+                  images.ic_calendar,
+                )}
+                {renderAppointmentDetail(
+                  chatData?.['visitor_timezone'],
+                  images.ic_qualification_temp,
+                )}
 
-              {renderAppointmentDetail(
-                chatData?.variables?.['¿·$user.info.email·?']?.value,
-                images.ic_email,
-              )}
-            </View>
+                {renderAppointmentDetail(
+                  chatData?.variables?.['¿·$user.info.email·?']?.value,
+                  images.ic_email,
+                )}
+              </View>
+            ) : null}
             <Text
               type={'button2'}
               fontFamily={theme.typography.fonts.circularStdMedium}

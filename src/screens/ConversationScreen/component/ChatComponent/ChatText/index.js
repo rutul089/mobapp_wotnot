@@ -158,9 +158,7 @@ function ChatText(props) {
                   }
                   timeStampRight
                   chatItem={chatItem}
-                  msg={messageParser(
-                    convertTextMessage(chatItem.agent.message),
-                  )}
+                  msg={convertTextMessage(chatItem.agent.message)}
                   isUser
                   chatUserName={chatUserName}
                   userFileJSX1={

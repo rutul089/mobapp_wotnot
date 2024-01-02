@@ -105,5 +105,6 @@
   "SLACK_LIVE_CHAT_PANEL_NO_TEAMMATES_FOUND": "No teammates found",
   "SEARCH_PLACEHOLDER": "Search",
   "PLACEHOLDER_REPLY": "Type your message...",
-  "NO_DATA_FOUND":"No data found"
+  "NO_DATA_FOUND":"No data found",
+  "NO_RESULT_DROPDOWN_MESSAGE": "No options"
 }

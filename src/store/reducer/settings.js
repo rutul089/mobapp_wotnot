@@ -4,6 +4,7 @@ const initialState = {
   accounts: [],
   notification_pref: {},
   userSetting: {},
+  calendarEvent:[]
 };
 
 const global = (state = initialState, action) => {
@@ -16,6 +17,8 @@ const global = (state = initialState, action) => {
       return {...initialState};
     case types.USER_SETTINGS:
       return {...state, userSetting: action.payload};
+    case types.CALENDER_EVENT:
+      return {...state, calendarEvent: action.payload};
     default:
       return state;
   }

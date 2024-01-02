@@ -93,7 +93,6 @@ export const loadingSetConversations = () => ({type: types.API_LOADING_START});
 
 export const loadingUnsetConversations = () => ({type: types.API_LOADING_STOP});
 
-
 export const setConversationsHistory = data => ({
   type: types.CONVERSATION_HISTORY,
   payload: data,
@@ -111,5 +110,10 @@ export const setUserList = data => ({
 
 export const setUserSetting = data => ({
   type: types.USER_SETTINGS,
+  payload: data,
+});
+
+export const setCalendarEvent = data => ({
+  type: types.CALENDER_EVENT,
   payload: data,
 });

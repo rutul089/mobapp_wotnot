@@ -11,6 +11,7 @@ import {
   View,
   PermissionsAndroid,
   Platform,
+  Linking
 } from 'react-native';
 import {
   ConversationScreen,
@@ -74,9 +75,12 @@ export default class RootContainer extends Component {
   async getFcmToken() {
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
-      console.log('FCM Token:', fcmToken);
+      // console.log('FCM Token:', fcmToken);
+      // alert(fcmToken)
+      // Linking.openURL(`mailto:support@example.com?subject=SendMail&body=${fcmToken}`)
       AsyncStorage.setItem(LOCAL_STORAGE.NOTIFICATION_TOKEN, fcmToken);
     } else {
+      // alert(fcmToken)
       // helperLog('Failed', 'No token received');
     }
   }

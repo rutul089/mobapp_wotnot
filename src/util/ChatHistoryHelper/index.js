@@ -178,6 +178,9 @@ export function getStatusChangeMsgText(el, assignee_id) {
     ) {
       return 'You' + ' ' + status.toLowerCase() + ' this conversation. ';
     }
+    if(status.toLowerCase() === "close"){
+      return name + ' closed this conversation.'
+    }
     return name + ' ' + status.toLowerCase() + ' this conversation. ';
   }
 }

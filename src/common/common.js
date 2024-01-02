@@ -33,6 +33,7 @@ export async function prepareAgentPayload(userPref, agent_account_list) {
 export const getMessageFromEventPayload = (object, receivedConvCreate) => {
   if (object) {
     let parsedMessage = JSON.parse(object['event_payload']['data']);
+    console.log("parsedMessage",{parsedMessage})
     let returnObj;
     if (
       parsedMessage.message &&

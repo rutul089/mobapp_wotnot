@@ -17,6 +17,7 @@ import {
   clearAllData,
   setProfileEvents,
   changeUserSetting,
+  setConversations
 } from '../../../store/actions';
 import {handleFailureCallback} from '../../../util/apiHelper';
 import {
@@ -131,6 +132,7 @@ class SettingScreenContainer extends Component {
         this.setState({showLanguageModal: false});
         this.languageModalRef?.current?.close();
         setLocale(item?.code);
+        this.props?.setConversations([])
         this.callSetUserSetting(item);
       },
     );
@@ -376,6 +378,7 @@ const mapActionCreators = {
   clearAllData,
   setProfileEvents,
   changeUserSetting,
+  setConversations
 };
 const mapStateToProps = state => {
   return {

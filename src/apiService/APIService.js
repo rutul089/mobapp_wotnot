@@ -98,12 +98,14 @@ class API {
   }
 
   Logger(message) {
+    console.log(appName, message);
     if (this._DevMode !== DevelopmentMode.PRODUCTION) {
       console.log(appName, message);
     }
   }
 
   helperLog(TAG, response) {
+    console.log(TAG, response);
     if (this._DevMode !== DevelopmentMode.PRODUCTION) {
       console.log(TAG, JSON.stringify(response));
     }

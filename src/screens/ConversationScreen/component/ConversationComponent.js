@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react';
+import React, {forwardRef, useEffect} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -17,6 +17,7 @@ import {
   ActionItem,
   BottomSheet,
   FlexContainer,
+  FullScreenModal,
   Header,
   ImageViewer,
   Input,
@@ -25,18 +26,18 @@ import {
 } from '../../../components';
 import Modal from '../../../components/CustomModal/index';
 import Spacing from '../../../components/Spacing';
-import { CONVERSATION } from '../../../constants/global';
-import { strings } from '../../../locales/i18n';
+import {CONVERSATION} from '../../../constants/global';
+import {strings} from '../../../locales/i18n';
 import {
   getAgentDetails,
   getChatMsgType,
   getFormChatItemWithResponse,
   userFileResponseElement,
 } from '../../../util/ChatHistoryHelper';
-import { getAddress } from '../../../util/ConversationListHelper';
-import { bytesToSize } from '../../../util/helper';
+import {getAddress} from '../../../util/ConversationListHelper';
+import {bytesToSize} from '../../../util/helper';
 import theme from '../../../util/theme';
-import { registerVisitorTypingHandler } from '../../../websocket';
+import {registerVisitorTypingHandler} from '../../../websocket';
 import styles from '../Style';
 import AssigneeItem from './AssigneeItem';
 import ButtonTeammate from './ButtonTeammate';
@@ -112,6 +113,15 @@ const ConversationComponent = (
     onMediaPreviewCancel,
     handleLoadMore1,
     saveReplyLoadMore,
+    calenderEventList,
+    showCalendarModal,
+    onHideCalendarModal,
+    onChangeCalendar,
+    searchCalendarEventValue,
+    onSelectedEvent,
+    isMessageTypeEvent,
+    onEventCancel,
+    selectedCalenderEvent
     // replyInputRef,
   },
   ref,
@@ -187,6 +197,14 @@ const ConversationComponent = (
         {renderItem(item, msgType, itemWithAccountDetails, formResponse)}
       </View>
     );
+  };
+
+  const getShortForm = value => {
+    return value?.toLowerCase() === 'minutes'
+      ? 'min'
+      : value?.toLowerCase() === 'hours'
+      ? 'hr'
+      : value;
   };
   const _renderAssigneeItemView = ({item}) => {
     return (
@@ -371,6 +389,67 @@ const ConversationComponent = (
             </View>
           </View>
         ) : null}
+        {isMessageTypeEvent ? (
+          <View
+            style={{
+              backgroundColor: '#fff',
+              marginBottom: 5,
+              borderRadius: 8,
+              padding: 5,
+              flexDirection: 'row',
+              justifyContent: 'center',
+            }}>
+            <View
+              style={{
+                flex: 0.6,
+                backgroundColor: '#f0f2f5',
+                padding: 10,
+                borderRadius: 8,
+              }}>
+              <TouchableOpacity
+                onPress={onEventCancel}
+                activeOpacity={0.6}
+                style={styles.imageContainerCross}>
+                <Image
+                  source={images.ic_cross}
+                  resizeMode="contain"
+                  style={{
+                    height: theme.normalize(9),
+                    width: theme.normalize(9),
+                    alignSelf: 'center',
+                  }}
+                />
+              </TouchableOpacity>
+              <View style={styles.durationContainer}>
+                <Text type={'caption12'} color={theme.colors.cool_blue}>
+                  {`${selectedCalenderEvent?.duration?.value} ${getShortForm(selectedCalenderEvent?.duration?.label)}`}
+                </Text>
+              </View>
+              <View style={{alignSelf: 'center'}}>
+                <Image
+                  defaultSource={images.ic_userprofile}
+                  source={images.ic_userprofile}
+                  // source={
+                  //   value?.avatar ? {uri: value?.avatar} : images.ic_userprofile
+                  // }
+                  style={styles.avatarStyle}
+                />
+              </View>
+              <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                <Text
+                  type={'body2'}
+                  numberOfLines={1}
+                  style={{
+                    width: '100%',
+                    marginVertical: theme.normalize(5),
+                    textAlign: 'center',
+                  }}>
+                 {selectedCalenderEvent?.title}
+                </Text>
+              </View>
+            </View>
+          </View>
+        ) : null}
         <View style={{flexDirection: 'row'}}>
           <View
             style={{
@@ -382,6 +461,7 @@ const ConversationComponent = (
             }}>
             <TextInput
               autoFocus={false}
+              editable={!isMessageTypeEvent}
               focusable={true}
               ref={replyInputRef}
               placeholder={strings('PLACEHOLDER_REPLY')}
@@ -411,6 +491,7 @@ const ConversationComponent = (
                 },
               ]}
             />
+
             <View
               style={{
                 flexDirection: 'row',
@@ -892,7 +973,7 @@ const ConversationComponent = (
               />
             }
           />
-          {/* <ActionItem
+          <ActionItem
             label={strings('chat.calendar')}
             onItemPress={onCalendarPress}
             leftIcon={
@@ -902,7 +983,7 @@ const ConversationComponent = (
                 style={styles.bottomSheetContainer.actionItemIcon}
               />
             }
-          /> */}
+          />
           <ActionItem
             label={strings('chat.attachment')}
             onItemPress={onAttachmentsPress}
@@ -922,6 +1003,22 @@ const ConversationComponent = (
         modalShow={imageModalShow}
         modalImg={modalImg}
         onRequestClose={() => setImageModalShow(false)}
+      />
+      <FullScreenModal
+        listData={calenderEventList}
+        lisItem={({item, index}) => (
+          <ActionItem
+            key={index}
+            label={item?.title}
+            onItemPress={() => onSelectedEvent(item, index)}
+          />
+        )}
+        showModal={showCalendarModal}
+        onHideModal={onHideCalendarModal}
+        placeholder={strings('SEARCH_PLACEHOLDER')}
+        onChangeText={onChangeCalendar}
+        searchValue={searchCalendarEventValue}
+        noDataPlaceholder={strings('NO_RESULT_DROPDOWN_MESSAGE')}
       />
       <Loader loading={isLoading} />
     </FlexContainer>

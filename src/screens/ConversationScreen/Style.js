@@ -110,7 +110,11 @@ const styles = StyleSheet.create({
       paddingVertical: theme.sizes.spacing.xs,
       gap: theme.sizes.spacing.xs,
     }),
-    attachmentButton: {height: theme.normalize(20), width: theme.normalize(20), tintColor: '#A7A7A7'},
+    attachmentButton: {
+      height: theme.normalize(20),
+      width: theme.normalize(20),
+      tintColor: '#A7A7A7',
+    },
     inputBox: inputHeight => ({
       flex: 1,
       height: inputHeight,
@@ -126,7 +130,11 @@ const styles = StyleSheet.create({
         borderTopRightRadius: theme.normalize(10),
       },
     },
-    actionItemIcon: {height: 20, width: 20, tintColor: theme.colors.bluish_grey},
+    actionItemIcon: {
+      height: 20,
+      width: 20,
+      tintColor: theme.colors.bluish_grey,
+    },
   },
   assigneeHeader: {
     backgroundColor: theme.colors.brandColor.FAFAFA,
@@ -147,6 +155,41 @@ const styles = StyleSheet.create({
     height: theme.sizes.image.md,
     width: theme.sizes.image.md,
     tintColor: 'black',
+  },
+  durationContainer: {
+    backgroundColor: '#d5e3f8',
+    padding: theme.normalize(5),
+    borderRadius: theme.normalize(5),
+    alignSelf: 'flex-end',
+  },
+  avatarStyle: {
+    height: theme.sizes.image.xl4,
+    width: theme.sizes.image.xl4,
+    borderRadius: theme.sizes.image.xl4 / 2,
+  },
+  iconStyle: {
+    height: theme.sizes.image.xs2,
+    width: theme.sizes.image.xs2,
+  },
+  imageContainerCross: {
+    height: theme.normalize(18),
+    width: theme.normalize(18),
+    borderRadius: theme.normalize(9),
+    backgroundColor: '#f0f2f5',
+    position: 'absolute',
+    right: -10,
+    top: -10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
   },
 });
 
